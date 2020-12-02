@@ -1,0 +1,23 @@
+#============================================
+#Logs de archivos procesados de L2A a poligonos 
+# de sargazo en el directorio 
+#/data/output/sentinel2/sargazo
+#============================================
+pathL2A,pathSargazo,fechaProc
+
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QDJ/S2B_MSIL2A_20201120T162559_N0214_R040_T16QDJ_20201120T185750.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/geojson/T16QDJ/2020/S2_MSI_SAR_T16QDJ_20201120T185750.json,2020-11-21T14:11
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QEJ/S2B_MSIL2A_20201120T162559_N0214_R040_T16QEJ_20201120T185750.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/geojson/T16QEJ/2020/S2_MSI_SAR_T16QEJ_20201120T185750.json,2020-11-21T14:17
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QDH/S2B_MSIL2A_20201120T162559_N0214_R040_T16QDH_20201120T185750.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/geojson/T16QDH/2020/S2_MSI_SAR_T16QDH_20201120T185750.json,2020-11-21T14:27
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QDJ/S2B_MSIL2A_20201120T162559_N0214_R040_T16QDJ_20201120T185750.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/geojson/T16QDJ/2020/S2_MSI_SAR_T16QDJ_20201120T185750.json,2020-11-21T14:50
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QDJ/S2B_MSIL2A_20201120T162559_N0214_R040_T16QDJ_20201120T185750.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/geojson/T16QDJ/2020/S2_MSI_SAR_T16QDJ_20201120T185750.json,2020-11-21T15:11
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QEJ/S2B_MSIL2A_20201120T162559_N0214_R040_T16QEJ_20201120T185750.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/empty/T16QEJ/2020/S2_MSI_SAR_T16QEJ_20201120T185750.txt,2020-11-21T15:11
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QDH/S2B_MSIL2A_20201120T162559_N0214_R040_T16QDH_20201120T185750.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/geojson/T16QDH/2020/S2_MSI_SAR_T16QDH_20201120T185750.json,2020-11-21T15:19
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QDG/S2B_MSIL2A_20201120T162559_N0214_R040_T16QDG_20201120T185750.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/geojson/T16QDG/2020/S2_MSI_SAR_T16QDG_20201120T185750.json,2020-11-21T15:22
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QDF/S2B_MSIL2A_20201120T162559_N0214_R040_T16QDF_20201120T185750.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/empty/T16QDF/2020/S2_MSI_SAR_T16QDF_20201120T185750.txt,2020-11-21T15:23
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QDJ/S2A_MSIL2A_20201125T162621_N0214_R040_T16QDJ_20201125T184745.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/geojson/T16QDJ/2020/S2_MSI_SAR_T16QDJ_20201125T184745.json,2020-11-26T22:51
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QEJ/S2A_MSIL2A_20201125T162621_N0214_R040_T16QEJ_20201125T184745.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/empty/T16QEJ/2020/S2_MSI_SAR_T16QEJ_20201125T184745.txt,2020-11-26T22:52
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QDJ/S2A_MSIL2A_20201125T162621_N0214_R040_T16QDJ_20201125T184745.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/empty/T16QDJ/2020/S2_MSI_SAR_T16QDJ_20201125T184745.txt,2020-11-27T00:11
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QDG/S2A_MSIL2A_20201125T162621_N0214_R040_T16QDG_20201125T184745.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/geojson/T16QDG/2020/S2_MSI_SAR_T16QDG_20201125T184745.json,2020-11-27T00:22
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QDH/S2A_MSIL2A_20201125T162621_N0214_R040_T16QDH_20201125T184745.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/empty/T16QDH/2020/S2_MSI_SAR_T16QDH_20201125T184745.txt,2020-11-27T00:24
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QDJ/S2A_MSIL2A_20201125T162621_N0214_R040_T16QDJ_20201125T184745.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/geojson/T16QDJ/2020/S2_MSI_SAR_T16QDJ_20201125T184745.json,2020-11-27T12:48
+/home/urielm/sargazo_lage/1.0/test/tmp/T16QEJ/S2A_MSIL2A_20201125T162621_N0214_R040_T16QEJ_20201125T184745.zip,/home/urielm/sargazo_lage/1.0/test/sargazo/empty/T16QEJ/2020/S2_MSI_SAR_T16QEJ_20201125T184745.txt,2020-11-27T12:49
