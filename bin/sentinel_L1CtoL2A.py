@@ -1,5 +1,5 @@
 import os
-from processing_sentinel import listaArchivos,nomDir,tipoCompresion,descomprime,obtieneFechaLog,obtieneAnio,sen2core,log,obtieneArchivoZip
+from processing_sentinel2 import listaArchivos,nomDir,tipoCompresion,descomprime,obtieneFechaLog,obtieneAnio,sen2core,log,obtieneArchivoZip
 
 #pathSen2core = '/home/lanotadm/sargazo/Sen2Cor-02.08.00-Linux64/bin/'
 #pathCFG = '/home/lanotadm/sen2cor/2.8/cfg/L2A_GIPP.xml'
