@@ -1,16 +1,7 @@
 from glob import glob
 import os
 import sys
-
-def obtieneTile(pathArchivo):
-	tile = pathArchivo.split('/')[-1].split('_')[5]
-	return tile
-def obtieneArchivoZip(pathArchivo):
-	archivo = pathArchivo.split('/')[-1].split('.')[0]+'.zip'
-	return archivo
-def obtieneAnio(path):
-   anio = path.split('/')[-1].split('_')[2][:4]
-   return anio
+from processing_sentinel2 import obtieneTile,obtieneArchivoZip,obtieneAnio
 
 pathInput = '/data/input/sentinel2/depot/'+sys.argv[1]+'/'
 print(pathInput)

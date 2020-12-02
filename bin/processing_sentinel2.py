@@ -13,6 +13,12 @@ import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+
+def obtieneArchivoZip(pathArchivo):
+    archivo = pathArchivo.split('/')[-1].split('.')[0]+'.zip'
+    return archivo
+
 def sen2core(pathSen2Core,pathCFG,pathInput,pathOutput,resolution):
         os.system(pathSen2Core+'L2A_Process --resolution '+resolution+' --GIP_L2A '+pathCFG+' '+pathInput)
 
