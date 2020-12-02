@@ -20,7 +20,7 @@ for tile in tiles:
 			compresion = tipoCompresion(archivo)
 			if compresion == 'zip':
 				print(archivo)
-				if verificaLog(pathLog,archivo):
+				if not verificaLog(pathLog,archivo):
 					descomprime(archivo,compresion,pathTmp)
 					dirL1C = nomDir(archivo,'L1C')
 					# Solucion para fallo de sen2core opcional
