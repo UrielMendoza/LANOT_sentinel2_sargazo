@@ -20,16 +20,26 @@ def obtieneArchivoZip(pathArchivo):
     return archivo
 
 def sen2core(pathSen2Core,pathCFG,pathInput,pathOutput,resolution):
-        os.system(pathSen2Core+'L2A_Process --resolution '+resolution+' --GIP_L2A '+pathCFG+' '+pathInput)
+    os.system(pathSen2Core+'L2A_Process --resolution '+resolution+' --GIP_L2A '+pathCFG+' '+pathInput)
+
+def verificaLog(pathLog,archivo):
+    file = open(pathLog,'r')
+    lines = file.readlines()
+    for i in lines:
+        if archivo in i:
+            return True
+        else:
+            return False
+    file.close
 
 def log(pathLog,archivo,archivoProc,fecha):
-        file = open(pathLog,'a')
-        file.write('\n'+archivo+','+archivoProc+','+fecha)
-        file.close
+    file = open(pathLog,'a')
+    file.write('\n'+archivo+','+archivoProc+','+fecha)
+    file.close
 
 def obtieneTile(pathArchivo):
-        tile = pathArchivo.split('/')[-1].split('_')[5]
-        return tile
+    tile = pathArchivo.split('/')[-1].split('_')[5]
+    return tile
 
 def obtieneAnio(path):
    anio = path.split('/')[-1].split('_')[2][:4]
