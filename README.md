@@ -10,4 +10,5 @@
  * Poligonización de los datos binarios.
 ## Instalación
  Para crear los directorios de prueba, descarga e instalación de sen2core y descarga de mascaras ejecute:
+ 
  `sh install.sh`
