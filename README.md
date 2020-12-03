@@ -8,4 +8,6 @@
  * Algoritmo de búsqueda por condicional en las bandas del infrarrojo.
  * Aplicación de máscaras de tierra, nube alta con buffer para eliminar bordes y nube baja con filtro de vecindad.
  * Poligonización de los datos binarios.
-
+## Instalación
+ Para crear los directorios de prueba, descarga e instalación de sen2core y descarga de mascaras ejecute:
+ ´sh install.sh´ 
