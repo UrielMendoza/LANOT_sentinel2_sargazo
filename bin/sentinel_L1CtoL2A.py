@@ -1,10 +1,10 @@
 import os
 from processing_sentinel2 import listaArchivos,nomDir,tipoCompresion,descomprime,obtieneFechaLog,obtieneAnio,sen2core,log,obtieneArchivoZip,verificaLog
 
-#pathSen2core = '/home/lanotadm/sargazo/Sen2Cor-02.08.00-Linux64/bin/'
-#pathCFG = '/home/lanotadm/sen2cor/2.8/cfg/L2A_GIPP.xml'
-pathSen2core = '/home/lanotadm/sargazo/Sen2Cor-02.05.05-Linux64/bin/'
-pathCFG = '/home/lanotadm/sen2cor/2.5/cfg/L2A_GIPP.xml'
+pathSen2core_8 = '/home/lanotadm/sargazo/Sen2Cor-02.08.00-Linux64/bin/'
+pathCFG_8 = '/home/lanotadm/sen2cor/2.8/cfg/L2A_GIPP.xml'
+pathSen2core_5 = '/home/lanotadm/sargazo/Sen2Cor-02.05.05-Linux64/bin/'
+pathCFG_5 = '/home/lanotadm/sen2cor/2.5/cfg/L2A_GIPP.xml'
 pathInput = '/data/input/sentinel2/L1C/'
 pathOutput = '/data/input/sentinel2/L2A/'
 pathTmp = '/data/input/sentinel2/tmp/'
@@ -25,7 +25,11 @@ for tile in tiles:
 					dirL1C = nomDir(archivo,'L1C')
 					# Solucion para fallo de sen2core opcional
 					#os.system('sudo mkdir '+pathTmp+dirL1C+'/AUX_DATA')
-					sen2core(pathSen2core,pathCFG,pathTmp+dirL1C,pathOutput+tile+'/','20')
+					
+					if int(anioDir) < 2018:
+						sen2core(pathSen2core_8,pathCFG_8,pathTmp+dirL1C,pathOutput+tile+'/','20')
+					else:
+						sen2core(pathSen2core_5,pathCFG_5,pathTmp+dirL1C,pathOutput+tile+'/','20')
 					
 					#Comprimir el L2 y guardarlo en el txt
 					dirL2A = listaArchivos(pathTmp+'*L2*')[0]

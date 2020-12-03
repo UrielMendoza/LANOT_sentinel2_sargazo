@@ -1,0 +1,6 @@
+#============================================
+#Logs de archivos procesados de L2A a poligonos 
+# de sargazo en el directorio 
+#/data/output/sentinel2/sargazo
+#============================================
+pathL2A,pathSargazo,fechaProc
