@@ -14,7 +14,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-
 def obtieneArchivoZip(pathArchivo):
     archivo = pathArchivo.split('/')[-1].split('.')[0]+'.zip'
     return archivo

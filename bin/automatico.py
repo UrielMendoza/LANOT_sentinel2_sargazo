@@ -13,12 +13,12 @@ if __name__ == "__main__":
     ini = time.time()
 
     # DIRECTORIOS
-    pathInput = '/home/urielm/sargazo_lage/1.0/test/L2A/'
-    pathOutput = '/home/urielm/sargazo_lage/1.0/test/sargazo/geojson/'
-    pathOutputEmpty = '/home/urielm/sargazo_lage/1.0/test/sargazo/empty/'
-    pathTmp = '/home/urielm/sargazo_lage/1.0/test/tmp/'
-    pathLM = '/home/urielm/sargazo_lage/1.0/data/masks/sargazo1_UTM16N_20m.tif'
-    pathLog = '/home/urielm/sargazo_lage/1.0/logs/proc_L2A_sargazo.txt'
+    pathInput = './test/L2A/'
+    pathOutput = './test/sargazo/geojson/'
+    pathOutputEmpty = './test/sargazo/empty/'
+    pathTmp = './test/tmp/'
+    pathLM = './data/masks/sargazo1_UTM16N_20m.tif'
+    pathLog = './logs_sentinel2_sargazo/proc_L2A_sargazo.txt'
 
     sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathLog,dateTime='automatico')
 
