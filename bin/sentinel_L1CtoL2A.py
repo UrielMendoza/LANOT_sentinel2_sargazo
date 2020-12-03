@@ -2,15 +2,16 @@ import os
 from processing_sentinel2 import listaArchivos,nomDir,tipoCompresion,descomprime,obtieneFechaLog,obtieneAnio,sen2core,log,obtieneArchivoZip,verificaLog
 
 if __name__ == "__main__":
-	
-	pathSen2core_8 = './Sen2Cor-02.08.00-Linux64/bin/'
-	pathCFG_8 = './sen2cor/2.8/cfg/L2A_GIPP.xml'
-	pathSen2core_5 = './Sen2Cor-02.05.05-Linux64/bin/'
-	pathCFG_5 = './sen2cor/2.5/cfg/L2A_GIPP.xml'
+
+	pathSen2core_8 = '../Sen2Cor-02.08.00-Linux64/bin/'
+	pathCFG_8 = '../../sen2cor/2.8/cfg/L2A_GIPP.xml'
+	pathSen2core_5 = '../Sen2Cor-02.05.05-Linux64/bin/'
+	pathCFG_5 = '../../sen2cor/2.5/cfg/L2A_GIPP.xml'
+	pathLog = '../../logs_sentinel2_sargazo/proc_L1C_L2A.txt'
 	pathInput = '/data/input/sentinel2/L1C/'
 	pathOutput = '/data/input/sentinel2/L2A/'
 	pathTmp = '/data/input/sentinel2/tmp/'
-	pathLog = './logs_sentinel2_sargazo/proc_L1C_L2A.txt'
+
 
 	tiles = list(map(lambda x : x.split('/')[-1],listaArchivos(pathInput+'*')))
 	#cont = 0
