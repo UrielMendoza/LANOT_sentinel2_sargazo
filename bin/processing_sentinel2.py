@@ -25,6 +25,7 @@ def verificaLog(pathLog,archivo):
     file = open(pathLog,'r')
     lines = file.readlines()
     for i in lines:
+        print(i)
         if archivo in i:
             return True
         else:

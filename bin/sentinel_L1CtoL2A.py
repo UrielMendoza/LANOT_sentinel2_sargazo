@@ -24,34 +24,37 @@ if __name__ == "__main__":
 				if compresion == 'zip':
 					print(archivo)
 					if not verificaLog(pathLog,archivo):
-						descomprime(archivo,compresion,pathTmp)
-						dirL1C = nomDir(archivo,'L1C')
-						# Solucion para fallo de sen2core opcional
-						#os.system('sudo mkdir '+pathTmp+dirL1C+'/AUX_DATA')
+						try:
+							descomprime(archivo,compresion,pathTmp)
+							dirL1C = nomDir(archivo,'L1C')
+							# Solucion para fallo de sen2core opcional
+							#os.system('sudo mkdir '+pathTmp+dirL1C+'/AUX_DATA')
 
-						if int(anioDir) < 2018:
-							sen2core(pathSen2core_8,pathCFG_8,pathTmp+dirL1C,pathOutput+tile+'/','20')
-						else:
-							sen2core(pathSen2core_5,pathCFG_5,pathTmp+dirL1C,pathOutput+tile+'/','20')
-						
-						#Comprimir el L2 y guardarlo en el txt
-						dirL2A = listaArchivos(pathTmp+'*L2*')[0]
-						anio = obtieneAnio(archivo)
-						archivoZip = obtieneArchivoZip(dirL2A)
+							if int(anioDir.split('/')[-1]) < 2018:
+								sen2core(pathSen2core_8,pathCFG_8,pathTmp+dirL1C,pathOutput+tile+'/','20')
+							else:
+								sen2core(pathSen2core_5,pathCFG_5,pathTmp+dirL1C,pathOutput+tile+'/','20')
+							
+							#Comprimir el L2 y guardarlo en el txt
+							dirL2A = listaArchivos(pathTmp+'*L2*')[0]
+							anio = obtieneAnio(archivo)
+							archivoZip = obtieneArchivoZip(dirL2A)
 
-						os.system('mkdir -p '+pathOutput+tile+'/'+anio)
-						
-						os.system('cd '+pathTmp+';zip -r '+pathOutput+tile+'/'+anio+'/'+dirL2A.split('/')[-1].split('.')[0]+'.zip ./'+dirL2A.split('/')[-1])
-						os.system('cd '+'/'.join(dirL2A.split('/')[:-1])+';zip -r '+archivoZip+' '+dirL2A.split('/')[-1]+';mv '+archivoZip+' '+pathOutput+tile+'/'+anio)
-						
-						os.system('rm -r '+pathTmp+dirL1C)
-						os.system('rm -r '+dirL2A)
-						#os.system('rm -r '+pathTmp+'\*L2*')
+							os.system('mkdir -p '+pathOutput+tile+'/'+anio)
+							
+							os.system('cd '+pathTmp+';zip -r '+pathOutput+tile+'/'+anio+'/'+dirL2A.split('/')[-1].split('.')[0]+'.zip ./'+dirL2A.split('/')[-1])
+							os.system('cd '+'/'.join(dirL2A.split('/')[:-1])+';zip -r '+archivoZip+' '+dirL2A.split('/')[-1]+';mv '+archivoZip+' '+pathOutput+tile+'/'+anio)
+							
+							os.system('rm -r '+pathTmp+dirL1C)
+							os.system('rm -r '+dirL2A)
+							#os.system('rm -r '+pathTmp+'\*L2*')
 
-						fecha = obtieneFechaLog()
-						
-						log(pathLog,archivo,pathOutput+tile+'/'+anio+'/'+dirL2A.split('/')[-1].split('.')[0]+'.zip',fecha)
-						#cont+=1
+							fecha = obtieneFechaLog()
+							
+							log(pathLog,archivo,pathOutput+tile+'/'+anio+'/'+dirL2A.split('/')[-1].split('.')[0]+'.zip',fecha)
+							#cont+=1
+						finally:
+							os.system('rm '+pathTmp+'*')
 					else:
 						print('Archivo: '+archivo+' ya fue procesado a L2A')
 	#print(cont)
