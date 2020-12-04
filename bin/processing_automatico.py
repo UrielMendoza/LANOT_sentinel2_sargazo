@@ -95,7 +95,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                 # LOG
                 print('4.1 Añadiendo log...')
                 fechaLog = processing_sentinel2.obtieneFechaLog()
-                processing_sentinel2.log(pathLog'+proc_L2A_sargazoGeoTiff.txt',archivo,archivoProc,fechaLog)
+                processing_sentinel2.log(pathLog+'proc_L2A_sargazoGeoTiff.txt',archivo,archivoProc,fechaLog)
 
             except IndexError:
                 print('Hay un error en la imagen: ', archivo)
