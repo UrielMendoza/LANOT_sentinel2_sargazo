@@ -53,6 +53,8 @@ if __name__ == "__main__":
 							
 							log(pathLog,archivo,pathOutput+tile+'/'+anio+'/'+dirL2A.split('/')[-1].split('.')[0]+'.zip',fecha)
 							#cont+=1
+						except IndexError:
+							pass
 						finally:
 							os.system('rm -r '+pathTmp+'*')
 					else:
