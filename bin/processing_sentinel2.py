@@ -28,9 +28,9 @@ def verificaLog(pathLog,archivo):
         print(i)
         if archivo in i:
             return True
-        else:
-            return False
     file.close
+    return False
+
 
 def log(pathLog,archivo,archivoProc,fecha):
     file = open(pathLog,'a')

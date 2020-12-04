@@ -31,9 +31,9 @@ if __name__ == "__main__":
 							#os.system('sudo mkdir '+pathTmp+dirL1C+'/AUX_DATA')
 
 							if int(anioDir.split('/')[-1]) < 2018:
-								sen2core(pathSen2core_8,pathCFG_8,pathTmp+dirL1C,pathOutput+tile+'/','20')
-							else:
 								sen2core(pathSen2core_5,pathCFG_5,pathTmp+dirL1C,pathOutput+tile+'/','20')
+							else:
+								sen2core(pathSen2core_8,pathCFG_8,pathTmp+dirL1C,pathOutput+tile+'/','20')
 							
 							#Comprimir el L2 y guardarlo en el txt
 							dirL2A = listaArchivos(pathTmp+'*L2*')[0]
