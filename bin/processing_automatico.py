@@ -52,9 +52,9 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                 os.system('mkdir -p '+pathInput+tile+'/'+anio)
                 os.system('mv '+archivo+' '+pathInput+tile+'/'+anio)
 
-                print(fecha)
-                print(dirI)
-                print('Procesando bandas...')
+                #print(fecha)
+                #print(dirI)
+                #print('Procesando bandas...')
                 
                 print('2. Conviertiendo a GeoTIFF...')
                 for banda in bandas:
