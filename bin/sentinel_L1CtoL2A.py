@@ -54,7 +54,7 @@ if __name__ == "__main__":
 							log(pathLog,archivo,pathOutput+tile+'/'+anio+'/'+dirL2A.split('/')[-1].split('.')[0]+'.zip',fecha)
 							#cont+=1
 						finally:
-							os.system('rm '+pathTmp+'*')
+							os.system('rm -r '+pathTmp+'*')
 					else:
 						print('Archivo: '+archivo+' ya fue procesado a L2A')
 	#print(cont)
