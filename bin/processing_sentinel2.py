@@ -119,11 +119,11 @@ def obtieneCuadrante(ds):
 
     return [xmin,ymax,xmax,ymin]
 
-def remuestrea(salida,ds,dimx,dimy):
-    gdal.Translate(salida,ds,options=gdal.TranslateOptions(xRes=dimx,yRes=dimy))
+def remuestrea(pathOutput,ds,dimx,dimy):
+    gdal.Translate(pathOutput,ds,options=gdal.TranslateOptions(xRes=dimx,yRes=dimy))
 
-def RGB(r,g,b,salida):
-    os.system('gdal_merge.py -separate -co PHOTOMETRIC=RGB -o '+salida+' '+r+' '+g+' '+b)
+def RGB(r,g,b,tile,anio,fecha,pathOutputGeoTiff):
+    os.system('gdal_merge.py -separate -co PHOTOMETRIC=RGB -o '+pathOutputGeoTiff+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+".tif"+' '+r+' '+g+' '+b)
 
 def poligonizacion(tile,anio,fecha,pathInput,pathOutput,pathOutputEmpty):
     index = 0

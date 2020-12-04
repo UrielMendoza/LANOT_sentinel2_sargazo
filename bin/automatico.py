@@ -14,12 +14,13 @@ if __name__ == "__main__":
 
     # DIRECTORIOS
     pathInput = '../test/L2A/'
-    pathOutput = '../test/sargazo/geojson/'
-    pathOutputEmpty = '../test/sargazo/empty/'
+    pathOutput = '../test/geojson/sargazo/'
+    pathOutputGeoTiff = '../test/geotiff/sargazo/'
+    pathOutputEmpty = '../test/geojson/empty/'
     pathTmp = '../test/tmp/'
     pathLM = '../data/masks/land_sargazo_UTM16N_20m.tif'
-    pathLog = '../../logs_sentinel2_sargazo/proc_L2A_sargazo.txt'
+    pathLog = '../../logs_sentinel2_sargazo/'
 
-    sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathLog,dateTime='automatico')
+    sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime='automatico')
 
     print("Tiempo de procesamiento: ",time.time()-ini)
