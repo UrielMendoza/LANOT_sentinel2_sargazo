@@ -56,7 +56,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                 #print(dirI)
                 #print('Procesando bandas...')
                 
-                print('2. Conviertiendo a GeoTIFF...')
+                print('2. Convirtiendo a GeoTIFF...')
                 for banda in bandas:
                     dirB = processing_sentinel2.listaBandas(pathTmp+dirI,'L2A',banda)
                     dsB = processing_sentinel2.aperturaDS(dirB)
@@ -72,7 +72,6 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                 banderaNub = processing_sentinel2.nubesMascara(cuadrante,pathTmp+bandas[-1]+'.tif',pathTmp)
                 print('3.3 Procesando sargazo sin filtro...')
                 processing_sentinel2.sargazoBin(banderaNub,'L2A',pathTmp,pathTmp)
-
                 dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_mask_tmp.tif')
                 print('3.4 Procesando sargazo con filtro...')
                 nuMask = processing_sentinel2.pixelNubesBajas(ref,dsSar)
