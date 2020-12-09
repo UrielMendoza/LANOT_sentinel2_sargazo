@@ -193,6 +193,9 @@ def pixelNubesBajas(dsRef,dsSar):
 	cont = 0
 	listaBanderas = []
 
+    # Valor de referencia B4
+    nubeBaja = 900
+
 	for i in range(nuMask.shape[0]):
 		for j in range(nuMask.shape[1]):
 			#print(nuMask.shape[0],nuMask.shape[1])
@@ -200,47 +203,47 @@ def pixelNubesBajas(dsRef,dsSar):
 			#print('valor:',sar[i,j])
 			if sar[i,j] == 1:
 				# ESQUINAS
-				if (i == 0 and j == 0) and (b4[i,j+1] > 1000 or b4[i+1,j+1] > 1000 or b4[i+1,j] > 1000):
+				if (i == 0 and j == 0) and (b4[i,j+1] > nubeBaja or b4[i+1,j+1] > nubeBaja or b4[i+1,j] > nubeBaja):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso1')
 
-				elif (i == 0 and j == nuMask.shape[1]) and (b4[i,j-1] > 1000 or b4[i+1,j-1] > 1000 or b4[i+1,j] > 1000):
+				elif (i == 0 and j == nuMask.shape[1]) and (b4[i,j-1] > nubeBaja or b4[i+1,j-1] > nubeBaja or b4[i+1,j] > nubeBaja):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso2')
 
-				elif (i == nuMask.shape[0] and j == 0) and (b4[i-1,j] > 1000 or b4[i-1,j+1] > 1000 or b4[i,j+1] > 1000):
+				elif (i == nuMask.shape[0] and j == 0) and (b4[i-1,j] > nubeBaja or b4[i-1,j+1] > nubeBaja or b4[i,j+1] > nubeBaja):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso3')
 
-				elif (i == nuMask.shape[0] and j == nuMask.shape[1]) and (b4[i-1,j-1] > 1000 or b4[i-1,j] > 1000 or b4[i,j-1] > 1000):
+				elif (i == nuMask.shape[0] and j == nuMask.shape[1]) and (b4[i-1,j-1] > nubeBaja or b4[i-1,j] > nubeBaja or b4[i,j-1] > nubeBaja):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso4')
 				#BORDES
-				elif (i == 0) and (b4[i,j-1] > 1000 or b4[i,j+1] > 1000 or b4[i+1,j-1] > 1000 or b4[i+1,j] > 1000 or b4[i+1,j+1] > 1000):
+				elif (i == 0) and (b4[i,j-1] > nubeBaja or b4[i,j+1] > nubeBaja or b4[i+1,j-1] > nubeBaja or b4[i+1,j] > nubeBaja or b4[i+1,j+1] > nubeBaja):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso5')
 
-				elif (i == nuMask.shape[0]) and (b4[i-1,j-1] > 1000 or b4[i-1,j] > 1000 or b4[i-1,j+1] > 1000 or b4[i,j-1] > 1000 or b4[i,j+1] > 1000):
+				elif (i == nuMask.shape[0]) and (b4[i-1,j-1] > nubeBaja or b4[i-1,j] > nubeBaja or b4[i-1,j+1] > nubeBaja or b4[i,j-1] > nubeBaja or b4[i,j+1] > nubeBaja):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso6')
 
-				elif (j == 0) and (b4[i-1,j] > 1000 or b4[i-1,j+1] > 1000 or b4[i,j+1] > 1000 or b4[i+1,j] > 1000 or b4[i+1,j+1] > 1000) and (sar[i,j] == 1):
+				elif (j == 0) and (b4[i-1,j] > nubeBaja or b4[i-1,j+1] > nubeBaja or b4[i,j+1] > nubeBaja or b4[i+1,j] > nubeBaja or b4[i+1,j+1] > nubeBaja) and (sar[i,j] == 1):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso7')
 
-				elif (j == nuMask.shape[1]) and (b4[i-1,j-1] > 1000 or b4[i-1,j] > 1000 or b4[i,j-1] > 1000 or b4[i+1,j-1] > 1000 or b4[i+1,j] > 1000):
+				elif (j == nuMask.shape[1]) and (b4[i-1,j-1] > nubeBaja or b4[i-1,j] > nubeBaja or b4[i,j-1] > nubeBaja or b4[i+1,j-1] > nubeBaja or b4[i+1,j] > nubeBaja):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso8')
 				#GENERAL
-				elif (b4[i-1,j-1] > 1000 or b4[i-1,j] > 1000 or b4[i-1,j+1] > 1000 or b4[i,j+1] > 1000 or b4[i+1,j+1] > 1000 or b4[i+1,j] > 1000 or b4[i+1,j-1] > 1000 or b4[i,j-1] > 1000):
+				elif (b4[i-1,j-1] > nubeBaja or b4[i-1,j] > nubeBaja or b4[i-1,j+1] > nubeBaja or b4[i,j+1] > nubeBaja or b4[i+1,j+1] > nubeBaja or b4[i+1,j] > nubeBaja or b4[i+1,j-1] > nubeBaja or b4[i,j-1] > nubeBaja):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso10')
