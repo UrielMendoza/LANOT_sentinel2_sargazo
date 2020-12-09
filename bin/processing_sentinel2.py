@@ -193,10 +193,10 @@ def pixelNubesBajas(dsRef,dsSar):
 	cont = 0
 	listaBanderas = []
 
-    # Valor de referencia B4
-    nubeBaja = 900
+	# Valor de referencia B4
+	nubeBaja = 900
 
-    for i in range(nuMask.shape[0]):
+	for i in range(nuMask.shape[0]):
 		for j in range(nuMask.shape[1]):
 			#print(nuMask.shape[0],nuMask.shape[1])
 			#print('pocision:',i,j)
