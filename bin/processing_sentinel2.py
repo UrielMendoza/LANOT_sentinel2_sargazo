@@ -186,9 +186,9 @@ def sargazoBin(banderaNub,nivel,pathInput,pathOutput):
     #os.system('gdal_calc.py -A '+pathOutput+tile+'_'+fecha+'_result_bin.tif -B '+pathInput+'maskNubes_b250_bin_tmp.tif --outfile='+pathOutput+tile+'_'+fecha+'_result_binFinal.tif --calc="A*B"')
 
 def pixelNubesBajas(dsRef,dsSar):
-	nuMask = dsRef.ReadAsArray()
-	b4 = dsRef.ReadAsArray()
-	sar = dsSar.ReadAsArray()
+    nuMask = dsRef.ReadAsArray()
+    b4 = dsRef.ReadAsArray()
+    sar = dsSar.ReadAsArray()
 
 	cont = 0
 	listaBanderas = []
