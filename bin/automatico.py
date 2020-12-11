@@ -17,7 +17,7 @@ if __name__ == "__main__":
     pathOutput = '../test/geojson/sargazo/'
     pathOutputEmpty = '../test/geojson/empty/'
     pathOutputGeoTiff = '../test/geotiff/sargazo/'
-    pathTmp = '../test/tmp/'
+    pathTmp = '../test/tmp/automatico/'
     pathLM = '../data/masks/land_sargazo_UTM16N_20m.tif'
     pathLog = '../../logs_sentinel2_sargazo/'
 
