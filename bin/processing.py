@@ -33,8 +33,8 @@ def manual():
     anio2 = input("Año: ")
     mes2 = input("Mes: ")
     dia2 = input("Dia: ")
-    start_date = datetime.datetime.strptime(anio1+mes1+dia1,"%a%m%d")
-    end_date = datetime.datetime.strptime(anio2+mes2+dia2,"%a%m%d")
+    start_date = datetime.datetime.strptime(anio1+mes1+dia1,"%Y%m%d")
+    end_date = datetime.datetime.strptime(anio2+mes2+dia2,"%Y%m%d")
 
         #if 2015 > int(anio1) > 2020 or 2015 > int(anio2) > 2020 or 1 > int(mes1) > 12 or 1 > int(mes2) > 12:
          #   raise Exception("Fecha no valida")
