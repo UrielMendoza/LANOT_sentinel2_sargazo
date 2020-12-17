@@ -33,6 +33,7 @@ def manual():
     anio2 = input("Año: ")
     mes2 = input("Mes: ")
     dia2 = input("Dia: ")
+    print('\n')
     start_date = datetime.datetime.strptime(anio1+mes1+dia1,"%Y%m%d")
     end_date = datetime.datetime.strptime(anio2+mes2+dia2,"%Y%m%d")
 
