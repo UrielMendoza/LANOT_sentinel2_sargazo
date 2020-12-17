@@ -11,11 +11,30 @@ import datetime
 import processing_sentinel2
 import download_datasets
 import base
+import sys
 
 def automatico():
 	start_date = datetime.datetime.now()
 	end_date = datetime.datetime.now()
+
 	return start_date,end_date
+
+def manual():
+    print("====================================================\n")
+    print("Ejecucion manual")
+    print("Fecha inicial")
+    anio1 = input("Año: ")
+    mes1 = input("Mes: ")
+    dia1 = input("Dia: ")
+    print("Fecha final")
+    anio2 = input("Año: ")
+    mes2 = input("Mes: ")
+    dia2 = input("Dia: ")
+    print("====================================================\n")
+    start_date = datatime.dateTime.strptime(anio1+mes1+dia1,"%a%m%d")
+    end_date = datatime.dateTime.strptime(anio2+mes2+dia2,"%a%m%d")
+
+    return start_date,end_date
 
 def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime):
 
@@ -23,15 +42,19 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
     bandas = ('B04','B05','B8A','B11','B07','SCL')
     tiles = base.tiles["sargazo1"]
 
+    # MANUAL Y AUTOMATICO
+    if dateTime == 'automatico':
+        start_date,end_date = automatico()
+    elif dateTime == 'manual':
+        start_date,end_date = manual()
+    
     # DESCARGA
-    start_date,end_date = automatico()
     #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
     print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
     # reste dod dias para prueba
     #download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=2), end_date - datetime.timedelta(days=2), pathTmp, unzip=False)
     download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
     tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
-
 
     # ALGORITMO
     for tileDir in tilesDirs:

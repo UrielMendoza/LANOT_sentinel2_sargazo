@@ -6,7 +6,7 @@ Created on Fri Nov 20 23:52:19 2020
 @author: urielm
 """
 import time
-from processing_automatico import sargazoL2A
+from processing import sargazoL2A
 
 if __name__ == "__main__":
 

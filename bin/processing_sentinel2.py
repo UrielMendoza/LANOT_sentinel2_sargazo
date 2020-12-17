@@ -30,7 +30,6 @@ def verificaLog(pathLog,archivo):
     file.close
     return False
 
-
 def log(pathLog,archivo,archivoProc,fecha):
     file = open(pathLog,'a')
     file.write('\n'+archivo+','+archivoProc+','+fecha)
