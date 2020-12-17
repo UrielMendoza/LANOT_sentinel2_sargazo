@@ -22,14 +22,16 @@ if __name__ == "__main__":
     pathLog = '../../logs_sentinel2_sargazo/'
 
     respuesta = None
-    while(respuesta != 4):
+    while respuesta != 4:
         print("LANOT_sentinel2_sargazo\n1.Ejecutar manual\n2.Buscar procesados\n3.Cambiar directorios\n4.Salir")
 
         try: 
             respuesta = input("Ingrese opcion: ")
         
-        if respuesta  > 4 or respuesta < 0:
-            raise Exception("Ingrese opcion valida")
+            if respuesta > 4 or respuesta < 0:
+                raise Exception("Ingrese opcion valida")
+        except:
+            pass
 
         if respuesta == 1:
             sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime='automatico')
