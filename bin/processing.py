@@ -23,23 +23,24 @@ def manual():
     print("=================")
     print("Ejecucion manual")
     print("=================\n")
-    try:
-        print("Fecha inicial")
-        anio1 = input("Año: ")
-        mes1 = input("Mes: ")
-        dia1 = input("Dia: ")
-        print('\n')
-        print("Fecha final")
-        anio2 = input("Año: ")
-        mes2 = input("Mes: ")
-        dia2 = input("Dia: ")
-        start_date = datatime.datetime.strptime(anio1+mes1+dia1,"%a%m%d")
-        end_date = datatime.datetime.strptime(anio2+mes2+dia2,"%a%m%d")
+    #try:
+    print("Fecha inicial")
+    anio1 = input("Año: ")
+    mes1 = input("Mes: ")
+    dia1 = input("Dia: ")
+    print('\n')
+    print("Fecha final")
+    anio2 = input("Año: ")
+    mes2 = input("Mes: ")
+    dia2 = input("Dia: ")
+    start_date = datatime.datetime.strptime(anio1+mes1+dia1,"%a%m%d")
+    end_date = datatime.datetime.strptime(anio2+mes2+dia2,"%a%m%d")
 
-        if 2015 > int(anio1) > 2020 or 2015 > int(anio2) > 2020 or 1 > int(mes1) > 12 or 1 > int(mes2) > 12:
-            raise Exception("Fecha no valida")
-    except:
-        print("Ingrese fecha valida")
+        #if 2015 > int(anio1) > 2020 or 2015 > int(anio2) > 2020 or 1 > int(mes1) > 12 or 1 > int(mes2) > 12:
+         #   raise Exception("Fecha no valida")
+    #except:
+    #    print("Ingrese fecha valida")
+
     return start_date,end_date
 
 def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime):
