@@ -11,7 +11,7 @@ from os import system
 
 if __name__ == "__main__":
 
-    ini = time.time()
+ 
 
     # DIRECTORIOS
     pathInput = '../test/L2A/'
@@ -39,11 +39,12 @@ if __name__ == "__main__":
             pass
 
         if respuesta == 1:
+            ini = time.time()
             sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime='manual')
+            print("Tiempo de procesamiento: ",time.time()-ini)
         elif respuesta == 2:
             print('Funcion en construccion...')
         elif respuesta == 3:
             print('Funcion en construccion...')
 
 
-    print("Tiempo de procesamiento: ",time.time()-ini)
