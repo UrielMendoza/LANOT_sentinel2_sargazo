@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
             if respuesta > 4 or respuesta < 0:
                 raise Exception("Ingrese opcion valida")
-        except Exception,TypeError:
+        except (Exception,TypeError):
             pass
 
         if respuesta == 1:
