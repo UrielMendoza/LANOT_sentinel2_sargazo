@@ -21,6 +21,7 @@ if __name__ == "__main__":
     pathLM = '../data/masks/land_sargazo_UTM16N_20m.tif'
     pathLog = '../../logs_sentinel2_sargazo/'
 
+    respuesta = None
     while(respuesta != 4):
         print("LANOT_sentinel2_sargazo\n1.Ejecutar manual\n2.Buscar procesados\n3.Cambiar directorios\n4.Salir")
 
@@ -29,10 +30,6 @@ if __name__ == "__main__":
         
         if respuesta  > 4 or respuesta < 0:
             raise Exception("Ingrese opcion valida")
-
-        except:
-            print("Ingrese opcion valida")
-            continue
 
         if respuesta == 1:
             sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime='automatico')
