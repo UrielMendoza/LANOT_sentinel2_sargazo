@@ -29,7 +29,7 @@ if __name__ == "__main__":
         print("1.Ejecutar manual\n2.Buscar procesados\n3.Cambiar directorios\n4.Salir")
 
         try: 
-            respuesta = input("Ingrese opcion: ")
+            respuesta = int(input("Ingrese opcion: "))
         
             if respuesta > 4 or respuesta < 0:
                 raise Exception("Ingrese opcion valida")
