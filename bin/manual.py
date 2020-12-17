@@ -7,6 +7,7 @@ Created on Fri Nov 20 23:52:19 2020
 """
 import time
 from processing import sargazoL2A
+from os import system
 
 if __name__ == "__main__":
 
@@ -26,18 +27,19 @@ if __name__ == "__main__":
         print("====================================================\n")
         print("LANOT_sentinel2_sargazo\n")
         print("====================================================\n")
-        print("1.Ejecutar manual\n2.Buscar procesados\n3.Cambiar directorios\n4.Salir")
+        print("1.Ejecutar manual\n2.Buscar procesados\n3.Cambiar directorios\n4.Salir\n")
 
         try: 
             respuesta = int(input("Ingrese opcion: "))
-        
+            system("clear")
+
             if respuesta > 4 or respuesta < 0:
                 raise Exception("Ingrese opcion valida")
-        except:
+        except Exception,TypeError:
             pass
 
         if respuesta == 1:
-            sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime='automatico')
+            sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime='manual')
         elif respuesta == 2:
             print('Funcion en construccion...')
         elif respuesta == 3:
