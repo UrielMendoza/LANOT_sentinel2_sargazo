@@ -20,7 +20,6 @@ def automatico():
 	return start_date,end_date
 
 def manual():
-    print("====================================================\n")
     print("Ejecucion manual")
     print("Fecha inicial")
     anio1 = input("Año: ")
@@ -30,7 +29,6 @@ def manual():
     anio2 = input("Año: ")
     mes2 = input("Mes: ")
     dia2 = input("Dia: ")
-    print("====================================================\n")
     start_date = datatime.dateTime.strptime(anio1+mes1+dia1,"%a%m%d")
     end_date = datatime.dateTime.strptime(anio2+mes2+dia2,"%a%m%d")
 

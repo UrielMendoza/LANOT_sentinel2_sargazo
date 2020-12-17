@@ -23,7 +23,10 @@ if __name__ == "__main__":
 
     respuesta = None
     while respuesta != 4:
-        print("LANOT_sentinel2_sargazo\n1.Ejecutar manual\n2.Buscar procesados\n3.Cambiar directorios\n4.Salir")
+        print("====================================================\n")
+        print("LANOT_sentinel2_sargazo\n")
+        print("====================================================\n")
+        print("1.Ejecutar manual\n2.Buscar procesados\n3.Cambiar directorios\n4.Salir")
 
         try: 
             respuesta = input("Ingrese opcion: ")
