@@ -16,6 +16,8 @@ mkdir -p ./test/geotiff/sargazo/;
 mkdir -p ./test/tmp/automatico;
 mkdir -p ./test/tmp/manual;
 wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_sargazo_UTM16N_20m.tif;
+wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_sargazo_UTM16N_20m_b2km.tif;
+wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_sargazo_UTM16N_20m_b5km.tif;
 wget -P ./test/L1C/T16QEF/2020/ http://132.247.103.154/tmp/sargazo/test/L1C/T16QEF/2020/S2B_MSIL1C_20200720T160829_N0209_R140_T16QEF_20200720T193314.zip;
-# Falta crear lo logs directoiro y encabezados txt
+# Falta crear lo logs directorio y encabezados txt
 # Falta crear peticion para la ruta del input y output
