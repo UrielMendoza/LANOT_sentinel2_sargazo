@@ -41,13 +41,17 @@ def manual():
     print("=================\n")
     print("PARAMETROS")
     print("Distancia de Buffer mascara de tierra\n1. 0km\n2. 2km\n3. 5km\n")
-    resLM = int(input())
+    while True:
+        resLM = int(input())
+        if resLM == 1 or resLM == 2 or resLM == 3:
+            break
     if resLM == 1:
         landMask = "land_sargazo_UTM16N_20m.tif"
     elif resLM == 2:
         landMask = "land_sargazo_UTM16N_20m_b2km.tif"
     elif resLM == 3:
         landMask = "land_sargazo_UTM16N_20m_b5km.tif"
+
     print("Valor de filtro de nubes bajas banda 4:")
     while True:
         nubesBajas = int(input("Valor (sugerido 900)"))
