@@ -18,7 +18,7 @@ if __name__ == "__main__":
     pathOutputEmpty = '../test/geojson/empty/'
     pathOutputGeoTiff = '../test/geotiff/sargazo/'
     pathTmp = '../test/tmp/automatico/'
-    pathLM = '../data/masks/land_sargazo_UTM16N_20m.tif'
+    pathLM = '../data/masks/'
     pathLog = '../../logs_sentinel2_sargazo/'
 
     sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime='automatico')
