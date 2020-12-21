@@ -30,7 +30,6 @@ def manual():
     anio1 = input("Año: ")
     mes1 = input("Mes: ")
     dia1 = input("Dia: ")        
-    print('\n')
     print("Termino")
     anio2 = input("Año: ")
     mes2 = input("Mes: ")
@@ -95,7 +94,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
             print('Procesando: '+archivo)
 
             # COMPRUEBA LOG
-            if not verificaLog(pathLog+'proc_L2A_sargazo.txt',archivo):                  
+            if not processing_sentinel2.verificaLog(pathLog+'proc_L2A_sargazo.txt',archivo):                  
                 try:
                     # INICIA PROCESO
                     print('1. Descomprimiendo...')
