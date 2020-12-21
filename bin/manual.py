@@ -44,6 +44,7 @@ if __name__ == "__main__":
             ini = time.time()
             sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime='manual')
             print("Tiempo de procesamiento: ",time.time()-ini)
+            break
         elif respuesta == 2:
             print('Funcion en construccion...')
         elif respuesta == 3:
