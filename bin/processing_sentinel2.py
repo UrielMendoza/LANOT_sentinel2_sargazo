@@ -13,6 +13,9 @@ import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 
+def obtieneBufferLM(landMask):
+    bufferLM = landMask.split('.')[0].split('_')[-1]
+    return bufferLM
 
 def obtieneArchivoZip(pathArchivo):
     archivo = pathArchivo.split('/')[-1].split('.')[0]+'.zip'
@@ -124,7 +127,7 @@ def remuestrea(pathOutput,ds,dimx,dimy):
 def RGB(r,g,b,tile,anio,fecha,pathOutputGeoTiff):
     os.system('gdal_merge.py -separate -co PHOTOMETRIC=RGB -o '+pathOutputGeoTiff+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+".tif"+' '+r+' '+g+' '+b)
 
-def poligonizacion(tile,anio,fecha,pathInput,pathOutput,pathOutputEmpty):
+def poligonizacion(tile,anio,fecha,bufferLM,pathInput,pathOutput,pathOutputEmpty):
     index = 0
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     os.system('gdal_polygonize.py '+pathInput+'nubesBajas_mask.tif -f "GeoJSON" '+pathInput+'alg_mask_filter_tmp.json')
@@ -139,17 +142,19 @@ def poligonizacion(tile,anio,fecha,pathInput,pathOutput,pathOutputEmpty):
         df['tile'] = tile
         df['index'] = index
         df['IDpolygon'] = range(1, len(df) + 1)
-        df.to_file(pathOutput+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+".json", driver="GeoJSON")
+        nombre = pathOutput+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".json"
+        df.to_file(nombre, driver="GeoJSON")
         index = index + 1
-        return pathOutput+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+".json"
+        return nombre
     else:
         print('No deteccion de sargazo')
         os.system('mkdir -p '+pathOutputEmpty+tile+'/'+anio)
-        f = open(pathOutputEmpty+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+".txt",'w')
+        nombre = pathOutputEmpty+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".txt"
+        f = open(nombre,'w')
         f.write('No detección de sargazo')
         f.close()
         #print('Tile:'+tile+'\nFecha:'+fecha)
-        return pathOutputEmpty+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+".txt"
+        return nombre
 
 def tierraMascara(cuadrante,pathMask,pathTmp):
     #gdal.Translate(pathTmp+'tmp_mask.tif',dsMascara,options=gdal.TranslateOptions(projWin=cuadrante))
@@ -184,7 +189,7 @@ def sargazoBin(banderaNub,nivel,pathInput,pathOutput):
         os.system('gdal_calc.py -A '+pathOutput+'alg_tmp.tif -B '+pathInput+'landMask_tmp.tif -C '+pathInput+'cloudMask_b250_bin_rec_tmp.tif --outfile='+pathOutput+'alg_mask_tmp.tif --calc="A*B*C"')
     #os.system('gdal_calc.py -A '+pathOutput+tile+'_'+fecha+'_result_bin.tif -B '+pathInput+'maskNubes_b250_bin_tmp.tif --outfile='+pathOutput+tile+'_'+fecha+'_result_binFinal.tif --calc="A*B"')
 
-def pixelNubesBajas(dsRef,dsSar):
+def pixelNubesBajas(dsRef,dsSar,nubesBajas):
 	nuMask = dsRef.ReadAsArray()
 	b4 = dsRef.ReadAsArray()
 	sar = dsSar.ReadAsArray()
@@ -192,8 +197,8 @@ def pixelNubesBajas(dsRef,dsSar):
 	cont = 0
 	listaBanderas = []
 
-	# Valor de referencia B4
-	nubeBaja = 900
+	# Valor de referencia B4 Sugerido 900
+	nubeBaja = nubesBajas
 
 	for i in range(nuMask.shape[0]):
 		for j in range(nuMask.shape[1]):

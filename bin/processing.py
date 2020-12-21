@@ -16,33 +16,50 @@ import sys
 def automatico():
 	start_date = datetime.datetime.now()
 	end_date = datetime.datetime.now()
+    landMask = "land_sargazo_UTM16N_20m_b2km.tif"
+    nubesBajas = 900
 
-	return start_date,end_date
+	return start_date,end_date,landMask,nubesBajas
 
 def manual():
     print("=================")
     print("Ejecucion manual")
     print("=================\n")
     #try:
-    print("Fecha inicio")
+    print("FECHAS")
+    print("Inicio")   
     anio1 = input("Año: ")
     mes1 = input("Mes: ")
-    dia1 = input("Dia: ")
+    dia1 = input("Dia: ")        
     print('\n')
-    print("Fecha termino")
+    print("Termino")
     anio2 = input("Año: ")
     mes2 = input("Mes: ")
-    dia2 = input("Dia: ")
-    print('\n')
+    dia2 = input("Dia: ")            
     start_date = datetime.datetime.strptime(anio1+mes1+dia1,"%Y%m%d")
     end_date = datetime.datetime.strptime(anio2+mes2+dia2,"%Y%m%d")
 
+    print("=================\n")
+    print("PARAMETROS")
+    print("Distancia de Buffer mascara de tierra\n1. 0km\n2. 2km\n3. 5km\n")
+    resLM = int(input())
+    if resLM == 1:
+        landMask = "land_sargazo_UTM16N_20m.tif"
+    elif resLM == 2:
+        landMask = "land_sargazo_UTM16N_20m_b2km.tif"
+    elif resLM == 3:
+        landMask = "land_sargazo_UTM16N_20m_b5km.tif"
+    print("Valor de filtro de nubes bajas banda 4:")
+    while True:
+        nubesBajas = int(input("Valor (sugerido 900)"))
+        if nubesBajas >= 900 and nubesBajas <= 1000:
+            break
         #if 2015 > int(anio1) > 2020 or 2015 > int(anio2) > 2020 or 1 > int(mes1) > 12 or 1 > int(mes2) > 12:
          #   raise Exception("Fecha no valida")
     #except:
     #    print("Ingrese fecha valida")
 
-    return start_date,end_date
+    return start_date,end_date,landMask,nubesBajas
 
 def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime):
 
@@ -52,10 +69,11 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
 
     # MANUAL Y AUTOMATICO
     if dateTime == 'automatico':
-        start_date,end_date = automatico()
+        start_date,end_date,landMask,nubesBajas = automatico()
+
     elif dateTime == 'manual':
-        start_date,end_date = manual()
-    
+        start_date,end_date,landMask,nubesBajas = manual() 
+ 
     # DESCARGA
     #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
     print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
@@ -70,76 +88,83 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
         archivos = processing_sentinel2.listaArchivos(tileDir+'/*')
         
         for archivo in archivos:
-            try:
-                print('Procesando: '+archivo)
+           
+            print('Procesando: '+archivo)
 
-                print('1. Descomprimiendo...')
-                compresion = processing_sentinel2.tipoCompresion(archivo)
-                processing_sentinel2.descomprime(archivo,compresion,pathTmp)
+            # COMPRUEBA LOG
+            if not verificaLog(pathLog+'proc_L2A_sargazo.txt',archivo):                  
+                try:
+                    # INICIA PROCESO
+                    print('1. Descomprimiendo...')
+                    compresion = processing_sentinel2.tipoCompresion(archivo)
+                    processing_sentinel2.descomprime(archivo,compresion,pathTmp)
 
-                fecha = processing_sentinel2.obtieneFecha(archivo)
-                tile = processing_sentinel2.obtieneTile(archivo)
-                anio = processing_sentinel2.obtieneAnio(archivo)
-                dirI = processing_sentinel2.nomDir(archivo,'L2A')
+                    fecha = processing_sentinel2.obtieneFecha(archivo)
+                    tile = processing_sentinel2.obtieneTile(archivo)
+                    anio = processing_sentinel2.obtieneAnio(archivo)
+                    dirI = processing_sentinel2.nomDir(archivo,'L2A')
+                    
+                    os.system('mkdir -p '+pathInput+tile+'/'+anio)
+                    os.system('mv '+archivo+' '+pathInput+tile+'/'+anio)
+
+                    #print(fecha)
+                    #print(dirI)
+                    #print('Procesando bandas...')
+                    
+                    print('2. Convirtiendo a GeoTIFF...')
+                    for banda in bandas:
+                        dirB = processing_sentinel2.listaBandas(pathTmp+dirI,'L2A',banda)
+                        dsB = processing_sentinel2.aperturaDS(dirB)
+                        processing_sentinel2.imgToGeoTIF(dsB,banda,pathTmp)
+                    
+                    ref = processing_sentinel2.aperturaDS(pathTmp+bandas[0]+'.tif')
+                    cuadrante = processing_sentinel2.obtieneCuadrante(ref)
+                    
+                    print('3. Aplicando algoritmo de deteccion de sargazo...')
+                    print('3.1 Procesando mascara tierra...')
+                    bufferLM = processing_sentinel2.obtieneBufferLM(landMask)
+                    processing_sentinel2.tierraMascara(cuadrante,pathLM+landMask,pathTmp)
+                    print('3.2 Procesando mascara nubes altas...')
+                    banderaNub = processing_sentinel2.nubesMascara(cuadrante,pathTmp+bandas[-1]+'.tif',pathTmp)
+                    print('3.3 Procesando sargazo sin filtro...')
+                    processing_sentinel2.sargazoBin(banderaNub,'L2A',pathTmp,pathTmp)
+                    dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_mask_tmp.tif')
+                    print('3.4 Procesando sargazo con filtro...')
+                    nuMask = processing_sentinel2.pixelNubesBajas(ref,dsSar,nubesBajas)
+                    processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')
+
+                    # POLIGONIZACION
+                    print('3.5 Procesando poligonizacion...')            
+                    archivoProc = processing_sentinel2.poligonizacion(tile,anio,fecha,bufferLM,pathTmp,pathOutput,pathOutputEmpty)
+
+                    # LOG
+                    print('3.6 Añadiendo log...') 
+                    fechaLog = processing_sentinel2.obtieneFechaLog()
+                    processing_sentinel2.log(pathLog+'proc_L2A_sargazo.txt',archivo,archivoProc,fechaLog)
+
+                    # COMPUESTO RGB
+                    print('4. Creando compuesto RGB...')
+                    os.system('mkdir -p '+pathOutputGeoTiff+tile+'/'+anio)                
+                    processing_sentinel2.RGB(pathTmp+bandas[2]+'.tif',pathTmp+bandas[1]+'.tif',pathTmp+bandas[0]+'.tif',tile,anio,fecha,pathOutputGeoTiff)
+
+                    # LOG
+                    print('4.1 Añadiendo log...')
+                    fechaLog = processing_sentinel2.obtieneFechaLog()
+                    processing_sentinel2.log(pathLog+'proc_L2A_sargazoGeoTiff.txt',archivo,archivoProc,fechaLog)
+
+                except IndexError:
+                    print('Hay un error en la imagen: ', archivo)
+                    pass
+
+                finally:
+                # BORRA BASURA
+                    os.system('rm -r '+pathTmp+'*.tif')
+                    os.system('rm -r '+pathTmp+'*.geojson')
+                    os.system('rm -r '+pathTmp+'*.json')
+                    os.system('rm -r '+pathTmp+'*.SAFE')
                 
-                os.system('mkdir -p '+pathInput+tile+'/'+anio)
-                os.system('mv '+archivo+' '+pathInput+tile+'/'+anio)
-
-                #print(fecha)
-                #print(dirI)
-                #print('Procesando bandas...')
-                
-                print('2. Convirtiendo a GeoTIFF...')
-                for banda in bandas:
-                    dirB = processing_sentinel2.listaBandas(pathTmp+dirI,'L2A',banda)
-                    dsB = processing_sentinel2.aperturaDS(dirB)
-                    processing_sentinel2.imgToGeoTIF(dsB,banda,pathTmp)
-                
-                ref = processing_sentinel2.aperturaDS(pathTmp+bandas[0]+'.tif')
-                cuadrante = processing_sentinel2.obtieneCuadrante(ref)
-                
-                print('3. Aplicando algoritmo de deteccion de sargazo...')
-                print('3.1 Procesando mascara tierra...')
-                processing_sentinel2.tierraMascara(cuadrante,pathLM,pathTmp)
-                print('3.2 Procesando mascara nubes altas...')
-                banderaNub = processing_sentinel2.nubesMascara(cuadrante,pathTmp+bandas[-1]+'.tif',pathTmp)
-                print('3.3 Procesando sargazo sin filtro...')
-                processing_sentinel2.sargazoBin(banderaNub,'L2A',pathTmp,pathTmp)
-                dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_mask_tmp.tif')
-                print('3.4 Procesando sargazo con filtro...')
-                nuMask = processing_sentinel2.pixelNubesBajas(ref,dsSar)
-                processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')
-
-                # POLIGONIZACION
-                print('3.5 Procesando poligonizacion...')            
-                archivoProc = processing_sentinel2.poligonizacion(tile,anio,fecha,pathTmp,pathOutput,pathOutputEmpty)
-
-                # LOG
-                print('3.6 Añadiendo log...') 
-                fechaLog = processing_sentinel2.obtieneFechaLog()
-                processing_sentinel2.log(pathLog+'proc_L2A_sargazo.txt',archivo,archivoProc,fechaLog)
-
-                # COMPUESTO RGB
-                print('4. Creando compuesto RGB...')
-                os.system('mkdir -p '+pathOutputGeoTiff+tile+'/'+anio)                
-                processing_sentinel2.RGB(pathTmp+bandas[2]+'.tif',pathTmp+bandas[1]+'.tif',pathTmp+bandas[0]+'.tif',tile,anio,fecha,pathOutputGeoTiff)
-
-                # LOG
-                print('4.1 Añadiendo log...')
-                fechaLog = processing_sentinel2.obtieneFechaLog()
-                processing_sentinel2.log(pathLog+'proc_L2A_sargazoGeoTiff.txt',archivo,archivoProc,fechaLog)
-
-            except IndexError:
-                print('Hay un error en la imagen: ', archivo)
-                pass
-
-            finally:
-
-            # BORRA BASURA
-                os.system('rm -r '+pathTmp+'*.tif')
-                os.system('rm -r '+pathTmp+'*.geojson')
-                os.system('rm -r '+pathTmp+'*.json')
-                os.system('rm -r '+pathTmp+'*.SAFE')
+            else:
+                print('Archivo: '+archivo+' ya fue procesado a L2A')
 
     # BORRA DIR DESCARGA
     os.system('rm -r '+pathTmp+'*')
