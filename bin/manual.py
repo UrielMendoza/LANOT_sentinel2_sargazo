@@ -24,6 +24,7 @@ if __name__ == "__main__":
 
     respuesta = None
     while respuesta != 4:
+        system("clear")
         print("====================================================\n")
         print("LANOT_sentinel2_sargazo\n")
         print("====================================================\n")
