@@ -15,11 +15,10 @@ import sys
 
 def automatico():
 	start_date = datetime.datetime.now()
-	end_date = datetime.datetime.now()
+    end_date = datetime.datetime.now()
     landMask = "land_sargazo_UTM16N_20m_b2km.tif"
     nubesBajas = 900
-
-	return start_date,end_date,landMask,nubesBajas
+    return start_date,end_date,landMask,nubesBajas
 
 def manual():
     print("=================")
