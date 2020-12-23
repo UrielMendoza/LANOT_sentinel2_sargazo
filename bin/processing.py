@@ -142,11 +142,11 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     # LOG
                     print('3.6 Añadiendo log...') 
                     fechaLog = processing_sentinel2.obtieneFechaLog()
-                    if bufferLM = '':
+                    if bufferLM == '':
                         processing_sentinel2.log(pathLog+'proc_L2A_sargazo.txt',archivo,archivoProc,fechaLog)
-                    elif bufferLM = 'b2km':
+                    elif bufferLM == 'b2km':
                         processing_sentinel2.log(pathLog+'proc_L2A_sargazo_b2km.txt',archivo,archivoProc,fechaLog)
-                    elif bufferLM = 'b5km':
+                    elif bufferLM == 'b5km':
                         processing_sentinel2.log(pathLog+'proc_L2A_sargazo_b5km.txt',archivo,archivoProc,fechaLog)
 
                     # COMPUESTO RGB
