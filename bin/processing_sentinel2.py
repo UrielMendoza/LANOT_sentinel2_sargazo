@@ -14,7 +14,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def obtieneBufferLM(landMask):
-    bufferLM = landMask.split('.')[0].split('_')[-1]
+    if landMask != "land_sargazo_UTM16N_20m.tif":
+        bufferLM = landMask.split('.')[0].split('_')[-1]
+    else:
+        bufferLM = ''    
     return bufferLM
 
 def obtieneArchivoZip(pathArchivo):
