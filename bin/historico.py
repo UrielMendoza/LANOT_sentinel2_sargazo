@@ -13,11 +13,11 @@ if __name__ == "__main__":
     ini = time.time()
 
     # DIRECTORIOS
-    pathInput = '../test/L2A/'
-    pathOutput = '../test/geojson/sargazo/'
-    pathOutputEmpty = '../test/geojson/empty/'
-    pathOutputGeoTiff = '../test/geotiff/sargazo/'
-    pathTmp = '../test/tmp/automatico/'
+    pathInput = '/data/input/sentinel2/L2A/'
+    pathOutput = '/data/output/sentinel2/l2/geojson/sargazo/'
+    pathOutputEmpty = '/data/output/sentinel2/l2/geojson/empty/'
+    pathOutputGeoTiff = '/data/output/sentinel2/l2/geotiff/sargazo/'
+    pathTmp = '/data/input/sentinel2/tmp/historico/'
     pathLM = '../data/masks/'
     pathLog = '../../logs_sentinel2_sargazo/'
 
