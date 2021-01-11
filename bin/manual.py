@@ -11,8 +11,6 @@ from os import system
 
 if __name__ == "__main__":
 
- 
-
     # DIRECTORIOS
     pathInput = '../test/L2A/'
     pathOutput = '../test/geojson/sargazo/'
@@ -24,7 +22,7 @@ if __name__ == "__main__":
 
     respuesta = None
     while respuesta != 4:
-        system("clear")
+        #system("clear")
         print("====================================================\n")
         print("LANOT_sentinel2_sargazo\n")
         print("====================================================\n")
