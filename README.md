@@ -31,3 +31,6 @@
  Ejecucion de conversion de L1C a L2A:
  `python3 sentinel_L1CtoL2A.py`
  
+ ## Resultados
+
+ ![Detección de sargazo](examples/sargazo.png)
