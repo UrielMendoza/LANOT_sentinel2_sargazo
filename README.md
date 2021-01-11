@@ -1,3 +1,5 @@
+ ![Detección de sargazo](examples/lanot_logo.png)
+
 # LANOT_sentinel2_sargazo
 
  Detección automática de sargazo en el caribe mexicano, mediante imágenes Sentinel-2.
@@ -32,5 +34,4 @@
  `python3 sentinel_L1CtoL2A.py`
  
  ## Resultados
-
  ![Detección de sargazo](examples/sargazo.png)
