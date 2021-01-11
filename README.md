@@ -34,4 +34,5 @@
  `python3 sentinel_L1CtoL2A.py`
  
  ## Resultados
+ ![Detección de sargazo](examples/rgb.png)
  ![Detección de sargazo](examples/sargazo.png)
