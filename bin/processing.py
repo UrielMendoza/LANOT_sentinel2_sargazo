@@ -124,7 +124,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
             print('Procesando: '+archivo)
 
             # COMPRUEBA LOG
-            if not processing_sentinel2.verificaLog(pathLog+'proc_L2A_sargazo.txt',archivo):                  
+            if not processing_sentinel2.verificaLog(pathLog+nomLog,archivo):                  
                 try:
                     # INICIA PROCESO
                     print('1. Descomprimiendo...')
