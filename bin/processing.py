@@ -16,6 +16,7 @@ import sys
 def automatico():
     start_date = datetime.datetime.now()
     end_date = datetime.datetime.now()
+    region = "sargazo1"
     landMask = "land_sargazo_UTM16N_20m_b2km.tif"
     nubesBajas = 900
     return start_date,end_date,landMask,nubesBajas
@@ -36,6 +37,26 @@ def manual():
     dia2 = input("Dia: ")            
     start_date = datetime.datetime.strptime(anio1+mes1+dia1,"%Y%m%d")
     end_date = datetime.datetime.strptime(anio2+mes2+dia2,"%Y%m%d")
+
+    print("=================\n")
+    print("REGION")
+    print("Regiones disponibles establecidas por PATH/ROW: \n1. Cancun\n2. Cancun-Tulum\n3. Sargazo1\n4. Caribe Mexicano\n5. Antillas francesas\n6. Guyana\n")
+     while True:
+        resR = int(input())
+        if resR == 1 or resR == 2 or resR == 3 or resR == 4 or resR == 5 resR == 6:
+            break
+    if resR == 1:
+        region = "Cancun"
+    elif resR == 2:
+        region = "Cancun-Tulum"
+    elif resR == 3:
+        region = "sargazo1"
+    elif resR == 4:
+        region = "Mexican_Caribbean"
+    elif resR == 5:
+        region = "French_Antilles"
+    elif resR == 6:
+        region = "Guyane"
 
     print("=================\n")
     print("PARAMETROS")
@@ -61,20 +82,20 @@ def manual():
     #except:
     #    print("Ingrese fecha valida")
 
-    return start_date,end_date,landMask,nubesBajas
+    return start_date,end_date,region,landMask,nubesBajas
 
 def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime):
 
-    # REFERENCIAS BANDAS Y TILES
-    bandas = ('B04','B05','B8A','B11','B07','SCL')
-    tiles = base.tiles["sargazo1"]
-
     # MANUAL Y AUTOMATICO
     if dateTime == 'automatico':
-        start_date,end_date,landMask,nubesBajas = automatico()
+        start_date,end_date,region,landMask,nubesBajas = automatico()
 
     elif dateTime == 'manual':
-        start_date,end_date,landMask,nubesBajas = manual() 
+        start_date,end_date,region,landMask,nubesBajas = manual() 
+
+    # REFERENCIAS BANDAS Y TILES
+    bandas = ('B04','B05','B8A','B11','B07','SCL')
+    tiles = base.tiles[region]
  
     # DESCARGA
     #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))

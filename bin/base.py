@@ -15,7 +15,7 @@ Copernicus_password = "lanot_2020"
 
 tiles = {}
 
-# Contains Cancún
+# Contiene Cancún
 tiles["Cancun"] = ["16QEJ"]
 
 # Coastal tiles of the Riviera Maya from Cancún to Tulum
