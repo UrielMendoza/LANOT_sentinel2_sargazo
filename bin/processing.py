@@ -41,7 +41,7 @@ def manual():
     print("=================\n")
     print("REGION")
     print("Regiones disponibles establecidas por PATH/ROW: \n1. Cancun\n2. Cancun-Tulum\n3. Sargazo1\n4. Caribe Mexicano\n5. Antillas francesas\n6. Guyana\n")
-     while True:
+    while True:
         resR = int(input())
         if resR == 1 or resR == 2 or resR == 3 or resR == 4 or resR == 5 resR == 6:
             break
