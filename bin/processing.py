@@ -91,7 +91,16 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
         start_date,end_date,region,landMask,nubesBajas = automatico()
 
     elif dateTime == 'manual':
-        start_date,end_date,region,landMask,nubesBajas = manual() 
+        start_date,end_date,region,landMask,nubesBajas = manual()
+
+    # OBTIENE NOMBRE DEL LOG
+    bufferLM = processing_sentinel2.obtieneBufferLM(landMask)
+    if bufferLM == '':
+        nomLog = 'proc_L2A_sargazo.txt'
+    elif bufferLM == 'b2km':
+        nomLog = 'proc_L2A_sargazo_b2km.txt'
+    elif bufferLM == 'b5km':
+        nomLog = 'proc_L2A_sargazo_b5km.txt'
 
     # REFERENCIAS BANDAS Y TILES
     bandas = ('B04','B05','B8A','B11','B07','SCL')
@@ -145,7 +154,6 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     
                     print('3. Aplicando algoritmo de deteccion de sargazo...')
                     print('3.1 Procesando mascara tierra...')
-                    bufferLM = processing_sentinel2.obtieneBufferLM(landMask)
                     processing_sentinel2.tierraMascara(cuadrante,pathLM+landMask,pathTmp)
                     print('3.2 Procesando mascara nubes altas...')
                     banderaNub = processing_sentinel2.nubesMascara(cuadrante,pathTmp+bandas[-1]+'.tif',pathTmp)
@@ -164,11 +172,11 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     print('3.6 Añadiendo log...') 
                     fechaLog = processing_sentinel2.obtieneFechaLog()
                     if bufferLM == '':
-                        processing_sentinel2.log(pathLog+'proc_L2A_sargazo.txt',archivo,archivoProc,fechaLog)
+                        processing_sentinel2.log(pathLog+nomLog,archivo,archivoProc,fechaLog)
                     elif bufferLM == 'b2km':
-                        processing_sentinel2.log(pathLog+'proc_L2A_sargazo_b2km.txt',archivo,archivoProc,fechaLog)
+                        processing_sentinel2.log(pathLog+nomLog,archivo,archivoProc,fechaLog)
                     elif bufferLM == 'b5km':
-                        processing_sentinel2.log(pathLog+'proc_L2A_sargazo_b5km.txt',archivo,archivoProc,fechaLog)
+                        processing_sentinel2.log(pathLog+nomLog,archivo,archivoProc,fechaLog)
 
                     # COMPUESTO RGB
                     print('4. Creando compuesto RGB...')
