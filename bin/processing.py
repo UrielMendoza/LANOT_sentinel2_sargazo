@@ -26,17 +26,35 @@ def manual():
     print("Ejecucion manual")
     print("=================\n")
     #try:
+    print("=================\n")
     print("FECHAS")
-    print("Inicio")   
-    anio1 = input("Año: ")
-    mes1 = input("Mes: ")
-    dia1 = input("Dia: ")        
-    print("Termino")
-    anio2 = input("Año: ")
-    mes2 = input("Mes: ")
-    dia2 = input("Dia: ")            
-    start_date = datetime.datetime.strptime(anio1+mes1+dia1,"%Y%m%d")
-    end_date = datetime.datetime.strptime(anio2+mes2+dia2,"%Y%m%d")
+    print("Seleccione tipo de fechas: \n1. Por dia\n2. Por intervalo de dias\n")
+    while True:
+        resF = int(input())
+        if resF == 1 or resF:
+            break
+    if resR == 1:
+        print("Fecha de dia")   
+        anio1 = input("Año: ")
+        mes1 = input("Mes: ")
+        dia1 = input("Dia: ")        
+        anio2 = anio1
+        mes2 = mes1
+        dia2 = dia1            
+        start_date = datetime.datetime.strptime(anio1+mes1+dia1,"%Y%m%d")
+        end_date = datetime.datetime.strptime(anio2+mes2+dia2,"%Y%m%d")
+    elif resR == 2:
+        print("Intervalo de dias")
+        print("Inicio")   
+        anio1 = input("Año: ")
+        mes1 = input("Mes: ")
+        dia1 = input("Dia: ")        
+        print("Termino")
+        anio2 = input("Año: ")
+        mes2 = input("Mes: ")
+        dia2 = input("Dia: ")            
+        start_date = datetime.datetime.strptime(anio1+mes1+dia1,"%Y%m%d")
+        end_date = datetime.datetime.strptime(anio2+mes2+dia2,"%Y%m%d")
 
     print("=================\n")
     print("REGION")
