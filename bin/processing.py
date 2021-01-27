@@ -33,7 +33,7 @@ def manual():
         resF = int(input())
         if resF == 1 or resF:
             break
-    if resR == 1:
+    if resF == 1:
         print("Fecha de dia")   
         anio1 = input("Año: ")
         mes1 = input("Mes: ")
@@ -43,7 +43,7 @@ def manual():
         dia2 = dia1            
         start_date = datetime.datetime.strptime(anio1+mes1+dia1,"%Y%m%d")
         end_date = datetime.datetime.strptime(anio2+mes2+dia2,"%Y%m%d")
-    elif resR == 2:
+    elif resF == 2:
         print("Intervalo de dias")
         print("Inicio")   
         anio1 = input("Año: ")
