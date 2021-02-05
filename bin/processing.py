@@ -55,7 +55,7 @@ def manual():
         dia2 = input("Dia: ")            
         start_date = datetime.datetime.strptime(anio1+mes1+dia1,"%Y%m%d")
         end_date = datetime.datetime.strptime(anio2+mes2+dia2,"%Y%m%d")
-
+    # Catalogo de dias 
     print("=================\n")
     print("REGION")
     print("Regiones disponibles establecidas por PATH/ROW: \n1. Cancun\n2. Cancun-Tulum\n3. Sargazo1\n4. Caribe Mexicano\n5. Antillas francesas\n6. Guyana\n")
@@ -75,7 +75,9 @@ def manual():
         region = "French_Antilles"
     elif resR == 6:
         region = "Guyane"
-
+    elif resR == 7:
+        region = "Prueba1"
+    # Opcion PathRow
     print("=================\n")
     print("PARAMETROS")
     print("Distancia de Buffer mascara de tierra: \n1. 0km\n2. 2km\n3. 5km\n")
