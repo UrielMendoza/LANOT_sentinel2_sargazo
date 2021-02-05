@@ -4,8 +4,9 @@
 # ------------------------------------------------------------------------------
 
 # Copernicus API access credentials
-Copernicus_username = "lanot_2020"
-Copernicus_password = "lanot_2020"
+# Insert your api credencials
+Copernicus_username = None
+Copernicus_password = None
 
 # ------------------------------------------------------------------------------
 
