@@ -58,7 +58,7 @@ def manual():
     # Catalogo de dias 
     print("=================\n")
     print("REGION")
-    print("Regiones disponibles establecidas por PATH/ROW: \n1. Cancun\n2. Cancun-Tulum\n3. Sargazo1\n4. Caribe Mexicano\n5. Antillas francesas\n6. Guyana\n")
+    print("Regiones disponibles establecidas por PATH/ROW: \n1. Cancun\n2. Cancun-Tulum\n3. Sargazo1\n4. Caribe Mexicano\n5. Antillas francesas\n6. Guyanan\n7. Prueba\n")
     while True:
         resR = int(input())
         if resR == 1 or resR == 2 or resR == 3 or resR == 4 or resR == 5 or resR == 6:
@@ -76,7 +76,7 @@ def manual():
     elif resR == 6:
         region = "Guyane"
     elif resR == 7:
-        region = "Prueba1"
+        region = "Prueba"
     # Opcion PathRow
     print("=================\n")
     print("PARAMETROS")
