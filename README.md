@@ -28,7 +28,7 @@
  `python3 automatico.py`
  
  Ejecucion del proceso manual:
- `python3 manual.py`
+ `python3 sargazo_manual.py`
 
  Ejecucion de conversion de L1C a L2A:
  `python3 sentinel_L1CtoL2A.py`
