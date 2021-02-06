@@ -1,6 +1,8 @@
 import os
 from processing_sentinel2 import listaArchivos,nomDir,tipoCompresion,descomprime,obtieneFechaLog,obtieneAnio,sen2core,log,obtieneArchivoZip,verificaLog
 
+# Depurar el codigo para hacerlo mas manual
+
 if __name__ == "__main__":
 
 	pathSen2core_8 = '../Sen2Cor-02.08.00-Linux64/bin/'
