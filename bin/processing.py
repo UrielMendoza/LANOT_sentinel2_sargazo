@@ -96,6 +96,7 @@ def manual():
 
     print("Valor de filtro de nubes bajas banda 4")
     while True:
+        # Discriminacion por cantidad de nubes
         nubesBajas = int(input("Valor (sugerido 900): "))
         if nubesBajas >= 900 and nubesBajas <= 1000:
             break
