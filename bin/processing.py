@@ -78,7 +78,7 @@ def manual():
     elif resR == 7:
         region = "Prueba"
     elif resR == 8:
-        region = "Lupita"
+        region = "Lupita3"
     # Opcion PathRow
     print("=================\n")
     print("PARAMETROS")
