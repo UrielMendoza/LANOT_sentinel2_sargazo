@@ -66,7 +66,7 @@ def manual():
     if resR == 1:
         region = "Cancun"
     elif resR == 2:
-        region = "Cancun-Tulum"
+        region = "Cancun_Tulum"
     elif resR == 3:
         region = "sargazo1"
     elif resR == 4:

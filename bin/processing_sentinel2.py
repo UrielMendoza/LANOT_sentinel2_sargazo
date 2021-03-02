@@ -185,7 +185,7 @@ def nubesMascara(cuadrante,pathSCL,pathTmp):
         return banderaNub
 
 def sargazoBin(banderaNub,nivel,pathInput,pathOutput):
-    os.system('gdal_calc.py -A '+pathInput+'B8A.tif -B '+pathInput+'B04.tif -C '+pathInput+'B11.tif --outfile='+pathOutput+'alg_tmp.tif --calc="logical_and(A>1000,B<1000,C<500)"')
+    os.system('gdal_calc.py -A '+pathInput+'B8A.tif -B '+pathInput+'B04.tif -C '+pathInput+'B11.tif --outfile='+pathOutput+'alg_tmp.tif --calc="logical_and(A>1000,B<1000,C<600)"')
     if nivel == 'L1C' or banderaNub == False:
         os.system('gdal_calc.py -A '+pathOutput+'alg_tmp.tif -B '+pathInput+'landMask_tmp.tif --outfile='+pathOutput+'alg_mask_tmp.tif --calc="A*B"')
     elif nivel == 'L2A' and banderaNub == True:
