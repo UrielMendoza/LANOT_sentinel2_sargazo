@@ -5,21 +5,21 @@
 
 # Copernicus API access credentials
 # Insert your api credencials
-Copernicus_username = None
-Copernicus_password = None
+Copernicus_username = "lanot_2020"
+Copernicus_password = "lanot_2020"
 
 # ------------------------------------------------------------------------------
 
 # Some tiles of interest in UTM/MGRS format
 
-# SENTINEL-2A and SENTINEL-2B occupy the same orbit, but separated by 180 degrees. The mean orbital altitude is 786 km. The orbit inclination is 98.62° and the Mean Local Solar Time (MLST) at the descending node is 10:30.
+# SENTINEL-2A and SENTINEL-2B occupy the same orbit, but separated by 180 degrees. The mean orbital altitude is 786 km. The orbit inclination is 98.62 and the Mean Local Solar Time (MLST) at the descending node is 10:30.
 
 tiles = {}
 
-# Contiene Cancún
+# Contiene Cancun
 tiles["Cancun"] = ["16QEJ"]
 
-# Coastal tiles of the Riviera Maya from Cancún to Tulum
+# Coastal tiles of the Riviera Maya from Cancun to Tulum
 tiles["Cancun_Tulum"] = ["16QEJ", "16QDH", "16QEH", "16QDG", "16QEG", "16QDF", "16QEF"]
 
 # The complete "Mexican Caribbean", extending to about Cuba eastward and
@@ -50,22 +50,10 @@ tiles["Guyane"] = [
 
 # Sargazo1: Region de monitoreo de sargazo
 tiles['sargazo1'] = [
-"16QDJ","16QEJ","16QDH","16QEH","16QDG","16QEG","16QDF","16QEF"
+"16QDJ","16QEJ","16QFJ","16QDH","16QEH","16QFH","16QDG","16QEG","16QFG","16QDF","16QEF","16QFF"
 ]
 
-# Lupita
-tiles["Lupita1"] = [
-"16QEJ"
-]
-tiles["Lupita2"] = [
-"16QEH","16QEJ"
-]
-tiles["Lupita3"] = [
-"16QEF","16QEG"
-]
-tiles["Lupita4"] = [
-"16QEF"
-]
 tiles["Prueba"] = [
-"16QDH"]
+"16QEG"
+]
 # ------------------------------------------------------------------------------

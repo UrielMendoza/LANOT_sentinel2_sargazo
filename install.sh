@@ -2,20 +2,25 @@
 
 wget http://step.esa.int/thirdparties/sen2cor/2.5.5/Sen2Cor-02.05.05-Linux64.run;
 wget http://step.esa.int/thirdparties/sen2cor/2.8.0/Sen2Cor-02.08.00-Linux64.run;
+wget http://step.esa.int/thirdparties/sen2cor/2.8.0/Sen2Cor-02.09.00-Linux64.run;
 sh Sen2Cor-02.05.05-Linux64.run;
 sh Sen2Cor-02.08.00-Linux64.run;
+sh Sen2Cor-02.09.00-Linux64.run;
 rm Sen2Cor-02.05.05-Linux64.run;
 rm  Sen2Cor-02.08.00-Linux64.run;
+rm  Sen2Cor-02.09.00-Linux64.run;
 mkdir -p ./data/masks/;
 mkdir -p ./data/masks/;
 mkdir -p ./test/L1C/T16QEF/2020/;
 mkdir -p ./test/L2A/;
 mkdir -p ./test/geojson/sargazo/;
 mkdir -p ./test/geojson/empty/;
+mkdir -p ./test/geotiff/TC/;
 mkdir -p ./test/geotiff/sargazo/;
 mkdir -p ./test/tmp/automatico;
 mkdir -p ./test/tmp/manual;
 mkdir -p ./test/tmp/historico;
+wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_UTM16N_20m.geojson;
 wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_sargazo_UTM16N_20m.tif;
 wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_sargazo_UTM16N_20m_b2km.tif;
 wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_sargazo_UTM16N_20m_b5km.tif;

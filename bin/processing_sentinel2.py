@@ -5,10 +5,12 @@ Created on Fri Nov 20 23:52:19 2020
 
 @author: urielm
 """
-import os
+import os,time
 from glob import glob
 from osgeo import gdal,osr
 import geopandas as gpd
+from shapely.geometry.polygon import Polygon
+from shapely.geometry.multipolygon import MultiPolygon
 import datetime
 import numpy as np
 import matplotlib.pyplot as plt
@@ -25,7 +27,7 @@ def obtieneArchivoZip(pathArchivo):
     return archivo
 
 def sen2core(pathSen2Core,pathCFG,pathInput,pathOutput,resolution):
-    os.system(pathSen2Core+'L2A_Process --resolution '+resolution+' --GIP_L2A '+pathCFG+' '+pathInput)
+    os.system(pathSen2Core+'L2A_Process --resolution '+resolution+' --GIP_L2A '+pathCFG+' --output_dir '+pathOutput+' '+pathInput)
 
 def verificaLog(pathLog,archivo):
     file = open(pathLog,'r')
@@ -36,9 +38,9 @@ def verificaLog(pathLog,archivo):
     file.close
     return False
 
-def log(pathLog,archivo,archivoProc,fecha):
+def log(pathLog,archivo,archivoProc,fecha,banderaSar,totalSar):
     file = open(pathLog,'a')
-    file.write('\n'+archivo+','+archivoProc+','+fecha)
+    file.write('\n'+archivo+','+archivoProc+','+fecha+','+banderaSar+','+totalSar)
     file.close
 
 def obtieneTile(pathArchivo):
@@ -57,14 +59,14 @@ def listaArchivos(pathInput):
     archivos = glob(pathInput)
     return archivos
 
-def listaBandas(pathInput,nivel,banda):
+def listaBandas(pathInput,nivel,resolucion,banda):
     if nivel == 'L2A':
-        archivoBanda = glob(pathInput+'/GRANULE/L2*/IMG_DATA/R20m/*'+banda+'*.jp2')
+        archivoBanda = glob(pathInput+'/GRANULE/L2*/IMG_DATA/'+resolucion+'/*'+banda+'*.jp2')
     elif nivel == 'L1C':
         archivoBanda = glob(pathInput+'/GRANULE/L1C*/IMG_DATA/*.jp2')
     elif nivel == 'L1C_resampled':
         archivoBanda = glob(pathInput+'/'+banda+'.img')
-    #print(archivoBanda)
+    print("Archivo usado:"+archivoBanda[0])
     return archivoBanda[0]
 
 def tipoCompresion(pathInput):
@@ -81,7 +83,7 @@ def nomDir(pathInput,nivel):
         return archivo+'.resampled.data'
 
 def obtieneFecha(pathDir):
-    fecha = pathDir.split('/')[-1].split('.')[0].split('_')[-1]
+    fecha = pathDir.split('/')[-1].split('.')[0].split('_')[2]
     fecha = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     return fecha.strftime('%Y%m%dT%H%M%S')
 
@@ -96,7 +98,12 @@ def aperturaDS(pathBand):
     return ds
 
 def imgToGeoTIF(ds,tif,pathOutput):
+    print("Pasando a tif: "+pathOutput+tif+'.tif')
     gdal.Translate(pathOutput+tif+'.tif',ds)
+
+#def remuestrea(ds,tif,dim,pathOutput):
+    #os.system('gdalwarp -tr '+dim+' '+dim+' '+pathOutput+ds+'.tif '+pathOutput+tif+'.tif')
+#    gdal.Warp(pathOutput+tif+'.tif',ds,options=gdal.WarpOptions(xRes=dim,yRes=dim))
 
 def creaTif(dsRef,npy,output):
     geotransform = dsRef.GetGeoTransform()
@@ -128,27 +135,29 @@ def remuestrea(pathOutput,ds,dimx,dimy):
     gdal.Translate(pathOutput,ds,options=gdal.TranslateOptions(xRes=dimx,yRes=dimy))
 
 def RGB(r,g,b,tile,anio,fecha,pathOutputGeoTiff):
-    os.system('gdal_merge.py -separate -co PHOTOMETRIC=RGB -o '+pathOutputGeoTiff+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+".tif"+' '+r+' '+g+' '+b)
+    os.system('gdal_merge.py -separate -co PHOTOMETRIC=RGB -o '+pathOutputGeoTiff+'sargazo/'+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+".tif"+' '+r+' '+g+' '+b)
+
+def RGB_TC(tile,anio,fecha,nivel,resolucion,pathInput,pathOutputGeoTiff):
+    dirTC = listaBandas(pathInput,nivel,resolucion,'TCI')
+    os.system('gdal_translate '+dirTC+' '+pathOutputGeoTiff+'TC/'+tile+'/'+anio+'/'+'S2_MSI_TC_'+tile+'_'+fecha+'.tif')
 
 def poligonizacion(tile,anio,fecha,bufferLM,pathInput,pathOutput,pathOutputEmpty):
-    index = 0
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     os.system('gdal_polygonize.py '+pathInput+'nubesBajas_mask.tif -f "GeoJSON" '+pathInput+'alg_mask_filter_tmp.json')
     df = gpd.read_file(pathInput+'alg_mask_filter_tmp.json')
     df = df[df.DN == 1]
 
     if len(df)>= 1:
-        print('Deteccion de saragazo: ',len(df),' elementos')
-        os.system('mkdir -p '+pathOutput+tile+'/'+anio)
-        df["area"] = round(df['geometry'].area,2)
+        print('Deteccion de sargazo sin mascara de tierra: ',len(df),' elementos')
+        df["area"] = df['geometry'].area
         df['fecha'] = fecha
         df['tile'] = tile
-        df['index'] = index
         df['IDpolygon'] = range(1, len(df) + 1)
-        nombre = pathOutput+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".json"
-        df.to_file(nombre, driver="GeoJSON")
-        index = index + 1
-        return nombre
+        df.to_file(pathInput+'alg_mask_filter_tmp_sar.json', driver="GeoJSON")
+        banderaSar = True
+        nombre = None
+        totalSar = str(df['area'].sum())
+        return nombre, banderaSar, totalSar
     else:
         print('No deteccion de sargazo')
         os.system('mkdir -p '+pathOutputEmpty+tile+'/'+anio)
@@ -157,24 +166,50 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathInput,pathOutput,pathOutputEmpty
         f.write('No detección de sargazo')
         f.close()
         #print('Tile:'+tile+'\nFecha:'+fecha)
-        return nombre
+        banderaSar = False
+        totalSar = '0'
+        return nombre, banderaSar, totalSar
+
+def tierraMascaraVectorial(tile,anio,fecha,bufferLM,pathLM,pathTmp,pathOutput):
+    df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar.json')
+    df_mask = gpd.read_file(pathLM+'land_UTM16N_20m'+bufferLM+'.geojson')
+    res_difference = gpd.overlay(df, df_mask, how='difference')
+    print('Deteccion de sargazo con mascara de tierra: ',len(res_difference),' elementos')
+    os.system('mkdir -p '+pathOutput+tile+'/'+anio)
+    nombre = pathOutput+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".json"
+    res_difference["geometry"] = [MultiPolygon([feature]) if type(feature) == Polygon \
+    else feature for feature in res_difference["geometry"]]
+    res_difference.to_file(nombre, driver="GeoJSON")
+    return nombre
 
 def tierraMascara(cuadrante,pathMask,pathTmp):
     #gdal.Translate(pathTmp+'tmp_mask.tif',dsMascara,options=gdal.TranslateOptions(projWin=cuadrante))
     cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
     os.system('gdal_translate -projwin '+cuadrante+' '+pathMask+' '+pathTmp+'landMask_tmp.tif')
 
+def aguaMascara(cuadrante,pathSCL,pathTmp):
+    # Esta parte e spara ver si funciona mejor con solo agua
+    #os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'aguaMask.tif --calc="0*(A!=2)+0*(A!=3)+0*(A!=10)+1*(A==2)+1*(A==3)+1*(A==10)"')
+    os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'aguaMask.tif --calc="0*(A!=2)+1*(A==2)"')
+
 def nubesMascara(cuadrante,pathSCL,pathTmp):
     cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
-    os.system('gdal_polygonize.py '+pathSCL+' -f "GeoJSON" '+pathTmp+'SCL_tmp.json')
+
+    # Esta parte es para eficientizar la poligonizacion de las nubes
+    #os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cirrusMask.tif --calc="0*(A!=8)"')
+    os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cirrusMask.tif --calc="0*(A!=8)+0*(A!=9)+0*(A!=10)++1*(A==8)+1*(A==9)+1*(A==10)"')
+
+    os.system('gdal_polygonize.py '+pathTmp+'cirrusMask.tif -f "GeoJSON" '+pathTmp+'SCL_tmp.json')
     df = gpd.read_file(pathTmp+'SCL_tmp.json')
-    df = df[df['DN'] == 8]
+    df = df[df['DN'] == 1]
     if len(df) == 0:
+        print("No buffer de nubes")
         banderaNub = False
         return banderaNub
     else:
+        print("Buffer de nubes")
         banderaNub = True
-        df = df.buffer(250)
+        df = df.buffer(350)
         df_g = df.unary_union
         df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
         df.to_file(pathTmp+"cloudMask_b250_tmp.geojson", driver='GeoJSON')
@@ -185,12 +220,38 @@ def nubesMascara(cuadrante,pathSCL,pathTmp):
         return banderaNub
 
 def sargazoBin(banderaNub,nivel,pathInput,pathOutput):
-    os.system('gdal_calc.py -A '+pathInput+'B8A.tif -B '+pathInput+'B04.tif -C '+pathInput+'B11.tif --outfile='+pathOutput+'alg_tmp.tif --calc="logical_and(A>1000,B<1000,C<600)"')
+    #Prueba BR
+    #os.system('gdal_calc.py -A '+pathInput+'B02.tif -B '+pathInput+'B03.tif --type=Float64 --outfile='+pathOutput+'BR.tif --calc="B.astype(numpy.float64)/A.astype(numpy.float64)"')
+    #os.system('gdal_calc.py -A '+pathInput+'BR.tif --outfile='+pathOutput+'alg_tmp.tif --calc="logical_and(A>0.45,A<0.57)"')
+    os.system('gdal_calc.py -A '+pathInput+'B8A.tif -B '+pathInput+'B04.tif -C '+pathInput+'B11.tif --outfile='+pathOutput+'alg_tmp_val.tif --calc="logical_and(A>700,B<1000,C<500)"')
+    os.system('gdal_calc.py -A '+pathInput+'B8A.tif -B '+pathInput+'B04.tif --outfile='+pathOutput+'alg_tmp_band_8A.tif --calc="1*(B<A)+0*(B>A)"')
+    os.system('gdal_calc.py -A '+pathInput+'B08_20.tif -B '+pathInput+'B04.tif --outfile='+pathOutput+'alg_tmp_band_8.tif --calc="1*(B<A)+0*(B>A)"')
+    os.system('gdal_calc.py -A '+pathInput+'alg_tmp_val.tif -B '+pathInput+'alg_tmp_band_8A.tif -C '+pathInput+'alg_tmp_band_8.tif --outfile='+pathOutput+'alg_tmp.tif --calc="A*B*C"')
+
     if nivel == 'L1C' or banderaNub == False:
-        os.system('gdal_calc.py -A '+pathOutput+'alg_tmp.tif -B '+pathInput+'landMask_tmp.tif --outfile='+pathOutput+'alg_mask_tmp.tif --calc="A*B"')
+        #Esto es para probar lo del corte
+	#os.system('gdal_calc.py -A '+pathOutput+'alg_tmp.tif -B '+pathInput+'landMask_tmp.tif --outfile='+pathOutput+'alg_mask_tmp.tif --calc="A*B"')
+        os.system('gdal_calc.py -A '+pathOutput+'alg_tmp.tif -B '+pathInput+'aguaMask.tif --outfile='+pathOutput+'alg_mask_tmp.tif --calc="A*B"')
     elif nivel == 'L2A' and banderaNub == True:
-        os.system('gdal_calc.py -A '+pathOutput+'alg_tmp.tif -B '+pathInput+'landMask_tmp.tif -C '+pathInput+'cloudMask_b250_bin_rec_tmp.tif --outfile='+pathOutput+'alg_mask_tmp.tif --calc="A*B*C"')
+	#Esto es para probar lo del corte 
+        #os.system('gdal_calc.py -A '+pathOutput+'alg_tmp.tif -B '+pathInput+'landMask_tmp.tif -C '+pathInput+'cloudMask_b250_bin_rec_tmp.tif --outfile='+pathOutput+'alg_mask_tmp.tif --calc="A*B*C"')
+        os.system('gdal_calc.py -A '+pathOutput+'alg_tmp.tif -B '+pathInput+'aguaMask.tif -C '+pathInput+'cloudMask_b250_bin_rec_tmp.tif --outfile='+pathOutput+'alg_mask_tmp.tif --calc="A*B*C"')
     #os.system('gdal_calc.py -A '+pathOutput+tile+'_'+fecha+'_result_bin.tif -B '+pathInput+'maskNubes_b250_bin_tmp.tif --outfile='+pathOutput+tile+'_'+fecha+'_result_binFinal.tif --calc="A*B"')
+
+def sargazoBinNumpy(pathInput):
+    b11 = aperturaDS(pathInput+'B11.tif').ReadAsArray()
+    b8A = aperturaDS(pathInput+'B8A.tif').ReadAsArray()
+    b08 = aperturaDS(pathInput+'B08_20.tif').ReadAsArray()
+    b04 = aperturaDS(pathInput+'B04.tif').ReadAsArray()
+
+    ref = aperturaDS(pathInput+'B04.tif')
+
+    sargazoBin = np.where((b8A > 700) & (b04 < 1000) & (b11 < 500) & (b04 < b8A) & (b04 < b08), 1, 0)
+
+    creaTif(ref,sargazoBin,pathInput+'alg_tmp_numpy.tif')
+    #os.system('gdal_calc.py -A '+pathInput+'alg_tmp_numpy.tif -B '+pathInput+'aguaMask.tif --outfile='+pathInput+'alg_mask_tmp_numpy.tif --calc="A*B"')
+    #os.system('gdal_calc.py -A '+pathInput+'alg_tmp_numpy.tif -B '+pathInput+'landMask_tmp.tif --outfile='+pathInput+'alg_mask_tmp_numpy.tif --calc="A*B"')
+    os.system('gdal_calc.py -A '+pathInput+'alg_tmp_numpy.tif -B '+pathInput+'cloudMask_b250_bin_rec_tmp.tif --outfile='+pathInput+'alg_mask_tmp_numpy.tif --calc="A*B"')
 
 def pixelNubesBajas(dsRef,dsSar,nubesBajas):
 	nuMask = dsRef.ReadAsArray()
@@ -203,8 +264,8 @@ def pixelNubesBajas(dsRef,dsSar,nubesBajas):
 	# Valor de referencia B4 Sugerido 900
 	nubeBaja = nubesBajas
 
-	for i in range(nuMask.shape[0]):
-		for j in range(nuMask.shape[1]):
+	for i in range(nuMask.shape[0]-1):
+		for j in range(nuMask.shape[1]-1):
 			#print(nuMask.shape[0],nuMask.shape[1])
 			#print('pocision:',i,j)
 			#print('valor:',sar[i,j])
@@ -252,6 +313,15 @@ def pixelNubesBajas(dsRef,dsSar,nubesBajas):
 				#GENERAL
 				elif (b4[i-1,j-1] > nubeBaja or b4[i-1,j] > nubeBaja or b4[i-1,j+1] > nubeBaja or b4[i,j+1] > nubeBaja or b4[i+1,j+1] > nubeBaja or b4[i+1,j] > nubeBaja or b4[i+1,j-1] > nubeBaja or b4[i,j-1] > nubeBaja):
 					nuMask[i,j] = 0
+					# RECORRE
+					#nuMask[i-1,j-1] = 3
+					#nuMask[i-1,j] = 3
+					#nuMask[i-1,j+1] = 3
+					#nuMask[i,j+1] = 3
+					#nuMask[i+1,j+1] = 3
+					#nuMask[i+1,j] = 3
+					#nuMask[i+1,j-1] = 3
+					#nuMask[i,j-1] = 3
 					cont = cont + 1
 					listaBanderas.append('Caso10')
 				# SARGAZO

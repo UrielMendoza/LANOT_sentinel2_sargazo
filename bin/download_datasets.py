@@ -17,7 +17,7 @@ from sentinelsat import SentinelAPI
 
 # ==============================================================================
 
-def search_products(tile=None, date=None, search_string=None, product_type="L2A", satellite=None, query_args=None):
+def search_products(tile=None, date=None, search_string=None, product_type="L1C", satellite=None, query_args=None):
   """Searches Copernicus SciHub for Sentinel-2 datasets (products) for a given
   tile and date. Alternatively, if search_string is given pass that directly
   to the Copernicus API (ignoring all other arguments).
