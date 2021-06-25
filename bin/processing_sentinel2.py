@@ -8,12 +8,21 @@ Created on Fri Nov 20 23:52:19 2020
 import os,time
 from glob import glob
 from osgeo import gdal,osr
+import pandas as pd
 import geopandas as gpd
+from shapely.geometry import Polygon,Point,LineString,MultiPoint
 from shapely.geometry.polygon import Polygon
 from shapely.geometry.multipolygon import MultiPolygon
 import datetime
 import numpy as np
 import matplotlib.pyplot as plt
+from xml.dom import minidom
+
+def obtienePorcentajeNube(pathInput):
+    mydoc = minidom.parse(pathInput+'/MTD_MSIL2A.xml')
+    items = mydoc.getElementsByTagName('n1:Quality_Indicators_Info')
+    porcNube = float(items[0].getElementsByTagName('Cloud_Coverage_Assessment')[0].firstChild.nodeValue)
+    return porcNube
 
 def obtieneBufferLM(landMask):
     if landMask != "land_sargazo_UTM16N_20m.tif":
@@ -38,10 +47,15 @@ def verificaLog(pathLog,archivo):
     file.close
     return False
 
-def log(pathLog,archivo,archivoProc,fecha,banderaSar,totalSar):
-    file = open(pathLog,'a')
-    file.write('\n'+archivo+','+archivoProc+','+fecha+','+banderaSar+','+totalSar)
-    file.close
+def logSargazo(pathLog,fecha,tile,banderaSar,totalSar,archivo,archivoProc,fechaProc):
+        file = open(pathLog,'a')
+        file.write(fecha+','+tile+','+banderaSar+','+totalSar+','+archivo+','+archivoProc+','+fechaProc+'\n')
+        file.close
+
+def logArchivo(pathLog,fecha,tile,archivo,archivoProc,fechaProc):
+        file = open(pathLog,'a')
+        file.write(fecha+','+tile+','+archivo+','+archivoProc+','+fechaProc+'\n')
+        file.close
 
 def obtieneTile(pathArchivo):
     tile = pathArchivo.split('/')[-1].split('_')[5]
@@ -54,6 +68,10 @@ def obtieneAnio(path):
 def obtieneFechaLog():
    fecha = datetime.datetime.now().strftime('%Y-%m-%-dT%H:%M')
    return fecha
+
+def obtieneFechaProc():
+   fecha = datetime.datetime.now()
+   return fecha.strftime('%Y%m%dT%H%M%S')
 
 def listaArchivos(pathInput):
     archivos = glob(pathInput)
@@ -81,6 +99,11 @@ def nomDir(pathInput,nivel):
         return archivo+'.SAFE'
     elif nivel == 'L1C_resampled':
         return archivo+'.resampled.data'
+
+def nomDirQuality(pathInput,maskQuality):
+    archivoQuality = glob(pathInput+'/GRANULE/L2*/QI_DATA/'+maskQuality)
+    archivoQuality = archivoQuality[0]
+    return archivoQuality
 
 def obtieneFecha(pathDir):
     fecha = pathDir.split('/')[-1].split('.')[0].split('_')[2]
@@ -134,12 +157,12 @@ def obtieneCuadrante(ds):
 def remuestrea(pathOutput,ds,dimx,dimy):
     gdal.Translate(pathOutput,ds,options=gdal.TranslateOptions(xRes=dimx,yRes=dimy))
 
-def RGB(r,g,b,tile,anio,fecha,pathOutputGeoTiff):
-    os.system('gdal_merge.py -separate -co PHOTOMETRIC=RGB -o '+pathOutputGeoTiff+'sargazo/'+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+".tif"+' '+r+' '+g+' '+b)
+def RGB(r,g,b,tile,anio,fecha,fechaProc,pathOutputGeoTiff):
+    os.system('gdal_merge.py -separate -co PHOTOMETRIC=RGB -o '+pathOutputGeoTiff+'sargazo/'+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+'_'+fechaProc+".tif"+' '+r+' '+g+' '+b)
 
-def RGB_TC(tile,anio,fecha,nivel,resolucion,pathInput,pathOutputGeoTiff):
+def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTiff):
     dirTC = listaBandas(pathInput,nivel,resolucion,'TCI')
-    os.system('gdal_translate '+dirTC+' '+pathOutputGeoTiff+'TC/'+tile+'/'+anio+'/'+'S2_MSI_TC_'+tile+'_'+fecha+'.tif')
+    os.system('gdal_translate '+dirTC+' '+pathOutputGeoTiff+'TC/'+tile+'/'+anio+'/'+'S2_MSI_TC_'+tile+'_'+fecha+'_'+fechaProc+'.tif')
 
 def poligonizacion(tile,anio,fecha,bufferLM,pathInput,pathOutput,pathOutputEmpty):
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
@@ -170,17 +193,38 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathInput,pathOutput,pathOutputEmpty
         totalSar = '0'
         return nombre, banderaSar, totalSar
 
-def tierraMascaraVectorial(tile,anio,fecha,bufferLM,pathLM,pathTmp,pathOutput):
+def obtieneVertices(pathInput,pathOutput):
+    polys = gpd.read_file(pathInput)
+    points = polys.copy()
+    points = points.explode()
+    points.geometry = points.geometry.apply(lambda x: MultiPoint(list(x.exterior.coords)))
+    points.to_file(pathOutput.split('.')[0]+'_vertices.json',driver='GeoJSON')
+
+def detfooMascaraVectorial(pathTmp):
+    detfoo = 'MSK_DETFOO_B8A.json'
     df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar.json')
+    df_mask = gpd.read_file(pathTmp+detfoo)
+    res_difference = gpd.overlay(df, df_mask, how='difference')
+    print('Deteccion de sargazo con mascara detfoo: ',len(res_difference),' elementos')
+    res_difference.to_file('alg_mask_filter_tmp_sar_detfoo.json', driver="GeoJSON")
+
+def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput):
+    df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json')
     df_mask = gpd.read_file(pathLM+'land_UTM16N_20m'+bufferLM+'.geojson')
     res_difference = gpd.overlay(df, df_mask, how='difference')
     print('Deteccion de sargazo con mascara de tierra: ',len(res_difference),' elementos')
     os.system('mkdir -p '+pathOutput+tile+'/'+anio)
-    nombre = pathOutput+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".json"
-    res_difference["geometry"] = [MultiPolygon([feature]) if type(feature) == Polygon \
-    else feature for feature in res_difference["geometry"]]
+    nombre = pathOutput+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+'_'+fechaProc+".json"
+    #res_difference["geometry"] = [Polygon([feature]) if type(feature) == Polygon \
+    #else feature for feature in res_difference["geometry"]]
+    if len(res_difference)>= 1:
+        banderaSar = True
+        totalSar = str(df['area'].sum())
+    else:
+        banderaSar = False
+        totalSar = '0'
     res_difference.to_file(nombre, driver="GeoJSON")
-    return nombre
+    return banderaSar, totalSar, nombre
 
 def tierraMascara(cuadrante,pathMask,pathTmp):
     #gdal.Translate(pathTmp+'tmp_mask.tif',dsMascara,options=gdal.TranslateOptions(projWin=cuadrante))
@@ -218,6 +262,42 @@ def nubesMascara(cuadrante,pathSCL,pathTmp):
         os.system('gdal_translate -projwin '+cuadrante+' '+pathTmp+'cloudMask_b250_bin_tmp.tif '+pathTmp+'cloudMask_b250_bin_rec_tmp.tif')
 
         return banderaNub
+
+def detfooMascara(detfoo_dist,pathInput,pathOutput):
+    #ogr2ogr -f "GeoJSON" MSK_DETFOO_B04.geojson MSK_DETFOO_B04.gml
+    detfoo = 'MSK_DETFOO_B8A.gml'
+    archivoQuality = nomDirQuality(pathInput,detfoo)
+    gdf = gpd.read_file(archivoQuality)
+
+    gdf = gdf.sort_values(by=['gml_id'])
+    gdf_crs = gdf.crs
+    ext = gdf.iloc[0].geometry.bounds
+
+    detfoot_buffers = []
+
+    for i in range(len(gdf)):
+        if i == 0:        
+            detfoot = gdf.iloc[i].geometry
+            ext = detfoot.bounds
+            detfoot_buff = LineString([Point(ext[2],ext[3]),Point(ext[0],ext[1])]).buffer(detfoo_dist)
+            detfoot_buffers.append(detfoot_buff)
+        elif i == len(gdf)-1:        
+            detfoot = gdf.iloc[i].geometry
+            ext = detfoot.bounds
+            detfoot_buff = LineString([Point(ext[2],ext[3]),Point(ext[0],ext[1])]).buffer(detfoo_dist)
+            detfoot_buffers.append(detfoot_buff)
+        elif i != len(gdf)-2:
+            detfoot = gdf.iloc[i].geometry
+            ext = detfoot.bounds
+            detfootSig = gdf.iloc[i+1].geometry
+            extSig = detfootSig.bounds
+            detfoot_buff = LineString([Point(ext[2],ext[3]),Point(extSig[0],extSig[1])]).buffer(detfoo_dist)
+            detfoot_buffers.append(detfoot_buff)
+
+    df_detfoot_buffers = pd.DataFrame(detfoot_buffers)
+    df_detfoot_buffers = df_detfoot_buffers.drop([0], axis=1)
+    gdf_detfoot_buffers = gpd.GeoDataFrame(df_detfoot_buffers, geometry=detfoot_buffers, crs=gdf_crs)
+    gdf_detfoot_buffers.to_file(pathOutput+detfoo.split('.')[0]+'.json',driver='GeoJSON')
 
 def sargazoBin(banderaNub,nivel,pathInput,pathOutput):
     #Prueba BR
