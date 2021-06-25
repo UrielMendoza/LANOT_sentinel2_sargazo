@@ -285,7 +285,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                 print('Archivo: '+archivo+' ya fue procesado a L2A')
 
     # BORRA DIR DESCARGA
-    #os.system('rm -r '+pathTmp+'*')
+    os.system('rm -r '+pathTmp+'*')
 
 
 
