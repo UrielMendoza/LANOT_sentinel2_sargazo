@@ -118,14 +118,14 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
     bufferLM = processing_sentinel2.obtieneBufferLM(landMask)
     if bufferLM == '':
         nomLog = 'L2A_sargazo.csv'
-    elif bufferLM == 'b2km':
+    elif bufferLM == 'b2km_':
         nomLog = 'L2A_sargazo_b2km.csv'
-    elif bufferLM == 'b5km':
+    elif bufferLM == 'b5km_':
         nomLog = 'L2A_sargazo_b5km.csv'
 
     # REFERENCIAS BANDAS Y TILES
     # agrego b02 y b03
-    bandas20m = ('B02','B03','B04','B05','B8A','B11','B07','SCL')
+    bandas20m = ('B02','B03','B04','B05','B8A','B11','SCL')
     bandas10m = ['B08']
     tiles = base.tiles[region]
  
@@ -189,7 +189,6 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     os.system('mv '+pathTmp+dirI+'.zip '+pathInput+tile+'/'+anio)
                     print(l2a)
                     print(dirI)
-
                     #print(fecha)
                     #print(dirI)
                     

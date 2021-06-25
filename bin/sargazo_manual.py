@@ -12,10 +12,10 @@ from os import system
 if __name__ == "__main__":
 
     # DIRECTORIOS
-    pathInput = '../test/L2A/'
-    pathOutput = '../test/geojson/sargazo/'
-    pathOutputEmpty = '../test/geojson/empty/'
-    pathOutputGeoTiff = '../test/geotiff/'
+    pathInput = '/data/output/sentinel2/msi/L2A/'
+    pathOutput = '/data/output/sentinel2/msi/l2/geojson/sargazo/'
+    pathOutputEmpty = '/data/output/sentinel2/msi/l2/geojson/sargazo/'
+    pathOutputGeoTiff = '/data/output/sentinel2/msi/l2/geotiff/'
     pathTmp = '../test/tmp/manual/'
     pathLM = '../data/masks/'
     pathLog = '../../logs_sentinel2_sargazo/'

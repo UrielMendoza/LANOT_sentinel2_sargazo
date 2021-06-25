@@ -214,7 +214,7 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
     res_difference = gpd.overlay(df, df_mask, how='difference')
     print('Deteccion de sargazo con mascara de tierra: ',len(res_difference),' elementos')
     os.system('mkdir -p '+pathOutput+tile+'/'+anio)
-    nombre = pathOutput+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+'_'+fechaProc+".json"
+    nombre = pathOutput+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+fecha+'_'+fechaProc+".json"
     #res_difference["geometry"] = [Polygon([feature]) if type(feature) == Polygon \
     #else feature for feature in res_difference["geometry"]]
     if len(res_difference)>= 1:
