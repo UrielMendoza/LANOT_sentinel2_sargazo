@@ -180,7 +180,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     elif porcNube > 60.0:
                         nubesBajas = 900
                     else:
-                        nubesBajas = 2000
+                        nubesBajas = 2500
                     print('Procentaje de nubes ',porcNube)
                     print('Valor de temperatura para filtro nubes bajas: ',nubesBajas)                    
                     
@@ -250,11 +250,11 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     print('5.9 Aniadiendo log...') 
                     fechaLog = processing_sentinel2.obtieneFechaLog()
                     if bufferLM == '':
-                        processing_sentinel2.logSargazo(pathLog,fecha,tile,banderaSar,totalSar,archivo,archivoProc,fechaProc)
+                        processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar,totalSar,archivo,archivoProc,fechaProc)
                     elif bufferLM == 'b2km':
-                        processing_sentinel2.logSargazo(pathLog,fecha,tile,banderaSar,totalSar,archivo,archivoProc,fechaProc)
+                        processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar,totalSar,archivo,archivoProc,fechaProc)
                     elif bufferLM == 'b5km':
-                        processing_sentinel2.logSargazo(pathLog,fecha,tile,banderaSar,totalSar,archivo,archivoProc,fechaProc)
+                        processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar,totalSar,archivo,archivoProc,fechaProc)
 
                     # COMPUESTO RGB
                     print('6. Creando compuesto RGB...')
