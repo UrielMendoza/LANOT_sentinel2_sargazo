@@ -206,7 +206,7 @@ def detfooMascaraVectorial(pathTmp):
     df_mask = gpd.read_file(pathTmp+detfoo)
     res_difference = gpd.overlay(df, df_mask, how='difference')
     print('Deteccion de sargazo con mascara detfoo: ',len(res_difference),' elementos')
-    res_difference.to_file('alg_mask_filter_tmp_sar_detfoo.json', driver="GeoJSON")
+    res_difference.to_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json', driver="GeoJSON")
 
 def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput):
     df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json')
