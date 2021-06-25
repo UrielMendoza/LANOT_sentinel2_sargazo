@@ -50,7 +50,7 @@ tiles["Guyane"] = [
 
 # Sargazo1: Region de monitoreo de sargazo
 tiles['sargazo1'] = [
-"16QDJ","16QEJ","16QFJ","16QDH","16QEH","16QFH","16QDG","16QEG","16QFG","16QDF","16QEF","16QFF"
+"16QDJ","16QEJ","16QDH","16QEH","16QDG","16QEG","16QDF","16QEF"
 ]
 
 tiles["Prueba"] = [
