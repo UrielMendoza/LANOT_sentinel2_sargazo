@@ -182,7 +182,8 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         df['distCosta'] = None
         for i in range(len(df)):
             distance = round(gdf['geometry'].iloc[0].distance(df['geometry'].iloc[i]),2)
-            df['distCosta'][i] = distance
+            print(distance)
+            df['distCosta'].iloc[i] = distance
         df = df.drop(columns=['DN'])      
         df.to_file(pathInput+'alg_mask_filter_tmp_sar.json', driver="GeoJSON")
         banderaSar = True
