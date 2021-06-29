@@ -280,10 +280,10 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
 
 #                finally:
                 # BORRA BASURA
-                    #os.system('rm -r '+pathTmp+'*.tif')
-                    #os.system('rm -r '+pathTmp+'*.geojson')
-                    #os.system('rm -r '+pathTmp+'*.json')
-                    #os.system('rm -r '+pathTmp+'*.SAFE')
+                    os.system('rm -r '+pathTmp+'*.tif')
+                    os.system('rm -r '+pathTmp+'*.geojson')
+                    os.system('rm -r '+pathTmp+'*.json')
+                    os.system('rm -r '+pathTmp+'*.SAFE')
                 
             else:
                 print('Archivo: '+archivo+' ya fue procesado a L2A')
