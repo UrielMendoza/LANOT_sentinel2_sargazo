@@ -144,7 +144,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
     # ALGORITMO
     for tileDir in tilesDirs:
 
-        if tileDir == 'T16QEJ':      
+        if tileDir == '../test/tmp/manual/T16QEJ':      
             archivos = processing_sentinel2.listaArchivos(tileDir+'/*2018*')
             archivos.sort()
             
