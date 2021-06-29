@@ -226,11 +226,12 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
     print('Deteccion de sargazo con mascara de tierra: ',len(res_difference),' elementos')
     os.system('mkdir -p '+pathOutput+tile+'/'+anio)
     nombre = pathOutput+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+fecha+'_'+fechaProc+".json"
-    #res_difference["geometry"] = [Polygon([feature]) if type(feature) == Polygon \
-    #else feature for feature in res_difference["geometry"]]
+    res_difference["geometry"] = [MultiPolygon([feature]) if type(feature) == Polygon \
+    else feature for feature in res_difference["geometry"]]
     if len(res_difference)>= 1:
         banderaSar = True
         totalSar = str(df['area'].sum())
+        res_difference.to_file(nombre, driver="GeoJSON")
     else:
         print('No deteccion de sargazo')
         os.system('mkdir -p '+pathOutputEmpty+tile+'/'+anio)
@@ -240,8 +241,7 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
         f.close()
         #print('Tile:'+tile+'\nFecha:'+fecha)
         banderaSar = False
-        totalSar = '0'
-    res_difference.to_file(nombre, driver="GeoJSON")
+        totalSar = '0'    
     return banderaSar, totalSar, nombre
 
 def tierraMascara(cuadrante,pathMask,pathTmp):
