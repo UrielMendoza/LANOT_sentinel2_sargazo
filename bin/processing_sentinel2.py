@@ -179,7 +179,7 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         df['fechaDia'] = fechaDia
         df["area"] = round(df['geometry'].area,2)
         gdf = gpd.read_file(pathLM+'land_UTM16N_20m_distance.geojson')
-        gdf['distCosta'] = None
+        df['distCosta'] = None
         for i in range(len(df)):
             distance = round(gdf.geometry[0].distance(df.geometry[i]),2)
             df['distCosta'][i] = distance
