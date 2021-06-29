@@ -139,6 +139,8 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
 
     tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
 
+    print(tilesDirs)
+
     # ALGORITMO
     for tileDir in tilesDirs:
 
