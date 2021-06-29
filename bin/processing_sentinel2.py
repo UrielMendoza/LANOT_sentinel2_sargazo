@@ -181,7 +181,7 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         gdf = gpd.read_file(pathLM+'land_UTM16N_20m_distance.geojson')
         df['distCosta'] = None
         for i in range(len(df)):
-            distance = round(gdf.geometry[0].distance(df.geometry[i]),2)
+            distance = round(gdf['geometry'].iloc[0].distance(df['geometry'].iloc[i]),2)
             df['distCosta'][i] = distance
         df = df.drop(columns=['DN'])      
         df.to_file(pathInput+'alg_mask_filter_tmp_sar.json', driver="GeoJSON")
