@@ -179,11 +179,14 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         df['fechaDia'] = fechaDia
         df["area"] = round(df['geometry'].area,2)
         gdf = gpd.read_file(pathLM+'land_UTM16N_20m_distance.geojson')
+        distances = []
         df['distCosta'] = None
         for i in range(len(df)):
             distance = round(gdf['geometry'].iloc[0].distance(df['geometry'].iloc[i]),2)
-            print(distance)
-            df['distCosta'].iloc[i] = distance
+            #print(distance)
+            #df['distCosta'].iloc[i] = distance
+            distances.append(distance)
+        df['distCosta'] = distances
         df = df.drop(columns=['DN'])      
         df.to_file(pathInput+'alg_mask_filter_tmp_sar.json', driver="GeoJSON")
         banderaSar = True
