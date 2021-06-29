@@ -20,6 +20,7 @@ mkdir -p ./test/tmp/automatico/;
 mkdir -p ./test/tmp/manual/;
 mkdir -p ./test/tmp/historico/;
 wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_UTM16N_20m.geojson;
+wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_UTM16N_20m_distance.geojson;
 wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_sargazo_UTM16N_20m.tif;
 wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_sargazo_UTM16N_20m_b2km.tif;
 wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_sargazo_UTM16N_20m_b5km.tif;
