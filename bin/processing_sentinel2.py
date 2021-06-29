@@ -172,7 +172,7 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathInput,pathOutput,pathOutputEmpty
 
     if len(df)>= 1:
         print('Deteccion de sargazo sin mascara de tierra: ',len(df),' elementos')
-        df["area"] = df['geometry'].area
+        df["area"] = round(df['geometry'].area,2)
         df['fecha'] = fecha
         df['tile'] = tile
         df['IDpolygon'] = range(1, len(df) + 1)
@@ -263,6 +263,37 @@ def nubesMascara(cuadrante,pathSCL,pathTmp):
 
         return banderaNub
 
+def nubesSombraMascara(cuadrante,pathTmp):
+
+    cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
+
+    b12 = aperturaDS(pathTmp+'B12.tif').ReadAsArray()
+    b11 = aperturaDS(pathTmp+'B11.tif').ReadAsArray()
+    ref = aperturaDS(pathTmp+'B12.tif')
+
+    nubesMask = np.where((b12 > 1220) & (b11 > 395), 0, 1)
+
+    creaTif(ref,nubesMask,pathTmp+'cloudMaskShadow_bin_tmp.tif')
+
+    os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_bin_tmp.tif -f "GeoJSON" '+pathTmp+'cloudMaskShadow_bin_tmp.json')
+    df = gpd.read_file(pathTmp+'cloudMaskShadow_bin_tmp.json')
+    df = df[df['DN'] == 1]
+    if len(df) == 0:
+        print("No buffer de nubes")
+        banderaNub = False
+        return banderaNub
+    else:
+        print("Buffer de nubes")
+        banderaNub = True
+        df = df.buffer(250)
+        df_g = df.unary_union
+        df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
+        df.to_file(pathTmp+"cloudMaskShadow_b250_tmp.geojson", driver='GeoJSON')
+        os.system('gdal_rasterize -burn 8 -tr 20 20 -l cloudMaskShadow_b250_tmp '+pathTmp+'cloudMaskShadow_b250_tmp.geojson '+pathTmp+'cloudMaskShadow_b250_tmp.tif')
+        os.system('gdal_translate -projwin '+cuadrante+' '+pathTmp+'cloudMaskShadow_b250_tmp.tif '+pathTmp+'cloudMaskShadow_b250_rec_tmp.tif')
+
+        return banderaNub
+
 def detfooMascara(detfoo_dist,pathInput,pathOutput):
     #ogr2ogr -f "GeoJSON" MSK_DETFOO_B04.geojson MSK_DETFOO_B04.gml
     detfoo = 'MSK_DETFOO_B8A.gml'
@@ -331,7 +362,10 @@ def sargazoBinNumpy(pathInput):
     creaTif(ref,sargazoBin,pathInput+'alg_tmp_numpy.tif')
     #os.system('gdal_calc.py -A '+pathInput+'alg_tmp_numpy.tif -B '+pathInput+'aguaMask.tif --outfile='+pathInput+'alg_mask_tmp_numpy.tif --calc="A*B"')
     #os.system('gdal_calc.py -A '+pathInput+'alg_tmp_numpy.tif -B '+pathInput+'landMask_tmp.tif --outfile='+pathInput+'alg_mask_tmp_numpy.tif --calc="A*B"')
-    os.system('gdal_calc.py -A '+pathInput+'alg_tmp_numpy.tif -B '+pathInput+'cloudMask_b250_bin_rec_tmp.tif --outfile='+pathInput+'alg_mask_tmp_numpy.tif --calc="A*B"')
+    # MASCARA DE NUBES SLC
+    #os.system('gdal_calc.py -A '+pathInput+'alg_tmp_numpy.tif -B '+pathInput+'cloudMask_b250_bin_rec_tmp.tif --outfile='+pathInput+'alg_mask_tmp_numpy.tif --calc="A*B"')
+    # MASCARA DE NUBES Y SOMBRA B12
+    os.system('gdal_calc.py -A '+pathInput+'alg_tmp_numpy.tif -B '+pathInput+'cloudMaskShadow_b250_rec_tmp.tif --outfile='+pathInput+'alg_mask_tmp_numpy.tif --calc="A*B"')
 
 def pixelNubesBajas(dsRef,dsSar,nubesBajas):
 	nuMask = dsRef.ReadAsArray()
