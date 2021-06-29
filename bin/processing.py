@@ -171,7 +171,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     pathCFG_8 = '../../sen2cor/2.9/cfg/L2A_GIPP.xml'
                     print(dirI)
                     print(pathTmp)
-                    #processing_sentinel2.sen2core(pathSen2core_8,pathCFG_8,pathTmp+dirI,pathTmp,'10')
+                    processing_sentinel2.sen2core(pathSen2core_8,pathCFG_8,pathTmp+dirI,pathTmp,'10')
                     l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*')[0]
                     dirI = processing_sentinel2.nomDir(l2a,'L2A')
 
