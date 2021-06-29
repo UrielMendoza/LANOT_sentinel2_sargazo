@@ -233,14 +233,13 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
 
                         # POLIGONIZACION
                         print('5.7 Procesando poligonizacion...')
-                        archivoProc,banderaSar,totalSar = processing_sentinel2.poligonizacion(tile,anio,fecha,bufferLM,pathTmp,pathOutput,pathOutputEmpty)
-                        fechaProc = processing_sentinel2.obtieneFechaProc()
+                        archivoProc,banderaSar,totalSar = processing_sentinel2.poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty)
 
                         if banderaSar == True:
                             print('5.8 Aplicando mascara detfoo vectorial...')
-                            processing_sentinel2.detfooMascaraVectorial(pathTmp)
+                            #processing_sentinel2.detfooMascaraVectorial(pathTmp)
                             print('5.9 Aplicando mascara de tierra vectorial...')
-                            banderaSar, totalSarMask, archivoProc = processing_sentinel2.tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput)
+                            banderaSar, totalSarMask, archivoProc = processing_sentinel2.tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty)
                             banderaSar_log = 'si'
                         
                         # BANDERA DE SARGAZO Y AREA TOTAL
@@ -252,7 +251,8 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                             banderaSar_log = 'no'
 
                         # LOG
-                        print('5.9 Aniadiendo log...') 
+                        print('5.9 Aniadiendo log...')
+                        fechaProc = processing_sentinel2.obtieneFechaProc()
                         fechaLog = processing_sentinel2.obtieneFechaLog()
                         if bufferLM == '':
                             processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivo,archivoProc,fechaProc)

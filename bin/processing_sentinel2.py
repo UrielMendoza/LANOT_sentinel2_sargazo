@@ -164,18 +164,26 @@ def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTif
     dirTC = listaBandas(pathInput,nivel,resolucion,'TCI')
     os.system('gdal_translate '+dirTC+' '+pathOutputGeoTiff+'TC/'+tile+'/'+anio+'/'+'S2_MSI_TC_'+tile+'_'+fecha+'_'+fechaProc+'.tif')
 
-def poligonizacion(tile,anio,fecha,bufferLM,pathInput,pathOutput,pathOutputEmpty):
+def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutputEmpty):
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
+    fechaDia = time.strftime('%Y-%m-%d')
     os.system('gdal_polygonize.py '+pathInput+'nubesBajas_mask.tif -f "GeoJSON" '+pathInput+'alg_mask_filter_tmp.json')
     df = gpd.read_file(pathInput+'alg_mask_filter_tmp.json')
     df = df[df.DN == 1]
 
     if len(df)>= 1:
         print('Deteccion de sargazo sin mascara de tierra: ',len(df),' elementos')
-        df["area"] = round(df['geometry'].area,2)
-        df['fecha'] = fecha
+        df['IDpoligono'] = range(1, len(df) + 1)
         df['tile'] = tile
-        df['IDpolygon'] = range(1, len(df) + 1)
+        df['fecha'] = fecha
+        df['fechaDia'] = fechaDia
+        df["area"] = round(df['geometry'].area,2)
+        gdf = gpd.read_file(pathLM+'land_UTM16N_20m_distance.geojson')
+        gdf['distCosta'] = None
+        for i in range(len(df)):
+            distance = round(gdf.geometry[0].distance(df.geometry[i]),2)
+            df['distCosta'][i] = distance
+        df = df.drop(columns=['DN'])      
         df.to_file(pathInput+'alg_mask_filter_tmp_sar.json', driver="GeoJSON")
         banderaSar = True
         nombre = None
@@ -208,8 +216,11 @@ def detfooMascaraVectorial(pathTmp):
     print('Deteccion de sargazo con mascara detfoo: ',len(res_difference),' elementos')
     res_difference.to_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json', driver="GeoJSON")
 
-def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput):
-    df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json')
+def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty):
+    # CON DETFOO
+    #df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json')
+    # SIN DETFOO
+    df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar.json')
     df_mask = gpd.read_file(pathLM+'land_UTM16N_20m'+bufferLM+'.geojson')
     res_difference = gpd.overlay(df, df_mask, how='difference')
     print('Deteccion de sargazo con mascara de tierra: ',len(res_difference),' elementos')
@@ -221,6 +232,13 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
         banderaSar = True
         totalSar = str(df['area'].sum())
     else:
+        print('No deteccion de sargazo')
+        os.system('mkdir -p '+pathOutputEmpty+tile+'/'+anio)
+        nombre = pathOutputEmpty+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".txt"
+        f = open(nombre,'w')
+        f.write('No detección de sargazo')
+        f.close()
+        #print('Tile:'+tile+'\nFecha:'+fecha)
         banderaSar = False
         totalSar = '0'
     res_difference.to_file(nombre, driver="GeoJSON")
