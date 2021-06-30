@@ -144,7 +144,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
     # ALGORITMO
     for tileDir in tilesDirs:
         
-        archivos = processing_sentinel2.listaArchivos(tileDir+'/*20210531*')
+        archivos = processing_sentinel2.listaArchivos(tileDir+'/*')
         archivos.sort()
         
         for archivo in archivos:
