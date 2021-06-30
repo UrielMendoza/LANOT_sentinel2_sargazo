@@ -233,12 +233,11 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     # POLIGONIZACION
                     print('5.7 Procesando poligonizacion...')
                     archivoProc,banderaSar,totalSar = processing_sentinel2.poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty)
-
+                    fechaProc = processing_sentinel2.obtieneFechaProc()
                     if banderaSar == True:
                         print('5.8 Aplicando mascara detfoo vectorial...')
                         #processing_sentinel2.detfooMascaraVectorial(pathTmp)
                         print('5.9 Aplicando mascara de tierra vectorial...')
-                        fechaProc = processing_sentinel2.obtieneFechaProc()
                         banderaSar, totalSarMask, archivoProc = processing_sentinel2.tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty)
                         banderaSar_log = 'si'
                     
