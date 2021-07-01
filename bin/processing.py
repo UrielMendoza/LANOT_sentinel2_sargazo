@@ -226,19 +226,20 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     #processing_sentinel2.sargazoBin(banderaNub,'L2A',pathTmp,pathTmp)
                     processing_sentinel2.sargazoBinNumpy(pathTmp)
                     dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_mask_tmp_numpy.tif')
-                    print('5.6 Procesando sargazo con filtro...')
+                    print('5.6 Obteniendo entropia...')
                     entropia = processing_sentinel2.entropiaNumpy(pathTmp)
-                    nuMask = processing_sentinel2.pixelNubesBajas(ref,dsSar,nubesBajas,entropia,6.2)
+                    print('5.7 Procesando sargazo con filtro...')
+                    nuMask = processing_sentinel2.pixelNubesBajas(ref,dsSar,nubesBajas,entropia,6.25)
                     processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')
 
                     # POLIGONIZACION
-                    print('5.7 Procesando poligonizacion...')
+                    print('6 Procesando poligonizacion...')
                     archivoProc,banderaSar,totalSar = processing_sentinel2.poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty)
                     fechaProc = processing_sentinel2.obtieneFechaProc()
                     if banderaSar == True:
-                        print('5.8 Aplicando mascara detfoo vectorial...')
+                        print('6.1 Aplicando mascara detfoo vectorial...')
                         #processing_sentinel2.detfooMascaraVectorial(pathTmp)
-                        print('5.9 Aplicando mascara de tierra vectorial...')
+                        print('6.2 Aplicando mascara de tierra vectorial...')
                         banderaSar, totalSarMask, archivoProc = processing_sentinel2.tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty)
                         banderaSar_log = 'si'
                     
@@ -251,7 +252,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                         banderaSar_log = 'no'
 
                     # LOG
-                    print('5.9 Aniadiendo log...')
+                    print('6.3 Aniadiendo log...')
                     fechaLog = processing_sentinel2.obtieneFechaLog()
                     if bufferLM == '':
                         processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivo,archivoProc,fechaProc)
@@ -261,16 +262,16 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                         processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivo,archivoProc,fechaProc)
 
                     # COMPUESTO RGB
-                    print('6. Creando compuesto RGB...')
-                    print('6.1 Creando compuesto RGB FC...')
+                    print('7. Creando compuesto RGB...')
+                    print('7.1 Creando compuesto RGB FC...')
                     os.system('mkdir -p '+pathOutputGeoTiff+'sargazo/'+tile+'/'+anio)                
                     processing_sentinel2.RGB(pathTmp+bandas20m[4]+'.tif',pathTmp+bandas20m[3]+'.tif',pathTmp+bandas20m[2]+'.tif',tile,anio,fecha,fechaProc,pathOutputGeoTiff)
-                    print('6.2 Creando compuesto RGB TC...')
+                    print('7.2 Creando compuesto RGB TC...')
                     os.system('mkdir -p '+pathOutputGeoTiff+'TC/'+tile+'/'+anio)
                     processing_sentinel2.RGB_TC(tile,anio,fecha,fechaProc,'L2A','R20m',pathTmp+dirI,pathOutputGeoTiff)
 
                     # LOG
-                    print('6.3 Añadiendo log...')
+                    print('7.3 Añadiendo log...')
                     fechaLog = processing_sentinel2.obtieneFechaLog()
                     processing_sentinel2.logArchivo(pathLog+'L2A_GeoTiff.csv',fecha,tile,archivo,archivoProc,fechaLog)
 
@@ -283,7 +284,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     os.system('rm -r '+pathTmp+'*.tif')
                     os.system('rm -r '+pathTmp+'*.geojson')
                     os.system('rm -r '+pathTmp+'*.json')
-                    os.system('rm -r '+pathTmp+'*.SAFE')
+                    #os.system('rm -r '+pathTmp+'*.SAFE')
                 
             else:
                 print('Archivo: '+archivo+' ya fue procesado a L2A')
