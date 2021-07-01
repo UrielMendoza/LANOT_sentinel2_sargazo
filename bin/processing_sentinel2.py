@@ -478,19 +478,12 @@ def pixelNubesBajas(dsRef,dsSar,nubesBajas,entropia,entropiaMin):
 					#nuMask[i,j-1] = 3
 					cont = cont + 1
 					listaBanderas.append('Caso10')
+                # ENTROPIA
                 elif (entropia[i,j] >= 6.0):
-					nuMask[i,j] = 0
-					# RECORRE
-					#nuMask[i-1,j-1] = 3
-					#nuMask[i-1,j] = 3
-					#nuMask[i-1,j+1] = 3
-					#nuMask[i,j+1] = 3
-					#nuMask[i+1,j+1] = 3
-					#nuMask[i+1,j] = 3
-					#nuMask[i+1,j-1] = 3
-					#nuMask[i,j-1] = 3
+				    nuMask[i,j] = 0
+
 					cont = cont + 1
-					listaBanderas.append('Caso10')
+					listaBanderas.append('Caso11')
 				# SARGAZO
 				else:
 					nuMask[i,j] = 1
