@@ -401,7 +401,7 @@ def entropiaNumpy(pathInput):
     entropia = entropy(b12, disk(5))
     return entropia
 
-def pixelNubesBajas(dsRef,dsSar,nubesBajas,entropia):
+def pixelNubesBajas(dsRef,dsSar,nubesBajas,entropia,entropiaMin):
 	nuMask = dsRef.ReadAsArray()
 	b4 = dsRef.ReadAsArray()
 	sar = dsSar.ReadAsArray()
@@ -411,7 +411,7 @@ def pixelNubesBajas(dsRef,dsSar,nubesBajas,entropia):
 
 
     # Entropia
-    entropiaMin = 6.2
+    #entropiaMin = 6.2
 
 	# Valor de referencia B4 Sugerido 900
 	nubeBaja = nubesBajas
