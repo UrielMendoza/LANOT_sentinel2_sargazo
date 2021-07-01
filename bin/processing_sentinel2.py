@@ -17,6 +17,10 @@ import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 from xml.dom import minidom
+from skimage import data
+from skimage.util import img_as_ubyte
+from skimage.filters.rank import entropy
+from skimage.morphology import disk
 
 def obtienePorcentajeNube(pathInput):
     mydoc = minidom.parse(pathInput+'/MTD_MSIL2A.xml')
@@ -391,7 +395,13 @@ def sargazoBinNumpy(pathInput):
     # MASCARA DE NUBES Y SOMBRA B12
     os.system('gdal_calc.py -A '+pathInput+'alg_tmp_numpy.tif -B '+pathInput+'cloudMaskShadow_b250_bin_rec_tmp.tif --outfile='+pathInput+'alg_mask_tmp_numpy.tif --calc="A*B"')
 
-def pixelNubesBajas(dsRef,dsSar,nubesBajas):
+def entropiaNumpy(pathInput):
+    ds = gdal.Open(pathInput+'B12.tif')
+    b12 = ds.ReadAsArray()
+    entropia = entropy(b12, disk(5))
+    return entropia
+
+def pixelNubesBajas(dsRef,dsSar,nubesBajas,entropia):
 	nuMask = dsRef.ReadAsArray()
 	b4 = dsRef.ReadAsArray()
 	sar = dsSar.ReadAsArray()
@@ -399,8 +409,13 @@ def pixelNubesBajas(dsRef,dsSar,nubesBajas):
 	cont = 0
 	listaBanderas = []
 
+
+    # Entropia
+        entropiaMin = 6.2
+
 	# Valor de referencia B4 Sugerido 900
 	nubeBaja = nubesBajas
+
 
 	for i in range(nuMask.shape[0]-1):
 		for j in range(nuMask.shape[1]-1):
@@ -409,47 +424,47 @@ def pixelNubesBajas(dsRef,dsSar,nubesBajas):
 			#print('valor:',sar[i,j])
 			if sar[i,j] == 1:
 				# ESQUINAS
-				if (i == 0 and j == 0) and (b4[i,j+1] > nubeBaja or b4[i+1,j+1] > nubeBaja or b4[i+1,j] > nubeBaja):
+				if (i == 0 and j == 0) and ((b4[i,j+1] > nubeBaja or b4[i+1,j+1] > nubeBaja or b4[i+1,j] > nubeBaja) or (entropia[i,j+1] > entropiaMin or entropia[i+1,j+1] > entropiaMin or entropia[i+1,j] > entropiaMin)):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso1')
 
-				elif (i == 0 and j == nuMask.shape[1]) and (b4[i,j-1] > nubeBaja or b4[i+1,j-1] > nubeBaja or b4[i+1,j] > nubeBaja):
+				elif (i == 0 and j == nuMask.shape[1]) and ((b4[i,j-1] > nubeBaja or b4[i+1,j-1] > nubeBaja or b4[i+1,j] > nubeBaja) or (entropia[i,j-1] > entropiaMin or entropia[i+1,j-1] > entropiaMin or entropia[i+1,j] > entropiaMin)):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso2')
 
-				elif (i == nuMask.shape[0] and j == 0) and (b4[i-1,j] > nubeBaja or b4[i-1,j+1] > nubeBaja or b4[i,j+1] > nubeBaja):
+				elif (i == nuMask.shape[0] and j == 0) and ((b4[i-1,j] > nubeBaja or b4[i-1,j+1] > nubeBaja or b4[i,j+1] > nubeBaja) or (entropia[i-1,j] > entropiaMin or entropia[i-1,j+1] > entropiaMin or entropia[i,j+1] > entropiaMin)):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso3')
 
-				elif (i == nuMask.shape[0] and j == nuMask.shape[1]) and (b4[i-1,j-1] > nubeBaja or b4[i-1,j] > nubeBaja or b4[i,j-1] > nubeBaja):
+				elif (i == nuMask.shape[0] and j == nuMask.shape[1]) and ((b4[i-1,j-1] > nubeBaja or b4[i-1,j] > nubeBaja or b4[i,j-1] > nubeBaja) or (entropia[i-1,j-1] > entropiaMin or entropia[i-1,j] > entropiaMin or entropia[i,j-1] > entropiaMin)):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso4')
 				#BORDES
-				elif (i == 0) and (b4[i,j-1] > nubeBaja or b4[i,j+1] > nubeBaja or b4[i+1,j-1] > nubeBaja or b4[i+1,j] > nubeBaja or b4[i+1,j+1] > nubeBaja):
+				elif (i == 0) and (b4[i,j-1] > nubeBaja or b4[i,j+1] > nubeBaja or b4[i+1,j-1] > nubeBaja or b4[i+1,j] > nubeBaja or b4[i+1,j+1] > nubeBaja) or (entropia[i,j-1] > entropiaMin or entropia[i,j+1] > entropiaMin or entropia[i+1,j-1] > entropiaMin or entropia[i+1,j] > entropiaMin or entropia[i+1,j+1] > entropiaMin):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso5')
 
-				elif (i == nuMask.shape[0]) and (b4[i-1,j-1] > nubeBaja or b4[i-1,j] > nubeBaja or b4[i-1,j+1] > nubeBaja or b4[i,j-1] > nubeBaja or b4[i,j+1] > nubeBaja):
+				elif (i == nuMask.shape[0]) and (b4[i-1,j-1] > nubeBaja or b4[i-1,j] > nubeBaja or b4[i-1,j+1] > nubeBaja or b4[i,j-1] > nubeBaja or b4[i,j+1] > nubeBaja) or (entropia[i-1,j-1] > entropiaMin or entropia[i-1,j] > entropiaMin or entropia[i-1,j+1] > entropiaMin or entropia[i,j-1] > entropiaMin or entropia[i,j+1] > entropiaMin):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso6')
 
-				elif (j == 0) and (b4[i-1,j] > nubeBaja or b4[i-1,j+1] > nubeBaja or b4[i,j+1] > nubeBaja or b4[i+1,j] > nubeBaja or b4[i+1,j+1] > nubeBaja) and (sar[i,j] == 1):
+				elif (j == 0) and (b4[i-1,j] > nubeBaja or b4[i-1,j+1] > nubeBaja or b4[i,j+1] > nubeBaja or b4[i+1,j] > nubeBaja or b4[i+1,j+1] > nubeBaja) or (entropia[i-1,j] > entropiaMin or entropia[i-1,j+1] > entropiaMin or entropia[i,j+1] > entropiaMin or entropia[i+1,j] > entropiaMin or entropia[i+1,j+1] > entropiaMin):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso7')
 
-				elif (j == nuMask.shape[1]) and (b4[i-1,j-1] > nubeBaja or b4[i-1,j] > nubeBaja or b4[i,j-1] > nubeBaja or b4[i+1,j-1] > nubeBaja or b4[i+1,j] > nubeBaja):
+				elif (j == nuMask.shape[1]) and (b4[i-1,j-1] > nubeBaja or b4[i-1,j] > nubeBaja or b4[i,j-1] > nubeBaja or b4[i+1,j-1] > nubeBaja or b4[i+1,j] > nubeBaja) or (entropia[i-1,j-1] > entropiaMin or entropia[i-1,j] > entropiaMin or entropia[i,j-1] > entropiaMin or entropia[i+1,j-1] > entropiaMin or entropia[i+1,j] > entropiaMin):
 					nuMask[i,j] = 0
 					cont = cont + 1
 					listaBanderas.append('Caso8')
 				#GENERAL
-				elif (b4[i-1,j-1] > nubeBaja or b4[i-1,j] > nubeBaja or b4[i-1,j+1] > nubeBaja or b4[i,j+1] > nubeBaja or b4[i+1,j+1] > nubeBaja or b4[i+1,j] > nubeBaja or b4[i+1,j-1] > nubeBaja or b4[i,j-1] > nubeBaja):
+				elif (b4[i-1,j-1] > nubeBaja or b4[i-1,j] > nubeBaja or b4[i-1,j+1] > nubeBaja or b4[i,j+1] > nubeBaja or b4[i+1,j+1] > nubeBaja or b4[i+1,j] > nubeBaja or b4[i+1,j-1] > nubeBaja or b4[i,j-1] > nubeBaja or (entropia[i-1,j-1] > entropiaMin or entropia[i-1,j] > entropiaMin or entropia[i-1,j+1] > entropiaMin or entropia[i,j+1] > entropiaMin or entropia[i+1,j+1] > entropiaMin or entropia[i+1,j] > entropiaMin or entropia[i+1,j-1] > entropiaMin or entropia[i,j-1] > entropiaMin)):
 					nuMask[i,j] = 0
 					# RECORRE
 					#nuMask[i-1,j-1] = 3

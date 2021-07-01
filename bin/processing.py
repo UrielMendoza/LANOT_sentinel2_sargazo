@@ -137,14 +137,14 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
     #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
     #download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=2), end_date - datetime.timedelta(days=2), pathTmp, unzip=False)
 
-    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
+    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QEH*')
 
     print(tilesDirs)
 
     # ALGORITMO
     for tileDir in tilesDirs:
         
-        archivos = processing_sentinel2.listaArchivos(tileDir+'/*')
+        archivos = processing_sentinel2.listaArchivos(tileDir+'/*20210531*')
         archivos.sort()
         
         for archivo in archivos:
@@ -227,7 +227,8 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     processing_sentinel2.sargazoBinNumpy(pathTmp)
                     dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_mask_tmp_numpy.tif')
                     print('5.6 Procesando sargazo con filtro...')
-                    nuMask = processing_sentinel2.pixelNubesBajas(ref,dsSar,nubesBajas)
+                    entropia = processing_sentinel2.entropiaNumpy(pathTmp)
+                    nuMask = processing_sentinel2.pixelNubesBajas(ref,dsSar,nubesBajas,entropia)
                     processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')
 
                     # POLIGONIZACION
