@@ -399,7 +399,7 @@ def entropiaNumpy(pathInput):
     ds = gdal.Open(pathInput+'B12.tif')
     b12 = ds.ReadAsArray()
     entropia = entropy(b12, disk(5))
-    creaTif(ds,entropia,'b12_entropia.tif')
+    creaTif(ds,entropia,pathInput+'b12_entropia.tif')
     return entropia
 
 def pixelNubesBajas(dsRef,dsSar,nubesBajas,entropia,entropiaMin):
