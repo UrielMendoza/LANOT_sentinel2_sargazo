@@ -411,7 +411,7 @@ def pixelNubesBajas(dsRef,dsSar,nubesBajas,entropia):
 
 
     # Entropia
-        entropiaMin = 6.2
+    entropiaMin = 6.2
 
 	# Valor de referencia B4 Sugerido 900
 	nubeBaja = nubesBajas
