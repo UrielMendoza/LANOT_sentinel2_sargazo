@@ -229,7 +229,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     print('5.6 Obteniendo entropia...')
                     entropia = processing_sentinel2.entropiaNumpy(pathTmp)
                     print('5.7 Procesando sargazo con filtro...')
-                    nuMask = processing_sentinel2.pixelNubesBajas(ref,dsSar,nubesBajas,entropia,6.3)
+                    nuMask = processing_sentinel2.pixelNubesBajasN(ref,dsSar,nubesBajas,entropia)
                     processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')
 
                     # POLIGONIZACION

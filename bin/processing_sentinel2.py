@@ -402,7 +402,7 @@ def entropiaNumpy(pathInput):
     creaTif(ds,entropia,pathInput+'b12_entropia.tif')
     return entropia
 
-def pixelNubesBajas(dsRef,dsSar,nubesBajas,entropia,entropiaMin):
+""" def pixelNubesBajas(dsRef,dsSar,nubesBajas,entropia,entropiaMin):
 	nuMask = dsRef.ReadAsArray()
 	b4 = dsRef.ReadAsArray()
 	sar = dsSar.ReadAsArray()
@@ -416,7 +416,6 @@ def pixelNubesBajas(dsRef,dsSar,nubesBajas,entropia,entropiaMin):
 
 	# Valor de referencia B4 Sugerido 900
 	nubeBaja = nubesBajas
-
 
 	for i in range(nuMask.shape[0]-1):
 		for j in range(nuMask.shape[1]-1):
@@ -480,19 +479,102 @@ def pixelNubesBajas(dsRef,dsSar,nubesBajas,entropia,entropiaMin):
 					listaBanderas.append('Caso10')
                 # ENTROPIA
                         elif (entropia[i,j] >= 6.0):
-				            nuMask[i,j] = 0
+                            nuMask[i,j] = 0
 
-				            cont = cont + 1
-				            listaBanderas.append('Caso11')
+                            cont = cont + 1
+                            listaBanderas.append('Caso11')
 				# SARGAZO
-				else:
-					nuMask[i,j] = 1
 			else:
-				nuMask[i,j] = 0
+				nuMask[i,j] = 1
+		else:
+			nuMask[i,j] = 0
 
 	#print(cont)
 	#print(bandera)
 	print(set(listaBanderas))
 	#np.save("nuMask.npy",nuMask)
 
-	return nuMask
+	return nuMask """
+
+def pixelNubesBajasN(dsRef,dsSar,nubesBajas,entropia):
+    nuMask = dsRef.ReadAsArray()
+    b4 = dsRef.ReadAsArray()
+    sar = dsSar.ReadAsArray()
+
+    cont = 0
+    listaBanderas = []
+
+    #Entropia
+    entropiaMin = 6.2
+
+    # valor nubes bajas B4
+    nubeBaja = nubesBajas
+
+    for i in range(nuMask.shape[0]-1):
+        for j in range(nuMask.shape[1]-1):
+            if sar[i,j] == 1:            
+                nuMask[i,j] = 0
+                listaBanderas.append('NubeBaja')
+            elif entropia[i,j] >= entropiaMin:
+                nuMask[i,j] = 0
+                listaBanderas.append('Entropia')
+            else:
+                nuMask[i,j] = 1    
+    print(set(listaBandas))
+
+    return nuMask
+
+""" def pixelNubesBajasN(dsRef,dsSar,nubesBajas,entropia,entropiaMin):
+	nuMask = dsRef.ReadAsArray()
+	b4 = dsRef.ReadAsArray()
+	sar = dsSar.ReadAsArray()
+
+	cont = 0
+	listaBanderas = []
+
+    # Entropia
+    #entropiaMin = 6.2
+
+	# Valor de referencia B4 Sugerido 900
+	nubeBaja = nubesBajas
+
+	for i in range(nuMask.shape[0]-1):
+		for j in range(nuMask.shape[1]-1):
+			#print(nuMask.shape[0],nuMask.shape[1])
+			#print('pocision:',i,j)
+			#print('valor:',sar[i,j])
+			if sar[i,j] == 1 and entropia[i,j] >= 6.0:
+                    nuMask[i,j] = 0
+				#GENERAL
+				if (b4[i-1,j-1] > nubeBaja or b4[i-1,j] > nubeBaja or b4[i-1,j+1] > nubeBaja or b4[i,j+1] > nubeBaja or b4[i+1,j+1] > nubeBaja or b4[i+1,j] > nubeBaja or b4[i+1,j-1] > nubeBaja or b4[i,j-1] > nubeBaja):
+					nuMask[i,j] = 0
+					# RECORRE
+					#nuMask[i-1,j-1] = 3
+					#nuMask[i-1,j] = 3
+					#nuMask[i-1,j+1] = 3
+					#nuMask[i,j+1] = 3
+					#nuMask[i+1,j+1] = 3
+					#nuMask[i+1,j] = 3
+					#nuMask[i+1,j-1] = 3
+					#nuMask[i,j-1] = 3
+					listaBanderas.append('Caso1')
+                if (entropia[i-1,j-1] > entropiaMin or entropia[i-1,j] > entropiaMin or entropia[i-1,j+1] > entropiaMin or entropia[i,j+1] > entropiaMin or entropia[i+1,j+1] > entropiaMin or entropia[i+1,j] > entropiaMin or entropia[i+1,j-1] > entropiaMin or entropia[i,j-1] > entropiaMin):
+                    nuMask[i,j] = 0
+					listaBanderas.append('Caso2') 
+                # ENTROPIA
+                if (entropia[i,j] >= 6.0):
+                    nuMask[i,j] = 0
+                    cont = cont + 1
+                    listaBanderas.append('Caso3')
+
+				# SARGAZO
+			else:
+				nuMask[i,j] = 1
+
+	#print(cont)
+	#print(bandera)
+	print(set(listaBanderas))
+	#np.save("nuMask.npy",nuMask)
+
+	return nuMask """
+
