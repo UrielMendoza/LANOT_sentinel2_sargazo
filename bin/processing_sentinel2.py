@@ -520,7 +520,7 @@ def pixelNubesBajasN(dsRef,dsSar,nubesBajas,entropia):
                 listaBanderas.append('Entropia')
             else:
                 nuMask[i,j] = 1    
-    print(set(listaBandas))
+    print(set(listaBanderas))
 
     return nuMask
 
