@@ -30,12 +30,12 @@ if __name__ == "__main__":
 
         try: 
             respuesta = int(input("Ingrese opcion: "))
-            system("clear")
+            #system("clear")
 
             if respuesta > 4 or respuesta < 0:
                 raise Exception("Ingrese opcion valida")
         except (Exception,TypeError):
-            system("clear")
+            #system("clear")
             pass
 
         if respuesta == 1:
