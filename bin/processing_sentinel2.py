@@ -520,6 +520,8 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia):
                     cont += 1    
                 else:
                     nuMask[i,j] = 1
+            else:
+                nuMask[i,j] = 0
     print(set(listaBanderas))
     print('Filtrados: ',cont)
 
