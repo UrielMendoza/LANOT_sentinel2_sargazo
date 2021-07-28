@@ -507,8 +507,8 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia):
     #Entropia
     entropiaMin = 6.2
 
-    for i in range(nuMask.shape[0]-1):
-        for j in range(nuMask.shape[1]-1):
+    for i in range(nuMask.shape[0]):
+        for j in range(nuMask.shape[1]):
             if sar[i,j] == 1:
                 if b4[i,j] >= nubeBaja:         
                     nuMask[i,j] = 0
