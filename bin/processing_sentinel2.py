@@ -496,7 +496,7 @@ def entropiaNumpy(pathInput):
 
 	return nuMask """
 
-def pixelNubesBajasN(dsRef,dsSar,nubesBajas,entropia):
+def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia):
     nuMask = dsRef.ReadAsArray()
     b4 = dsRef.ReadAsArray()
     sar = dsSar.ReadAsArray()
@@ -507,19 +507,21 @@ def pixelNubesBajasN(dsRef,dsSar,nubesBajas,entropia):
     #Entropia
     entropiaMin = 6.2
 
-    # valor nubes bajas B4
-    nubeBaja = nubesBajas
-
     for i in range(nuMask.shape[0]-1):
         for j in range(nuMask.shape[1]-1):
             if sar[i,j] == 1:
                 if b4[i,j] >= nubeBaja:         
                     nuMask[i,j] = 0
                     listaBanderas.append('NubeBaja')
+                    cont += 1
                 elif entropia[i,j] >= entropiaMin:
                     nuMask[i,j] = 0
-                    listaBanderas.append('Entropia')    
+                    listaBanderas.append('Entropia')
+                    cont += 1    
+                else:
+                    nuMask[i,j] = 1
     print(set(listaBanderas))
+    print('Filtrados: ',cont)
 
     return nuMask
 
