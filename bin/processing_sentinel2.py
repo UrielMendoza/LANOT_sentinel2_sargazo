@@ -505,7 +505,7 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia):
     listaBanderas = []
 
     #Entropia
-    entropiaMin = 6.2
+    entropiaMin = 6.0
 
     for i in range(nuMask.shape[0]):
         for j in range(nuMask.shape[1]):
