@@ -616,23 +616,23 @@ def insertSargazoDB(conect,cur,crs,pathInput):
 	row = cur.fetchall()
 	conect.commit()
 
-def insertSargazoLogDB(conect,cur,fecha,tile,sargazo,totalsar,pathl2a,pathsargazo,fechaproc):
+def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar):
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     fechaDia = time.strftime('%Y-%m-%d')
 
     print('Añadiendo log a DB: ')
-    cur.execute("INSERT INTO sargazo_log VALUES (DEFAULT, "+fecha+", "+fechaDia+", "+tile+", "+sargazo+", "+totalsar+", "+pathl2a+","+pathsargazo+","+fechaproc+")")
+    cur.execute("INSERT INTO sargazo_log VALUES (DEFAULT, "+pathl2a+", "+pathsargazo+", "+fecha+", "+fechaproc+", "+fechaDia+", "+tile+","+sargazo+","+totalsar+")")
     cur.execute("SELECT * from sargazo_log")
     row = cur.fetchall()
     conect.commit()
 
 #Abrimos conexión con la base de datos
 
-def agregaSargazoDB(crs,fecha,tile,sargazo,totalsar,pathl2a,pathsargazo,fechaproc,pathInput):
+def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar,pathInput):
     conect,cur = conexionDB()
     try:
         insertSargazoDB(conect,cur,crs,pathInput)
-        insertSargazoLogDB(conect,cur,fecha,tile,sargazo,totalsar,pathl2a,pathsargazo,fechaproc)
+        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar)
         print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')

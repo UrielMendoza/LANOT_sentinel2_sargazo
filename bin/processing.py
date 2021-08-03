@@ -262,7 +262,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                             processing_sentinel2.obtieneVertices(archivoProc,archivoProc)
                             processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
-                            processing_sentinel2.agregaSargazoDB(crs,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog,archivoCSV)
+                            processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar,archivoCSV)
                     else:
                             banderaSar_log = 'no'
                             processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
