@@ -175,6 +175,16 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*')[0]
                     dirI = processing_sentinel2.nomDir(l2a,'L2A')
 
+                    # COMPRIME Y MUEVE EL L2 CORREGIDO
+                    os.system('mkdir -p '+pathInput+tile+'/'+anio)
+                    os.system('zip -r '+pathTmp+dirI+'.zip '+pathTmp+dirI)
+                    archivol2 = pathInput+tile+'/'+anio+'/'+dirI+'.zip'
+                    os.system('mv '+pathTmp+dirI+'.zip '+pathInput+tile+'/'+anio)
+                    print(l2a)
+                    print(dirI)
+                    #print(fecha)
+                    #print(dirI)
+
                     # PORCENTAJE DE NUBES
                     print('3.1 Porcentaje de nubes')
                     porcNube = processing_sentinel2.obtienePorcentajeNube(pathTmp+dirI)
@@ -186,15 +196,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                         nubesBajas = 2500
                     print('Procentaje de nubes ',porcNube)
                     print('Valor de temperatura para filtro nubes bajas: ',nubesBajas)                    
-                    
-                    os.system('mkdir -p '+pathInput+tile+'/'+anio)
-                    os.system('zip -r '+pathTmp+dirI+'.zip '+pathTmp+dirI)
-                    os.system('mv '+pathTmp+dirI+'.zip '+pathInput+tile+'/'+anio)
-                    print(l2a)
-                    print(dirI)
-                    #print(fecha)
-                    #print(dirI)
-                    
+          
                     print('4. Convirtiendo a GeoTIFF...')
                     for banda20 in bandas20m:
                         dirB20 = processing_sentinel2.listaBandas(pathTmp+dirI,'L2A','R20m',banda20)
@@ -251,15 +253,19 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     else:
                         banderaSar_log = 'no'
 
-                    # LOG
-                    print('6.3 Aniadiendo log...')
+                    # BANDERA DE SARGAZO , AREA TOTAL, LOG y DB
+                    print('6.3 Aniadiendo a la base de datos y log...')
                     fechaLog = processing_sentinel2.obtieneFechaLog()
-                    if bufferLM == '':
-                        processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivo,archivoProc,fechaProc)
-                    elif bufferLM == 'b2km':
-                        processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivo,archivoProc,fechaProc)
-                    elif bufferLM == 'b5km':
-                        processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivo,archivoProc,fechaProc)
+                    if banderaSar == True:
+                            banderaSar_log = 'si'
+                            totalSar = str((float(totalSar)+ float(totalSarMask))/2)
+                            processing_sentinel2.obtieneVertices(archivoProc,archivoProc)
+                            processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaProc)
+                            archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
+                            processing_sentinel2.agregaSargazoDB(crs,archivoCSV)
+                    else:
+                            banderaSar_log = 'no'
+                            processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaProc)
 
                     # COMPUESTO RGB
                     print('7. Creando compuesto RGB...')

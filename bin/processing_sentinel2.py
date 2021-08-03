@@ -21,6 +21,8 @@ from skimage import data
 from skimage.util import img_as_ubyte
 from skimage.filters.rank import entropy
 from skimage.morphology import disk
+import psycopg2
+import csv
 
 def obtienePorcentajeNube(pathInput):
     mydoc = minidom.parse(pathInput+'/MTD_MSIL2A.xml')
@@ -582,3 +584,49 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia):
 
 	return nuMask """
 
+def creaCSV(pathInput,pathOutput):
+    gdf = gpd.read_file(pathInput)
+    crs = gdf.crs['init'].split(':')[-1]
+    archivoCSV = pathOutput+pathInput.split('/')[-1].split('.')[0]+'.csv'
+    gdf.to_csv(archivoCSV,index=False)
+
+    return archivoCSV,crs
+
+
+def conexionDB():
+    conect = psycopg2.connect(
+            host = "132.247.103.145",
+            database = "sargazo",
+            user = "sargazo",
+            password = "iTh1Mou*",
+            port = 5433
+            )
+    cur = conect.cursor()
+    return conect,cur
+
+def insertSargazoDB(conect,cur,crs,pathInput):
+
+	with open(pathInput, 'r') as f:
+		reader = csv.reader(f)
+		next(reader)
+		for row in reader:
+			print('Añadiendo a DB: ', row)
+			cur.execute("INSERT INTO sargazo_p VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)		
+	cur.execute("SELECT * from sargazo_p")
+	row = cur.fetchall()
+	conect.commit()
+
+#Abrimos conexión con la base de datos
+
+def agregaSargazoDB(crs,pathInput):
+
+    conect,cur = conexionDB()
+    try:
+        insertSargazoDB(conect,cur,crs,pathInput)
+        print ("Se agrego a la DB archivo: "+pathInput)
+    except Exception as e:
+        print(f'Ocurrio un error en la transacción DB: {e}')
+        # Mandar correo
+        cur.close()
+        conect.close()
+    conect.close()
