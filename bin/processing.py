@@ -260,12 +260,12 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                             banderaSar_log = 'si'
                             totalSar = str((float(totalSar)+ float(totalSarMask))/2)
                             processing_sentinel2.obtieneVertices(archivoProc,archivoProc)
-                            processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaProc)
+                            processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
-                            processing_sentinel2.agregaSargazoDB(crs,archivoCSV)
+                            processing_sentinel2.agregaSargazoDB(crs,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog,archivoCSV)
                     else:
                             banderaSar_log = 'no'
-                            processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaProc)
+                            processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
 
                     # COMPUESTO RGB
                     print('7. Creando compuesto RGB...')
