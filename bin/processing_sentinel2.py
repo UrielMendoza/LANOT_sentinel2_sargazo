@@ -621,7 +621,7 @@ def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,fechaproc,tile,sarga
     fechaDia = time.strftime('%Y-%m-%d')
 
     print('Añadiendo log a DB: ')
-    cur.execute("INSERT INTO sargazo_log VALUES (DEFAULT, '"+pathl2a+"', '"+pathsargazo+"', "+fecha+", "+fechaproc+", "+fechaDia+", "+tile+","+sargazo+","+totalsar+")")
+    cur.execute("INSERT INTO sargazo_log VALUES (DEFAULT, '"+pathl2a+"', '"+pathsargazo+"', '"+fecha+"', '"+fechaproc+"', '"+fechaDia+"', '"+tile+"','"+sargazo+"','"+totalsar+"')")
     cur.execute("SELECT * from sargazo_log")
     row = cur.fetchall()
     conect.commit()
