@@ -254,7 +254,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                         banderaSar_log = 'no'
 
                     # BANDERA DE SARGAZO , AREA TOTAL, LOG y DB
-                    print('6.3 Aniadiendo a la base de datos y log...')
+                    print('6.3 Añadiendo a la base de datos y log...')
                     fechaLog = processing_sentinel2.obtieneFechaLog()
                     if banderaSar == True:
                             banderaSar_log = 'si'
