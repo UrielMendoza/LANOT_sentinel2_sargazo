@@ -14,6 +14,7 @@ import zipfile
 import base
 
 from sentinelsat import SentinelAPI
+import sentinelsat
 
 # ==============================================================================
 
@@ -130,7 +131,7 @@ def download_products(products, datadir, unzip=False, max_retries=3, verbose=Tru
         try:
           result = api.download(product_id, tile_dir_path)
           break 
-        except SentinelAPI.InvalidChecksumError:
+        except sentinelsat.sentinel.InvalidChecksumError:
           tries_left -= 1
           if verbose:
             if tries_left > 0:
