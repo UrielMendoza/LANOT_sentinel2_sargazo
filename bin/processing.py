@@ -283,8 +283,10 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     processing_sentinel2.logArchivo(pathLog+'L2A_GeoTiff.csv',fecha,tile,archivo,archivoProc,fechaLog)
 
 #                except IndexError:
+#                except Exception as e:
                     #print('Hay un error en la imagen: ', archivo)
                     #pass
+#                    processing_sentinel2.enviaMail(fecha, tile, e)
 
 #                finally:
                 # BORRA BASURA

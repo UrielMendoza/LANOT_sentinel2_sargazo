@@ -23,6 +23,9 @@ from skimage.filters.rank import entropy
 from skimage.morphology import disk
 import psycopg2
 import csv
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 def obtienePorcentajeNube(pathInput):
     mydoc = minidom.parse(pathInput+'/MTD_MSIL2A.xml')
@@ -507,8 +510,8 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia):
     listaBanderas = []
 
     #Entropia
-    #entropiaMin = 5.8
-    entropiaMin = 1000
+    entropiaMin = 5.8
+    #entropiaMin = 1000
 
     for i in range(nuMask.shape[0]):
         for j in range(nuMask.shape[1]):
@@ -653,3 +656,30 @@ def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar)
         cur.close()
         conect.close()
     conect.close()
+
+def enviaMail(fecha,tile,error):
+    mail_content = '''
+    El proceso de deteccion de sargazo con sentinel-2 tuvo un error de ejecución:
+    \nFecha: '''+fecha+'''
+    \nTile: '''+tile+'''
+    \nError: '''+error
+
+    #The mail addresses and password
+    sender_address = 'alertaslanot@gmail.com'
+    sender_pass = 'alertaslanot'
+    receiver_address = 'alertaslanot@gmail.com'
+    #Setup the MIME
+    message = MIMEMultipart()
+    message['From'] = sender_address
+    message['To'] = receiver_address
+    message['Subject'] = 'Sargazo: Error en el procesamiento.'   #The subject line
+    #The body and the attachments for the mail
+    message.attach(MIMEText(mail_content, 'plain'))
+    #Create SMTP session for sending the mail
+    session = smtplib.SMTP('smtp.gmail.com', 587) #use gmail with port
+    session.starttls() #enable security
+    session.login(sender_address, sender_pass) #login with mail_id and password
+    text = message.as_string()
+    session.sendmail(sender_address, receiver_address, text)
+    session.quit()
+    print('Mail enviado')
