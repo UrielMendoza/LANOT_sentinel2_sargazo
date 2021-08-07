@@ -132,6 +132,7 @@ def download_products(products, datadir, unzip=False, max_retries=3, verbose=Tru
           break 
         except SentinelAPI.InvalidChecksumError:
           tries_left -= 1
+          pass
           if verbose:
             if tries_left > 0:
               print("Bad MD5 checksum! Retrying.")
