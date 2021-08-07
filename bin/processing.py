@@ -132,19 +132,19 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
     # DESCARGA
     print('1. Descargando...')
     print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
-    #download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
+    download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
     # Reste dias para prueba
     #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
     #download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=2), end_date - datetime.timedelta(days=2), pathTmp, unzip=False)
 
-    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QEH*')
+    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
 
     print(tilesDirs)
 
     # ALGORITMO
     for tileDir in tilesDirs:
         
-        archivos = processing_sentinel2.listaArchivos(tileDir+'/*20210531*')
+        archivos = processing_sentinel2.listaArchivos(tileDir+'/*')
         archivos.sort()
         
         for archivo in archivos:
@@ -171,7 +171,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     pathCFG_8 = '../../sen2cor/2.9/cfg/L2A_GIPP.xml'
                     print(dirI)
                     print(pathTmp)
-                    #processing_sentinel2.sen2core(pathSen2core_8,pathCFG_8,pathTmp+dirI,pathTmp,'10')
+                    processing_sentinel2.sen2core(pathSen2core_8,pathCFG_8,pathTmp+dirI,pathTmp,'10')
                     l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*')[0]
                     dirI = processing_sentinel2.nomDir(l2a,'L2A')
 
@@ -292,6 +292,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                 # BORRA BASURA
                     #os.system('rm -r '+pathTmp+'*.tif')
                     #os.system('rm -r '+pathTmp+'*.geojson')
+                    #os.system('rm -r '+pathTmp+'*.csv')
                     #os.system('rm -r '+pathTmp+'*.json')
                     #os.system('rm -r '+pathTmp+'*.SAFE')
                 
