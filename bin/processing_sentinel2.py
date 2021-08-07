@@ -507,7 +507,8 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia):
     listaBanderas = []
 
     #Entropia
-    entropiaMin = 6.0
+    #entropiaMin = 5.8
+    entropiaMin = 1000
 
     for i in range(nuMask.shape[0]):
         for j in range(nuMask.shape[1]):
@@ -634,6 +635,18 @@ def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsa
         insertSargazoDB(conect,cur,crs,pathInput)
         insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar)
         print ("Se agrego a la DB archivo: "+pathInput)
+    except Exception as e:
+        print(f'Ocurrio un error en la transacción DB: {e}')
+        # Mandar correo
+        cur.close()
+        conect.close()
+    conect.close()
+
+def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar):
+    conect,cur = conexionDB()
+    try:        
+        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar)
+        #print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo

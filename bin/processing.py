@@ -223,7 +223,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     #banderaNub = processing_sentinel2.nubesMascara(cuadrante,pathTmp+bandas20m[-1]+'.tif',pathTmp)
                     banderaNub = processing_sentinel2.nubesSombraMascara(cuadrante,pathTmp)
                     print('5.4 Procesando mascara detfoo...')
-                    processing_sentinel2.detfooMascara(200,pathTmp+dirI,pathTmp)
+                    #processing_sentinel2.detfooMascara(200,pathTmp+dirI,pathTmp)
                     print('5.5 Procesando sargazo sin filtro...')
                     #processing_sentinel2.sargazoBin(banderaNub,'L2A',pathTmp,pathTmp)
                     processing_sentinel2.sargazoBinNumpy(pathTmp)
@@ -266,6 +266,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     else:
                             banderaSar_log = 'no'
                             processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
+                            processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar)
 
                     # COMPUESTO RGB
                     print('7. Creando compuesto RGB...')
