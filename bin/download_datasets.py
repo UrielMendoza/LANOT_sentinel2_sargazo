@@ -130,7 +130,8 @@ def download_products(products, datadir, unzip=False, max_retries=3, verbose=Tru
         try:
           result = api.download(product_id, tile_dir_path)
           break 
-        except SentinelAPI.InvalidChecksumError:
+        #except SentinelAPI.InvalidChecksumError:
+        except:
           tries_left -= 1
           pass
           if verbose:
