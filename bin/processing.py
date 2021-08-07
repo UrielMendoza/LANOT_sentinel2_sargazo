@@ -132,11 +132,11 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
     # DESCARGA
     print('1. Descargando...')
     print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
-    try:
-        download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
-    except AttributeError:
-        print('Error de descarga')
-        pass
+    #try:
+    download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
+    #except AttributeError:
+    #    print('Error de descarga')
+    #    pass
     # Reste dias para prueba
     #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
     #download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=2), end_date - datetime.timedelta(days=2), pathTmp, unzip=False)
