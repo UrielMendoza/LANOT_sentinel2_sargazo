@@ -154,20 +154,21 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
         for archivo in archivos:
         
             print('Procesando: '+archivo)
+            fecha = processing_sentinel2.obtieneFecha(archivo)
+            tile = processing_sentinel2.obtieneTile(archivo)
+            anio = processing_sentinel2.obtieneAnio(archivo)
+            dirI = processing_sentinel2.nomDir(archivo,'L2A')
+            print("Fecha: "+fecha)
+            print("Tile: "+tile)
 
             # COMPRUEBA LOG
-            if not processing_sentinel2.verificaLog(pathLog+nomLog,archivo):                  
+            #if not processing_sentinel2.verificaLog(pathLog+nomLog,archivo):
+            if processing_sentinel2.verificaSargazoDB(tile,fecha) >= 1:                   
 #                try:
                     # INICIA PROCESO
                     print('2. Descomprimiendo...')
                     compresion = processing_sentinel2.tipoCompresion(archivo)
                     processing_sentinel2.descomprime(archivo,compresion,pathTmp)
-
-                    fecha = processing_sentinel2.obtieneFecha(archivo)
-                    tile = processing_sentinel2.obtieneTile(archivo)
-                    anio = processing_sentinel2.obtieneAnio(archivo)
-                    dirI = processing_sentinel2.nomDir(archivo,'L2A')
-                    print("fecha y tile"+fecha+' '+tile)
 
                     # CORRECCION ATMOSFERICA
                     print('3. Correción atmosferica...')
@@ -301,7 +302,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     #os.system('rm -r '+pathTmp+'*.SAFE')
                 
             else:
-                print('Archivo: '+archivo+' ya fue procesado a L2A')
+                print('Archivo: '+archivo+' ya fue procesado')
 
     # BORRA DIR DESCARGA
     #os.system('rm -r '+pathTmp+'*')

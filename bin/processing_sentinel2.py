@@ -657,6 +657,23 @@ def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar)
         conect.close()
     conect.close()
 
+def verificaSargazoDB(tile,fecha):
+	
+    conect,cur = conexionDB()
+    try:
+        cur.execute("SELECT * FROM sargazo_log where tile = '"+tile+"' AND fecha = '"+fecha+"'")
+        row = cur.fetchall()
+        #print(len(row))
+        conect.commit()
+    except Exception as e:
+        print(f'Ocurrio un error en la transacción DB log: {e}')
+        # Mandar correo
+        cur.close()
+        conect.close()
+    conect.close()
+    
+    return len(row)
+
 def enviaMail(fecha,tile,error):
     mail_content = '''
     El proceso de deteccion de sargazo con sentinel-2 tuvo un error de ejecución:
