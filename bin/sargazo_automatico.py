@@ -10,17 +10,13 @@ from processing import sargazoL2A
 
 if __name__ == "__main__":
 
-    ini = time.time()
-
     # DIRECTORIOS
-    pathInput = '../test/L2A/'
-    pathOutput = '../test/geojson/sargazo/'
-    pathOutputEmpty = '../test/geojson/empty/'
-    pathOutputGeoTiff = '../test/geotiff/sargazo/'
-    pathTmp = '../test/tmp/automatico/'
+    pathInput = '/data/output/sentinel2/msi/L2A/'
+    pathOutput = '/data/output/sentinel2/msi/l2/geojson/sargazo/'
+    pathOutputEmpty = '/data/output/sentinel2/msi/l2/geojson/sargazo/'
+    pathOutputGeoTiff = '/data/output/sentinel2/msi/l2/geotiff/'
+    pathTmp = '../test/tmp/manual/'
     pathLM = '../data/masks/'
     pathLog = '../../logs_sentinel2_sargazo/'
 
     sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime='automatico')
-
-    print("Tiempo de procesamiento: ",time.time()-ini)

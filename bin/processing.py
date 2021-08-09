@@ -14,6 +14,14 @@ import base
 import sys
 from glob import glob
 
+def semiManual():
+    start_date = None
+    end_date = None
+    region = "sargazo1"
+    landMask = "land_sargazo_UTM16N_20m.tif"
+    #nubesBajas = 900
+    return start_date,end_date,landMask
+
 def automatico():
     start_date = datetime.datetime.now()
     end_date = datetime.datetime.now()
@@ -114,6 +122,9 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
     elif dateTime == 'manual':
         start_date,end_date,region,landMask = manual()
 
+    elif dateTime == 'pendientes':
+        start_date,end_date,region,landMask = semiManual()
+
     # OBTIENE NOMBRE DEL LOG
     bufferLM = processing_sentinel2.obtieneBufferLM(landMask)
     if bufferLM == '':
@@ -128,19 +139,20 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
     bandas20m = ('B02','B03','B04','B05','B8A','B11','B12','SCL')
     bandas10m = ['B08']
     tiles = base.tiles[region]
- 
-    # DESCARGA
-    print('1. Descargando...')
-    print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
-    #try:
-    download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
-    #except AttributeError:
-    #    print('Error de descarga')
-    #    pass
-    # Reste dias para prueba
-    #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
-    #download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=2), end_date - datetime.timedelta(days=2), pathTmp, unzip=False)
-
+     
+    if dateTime != 'semiManual':
+        #try:
+        # DESCARGA
+        print('1. Descargando...')
+        print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
+        download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
+        # Reste dias para prueba
+        #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
+        #download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=2), end_date - datetime.timedelta(days=2), pathTmp, unzip=False)
+        #except AttributeError:
+        #    print('Error de descarga')
+        #    pass
+    
     tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
 
     print(tilesDirs)
@@ -152,7 +164,8 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
         archivos.sort()
         
         for archivo in archivos:
-        
+            
+            ini = time.time()
             print('Procesando: '+archivo)
             fecha = processing_sentinel2.obtieneFecha(archivo)
             tile = processing_sentinel2.obtieneTile(archivo)
@@ -172,11 +185,11 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
 
                     # CORRECCION ATMOSFERICA
                     print('3. Correción atmosferica...')
-                    pathSen2core_8 = '../Sen2Cor-02.09.00-Linux64/bin/'
-                    pathCFG_8 = '../../sen2cor/2.9/cfg/L2A_GIPP.xml'
+                    pathSen2core = '../Sen2Cor-02.09.00-Linux64/bin/'
+                    pathCFG = '../../sen2cor/2.9/cfg/L2A_GIPP.xml'
                     print(dirI)
                     print(pathTmp)
-                    processing_sentinel2.sen2core(pathSen2core_8,pathCFG_8,pathTmp+dirI,pathTmp,'10')
+                    processing_sentinel2.sen2core(pathSen2core,pathCFG,pathTmp+dirI,pathTmp,'10')
                     l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*')[0]
                     dirI = processing_sentinel2.nomDir(l2a,'L2A')
 
@@ -303,6 +316,8 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                 
             else:
                 print('Archivo: '+archivo+' ya fue procesado')
+
+            print("Tiempo de procesamiento: ",time.time()-ini)
 
     # BORRA DIR DESCARGA
     #os.system('rm -r '+pathTmp+'*')
