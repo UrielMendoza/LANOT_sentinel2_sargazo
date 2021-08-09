@@ -15,8 +15,9 @@ if __name__ == "__main__":
     pathOutput = '/data/output/sentinel2/msi/l2/geojson/sargazo/'
     pathOutputEmpty = '/data/output/sentinel2/msi/l2/geojson/sargazo/'
     pathOutputGeoTiff = '/data/output/sentinel2/msi/l2/geotiff/'
+    pathInputPeta = '/depot/sentinel2/input/sentinel2/L1C/'
     pathTmp = '../test/tmp/manual/'
     pathLM = '../data/masks/'
     pathLog = '../../logs_sentinel2_sargazo/'
 
-    sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime='semiManual')
+    sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathInputPeta,pathLog,dateTime='semiManual')

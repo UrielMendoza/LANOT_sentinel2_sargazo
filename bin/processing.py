@@ -113,7 +113,7 @@ def manual():
 
     return start_date,end_date,region,landMask
 
-def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathLog,dateTime):
+def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathInputPeta,pathLog,dateTime):
 
     # MANUAL Y AUTOMATICO
     if dateTime == 'automatico':
@@ -122,7 +122,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
     elif dateTime == 'manual':
         start_date,end_date,region,landMask = manual()
 
-    elif dateTime == 'pendientes':
+    elif dateTime == 'semiManual':
         start_date,end_date,region,landMask = semiManual()
 
     # OBTIENE NOMBRE DEL LOG
@@ -182,6 +182,10 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     print('2. Descomprimiendo...')
                     compresion = processing_sentinel2.tipoCompresion(archivo)
                     processing_sentinel2.descomprime(archivo,compresion,pathTmp)
+
+                    # MANDA A PETA L1C
+                    print('2.1 Moviendo L1C a peta...')
+                    os.system('scp '+archivo+' lanotadm@stratus:'+pathInputPeta)
 
                     # CORRECCION ATMOSFERICA
                     print('3. Correción atmosferica...')
