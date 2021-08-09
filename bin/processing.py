@@ -176,7 +176,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
 
             # COMPRUEBA LOG
             #if not processing_sentinel2.verificaLog(pathLog+nomLog,archivo):
-            if processing_sentinel2.verificaSargazoDB(tile,fecha) >= 1:                   
+            if processing_sentinel2.verificaSargazoDB(tile,fecha) == 0:                   
 #                try:
                     # INICIA PROCESO
                     print('2. Descomprimiendo...')
