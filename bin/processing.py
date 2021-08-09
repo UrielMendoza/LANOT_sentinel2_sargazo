@@ -20,7 +20,7 @@ def semiManual():
     region = "sargazo1"
     landMask = "land_sargazo_UTM16N_20m.tif"
     #nubesBajas = 900
-    return start_date,end_date,landMask
+    return start_date,end_date,region,landMask
 
 def automatico():
     start_date = datetime.datetime.now()
@@ -28,7 +28,7 @@ def automatico():
     region = "sargazo1"
     landMask = "land_sargazo_UTM16N_20m.tif"
     #nubesBajas = 900
-    return start_date,end_date,landMask
+    return start_date,end_date,region,landMask
 
 def manual():
     print("=================")
