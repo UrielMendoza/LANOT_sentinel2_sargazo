@@ -16,6 +16,7 @@ if __name__ == "__main__":
     pathOutput = '/data/output/sentinel2/msi/l2/geojson/sargazo/'
     pathOutputEmpty = '/data/output/sentinel2/msi/l2/geojson/sargazo/'
     pathOutputGeoTiff = '/data/output/sentinel2/msi/l2/geotiff/'
+    pathOutputPeta = '/depot/sentinel2/output/sentinel2/msi/'
     pathInputPeta = '/depot/sentinel2/input/sentinel2/L1C/'
     pathVertices = '/data/output/sentinel2/msi/l2/geojson/sargazo_vertices/'
     pathTmp = '../test/tmp/manual/'
@@ -42,7 +43,7 @@ if __name__ == "__main__":
 
         if respuesta == 1:
             ini = time.time()
-            sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathInputPeta,pathVertices,pathLog,dateTime='manual')
+            sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputPeta,pathInputPeta,pathVertices,pathLog,dateTime='manual')
             print("Tiempo de procesamiento: ",time.time()-ini)
             break
         elif respuesta == 2:

@@ -166,12 +166,18 @@ def obtieneCuadrante(ds):
 def remuestrea(pathOutput,ds,dimx,dimy):
     gdal.Translate(pathOutput,ds,options=gdal.TranslateOptions(xRes=dimx,yRes=dimy))
 
-def RGB(r,g,b,tile,anio,fecha,fechaProc,pathOutputGeoTiff):
-    os.system('gdal_merge.py -separate -co PHOTOMETRIC=RGB -o '+pathOutputGeoTiff+'sargazo/'+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+'_'+fechaProc+".tif"+' '+r+' '+g+' '+b)
+def RGB(r,g,b,tile,anio,fecha,fechaProc,pathOutputGeoTiff,pathOutputPeta):
+    nombre = pathOutputGeoTiff+'sargazo/'+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+'_'+fechaProc+".tif"
+    os.system('gdal_merge.py -separate -co PHOTOMETRIC=RGB -o '+nombre+' '+r+' '+g+' '+b)
+    # MANDA A PETA
+    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/sargazo/')
 
-def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTiff):
+def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTiff,pathOutputPeta):
     dirTC = listaBandas(pathInput,nivel,resolucion,'TCI')
-    os.system('gdal_translate '+dirTC+' '+pathOutputGeoTiff+'TC/'+tile+'/'+anio+'/'+'S2_MSI_TC_'+tile+'_'+fecha+'_'+fechaProc+'.tif')
+    nombre = pathOutputGeoTiff+'TC/'+tile+'/'+anio+'/'+'S2_MSI_TC_'+tile+'_'+fecha+'_'+fechaProc+'.tif'
+    os.system('gdal_translate '+dirTC+' '+nombre)
+    # MANDA A PETA
+    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/TC/')
 
 def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutputEmpty):
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
@@ -219,12 +225,15 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         totalSar = '0'
         return nombre, banderaSar, totalSar
 
-def obtieneVertices(pathInput,pathOutput):
+def obtieneVertices(pathInput,pathOutput,pathOutputPeta):
     polys = gpd.read_file(pathInput)
     points = polys.copy()
     points = points.explode()
     points.geometry = points.geometry.apply(lambda x: MultiPoint(list(x.exterior.coords)))
-    points.to_file(pathOutput+pathInput.split('.')[0]+'_vertices.json',driver='GeoJSON')
+    nombre = pathOutput+pathInput.split('.')[0]+'_vertices.json'
+    points.to_file(nombre,driver='GeoJSON')
+    # MANDA A PETA
+    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_vertices/')
 
 def detfooMascaraVectorial(pathTmp):
     detfoo = 'MSK_DETFOO_B8A.json'
@@ -236,7 +245,7 @@ def detfooMascaraVectorial(pathTmp):
     print('=============================================')
     res_difference.to_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json', driver="GeoJSON")
 
-def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty):
+def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta):
     # CON DETFOO
     #df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json')
     # SIN DETFOO
@@ -254,17 +263,19 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
         banderaSar = True
         totalSar = str(df['area'].sum())
         res_difference.to_file(nombre, driver="GeoJSON")
+        # MANDA A PETA
+        os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo/')
     else:
         print('=========================')
         print('NO DETECCIÓN DE SARGAZO')
         print('=========================')
-        os.system('mkdir -p '+pathOutputEmpty+tile+'/'+anio)
-        nombre = pathOutputEmpty+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".txt"
-        f = open(nombre,'w')
-        print('=========================')
-        print('NO DETECCIÓN DE SARGAZO')
-        print('=========================')
-        f.close()
+        #os.system('mkdir -p '+pathOutputEmpty+tile+'/'+anio)
+        #nombre = pathOutputEmpty+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".txt"
+        #f = open(nombre,'w')
+        #print('=========================')
+        #print('NO DETECCIÓN DE SARGAZO')
+        #print('=========================')
+        #f.close()
         #print('Tile:'+tile+'\nFecha:'+fecha)
         banderaSar = False
         totalSar = '0'    

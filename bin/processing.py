@@ -113,7 +113,7 @@ def manual():
 
     return start_date,end_date,region,landMask
 
-def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathInputPeta,pathVertices,pathLog,dateTime):
+def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputPeta,pathInputPeta,pathVertices,pathLog,dateTime):
 
     # MANUAL Y AUTOMATICO
     if dateTime == 'automatico':
@@ -198,9 +198,13 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     dirI = processing_sentinel2.nomDir(l2a,'L2A')
 
                     # COMPRIME Y MUEVE EL L2 CORREGIDO
+                    print('3.1 Moviendo L2A a data y peta...')
                     os.system('mkdir -p '+pathInput+tile+'/'+anio)
                     os.system('zip -r '+pathTmp+dirI+'.zip '+pathTmp+dirI)
                     archivol2 = pathInput+tile+'/'+anio+'/'+dirI+'.zip'
+                    # MANDA A PETA
+                    os.system('scp '+archivol2+' lanotadm@stratus:'+pathOutputPeta+'L2A/')
+                    # MANDA A DATA
                     os.system('mv '+pathTmp+dirI+'.zip '+pathInput+tile+'/'+anio)
                     print(l2a)
                     print(dirI)
@@ -208,7 +212,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     #print(dirI)
 
                     # PORCENTAJE DE NUBES
-                    print('3.1 Porcentaje de nubes')
+                    print('3.2 Porcentaje de nubes')
                     porcNube = processing_sentinel2.obtienePorcentajeNube(pathTmp+dirI)
                     if porcNube > 80.0 :
                         nubesBajas = 600
@@ -264,14 +268,14 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                         print('6.1 Aplicando mascara detfoo vectorial...')
                         #processing_sentinel2.detfooMascaraVectorial(pathTmp)
                         print('6.2 Aplicando mascara de tierra vectorial...')
-                        banderaSar, totalSarMask, archivoProc = processing_sentinel2.tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty)
+                        banderaSar, totalSarMask, archivoProc = processing_sentinel2.tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta)
                         banderaSar_log = 'si'
                     
                     # BANDERA DE SARGAZO Y AREA TOTAL
                     if banderaSar == True:
                         banderaSar_log = 'si'
-                        totalSar = str((float(totalSar)+ float(totalSarMask))/2)
-                        processing_sentinel2.obtieneVertices(archivoProc,pathVertices)
+                        #totalSar = str((float(totalSar)+ float(totalSarMask))/2)
+                        processing_sentinel2.obtieneVertices(archivoProc,pathVertices,pathOutputPeta)
                     else:
                         banderaSar_log = 'no'
 
@@ -280,29 +284,29 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     fechaLog = processing_sentinel2.obtieneFechaLog()
                     if banderaSar == True:
                             banderaSar_log = 'si'
-                            totalSar = str((float(totalSar)+ float(totalSarMask))/2)
-                            processing_sentinel2.obtieneVertices(archivoProc,pathVertices)
-                            processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
+                            #totalSar = str((float(totalSar)+ float(totalSarMask))/2)
+                            processing_sentinel2.obtieneVertices(archivoProc,pathVertices,pathOutputPeta)
+                            #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
                             processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar,archivoCSV)
                     else:
                             banderaSar_log = 'no'
-                            processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
+                            #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar)
 
                     # COMPUESTO RGB
                     print('7. Creando compuesto RGB...')
                     print('7.1 Creando compuesto RGB FC...')
                     os.system('mkdir -p '+pathOutputGeoTiff+'sargazo/'+tile+'/'+anio)                
-                    processing_sentinel2.RGB(pathTmp+bandas20m[4]+'.tif',pathTmp+bandas20m[3]+'.tif',pathTmp+bandas20m[2]+'.tif',tile,anio,fecha,fechaProc,pathOutputGeoTiff)
+                    processing_sentinel2.RGB(pathTmp+bandas20m[4]+'.tif',pathTmp+bandas20m[3]+'.tif',pathTmp+bandas20m[2]+'.tif',tile,anio,fecha,fechaProc,pathOutputGeoTiff,pathOutputPeta)
                     print('7.2 Creando compuesto RGB TC...')
                     os.system('mkdir -p '+pathOutputGeoTiff+'TC/'+tile+'/'+anio)
-                    processing_sentinel2.RGB_TC(tile,anio,fecha,fechaProc,'L2A','R20m',pathTmp+dirI,pathOutputGeoTiff)
+                    processing_sentinel2.RGB_TC(tile,anio,fecha,fechaProc,'L2A','R20m',pathTmp+dirI,pathOutputGeoTiff,pathOutputPeta)
 
                     # LOG
                     print('7.3 Añadiendo log...')
-                    fechaLog = processing_sentinel2.obtieneFechaLog()
-                    processing_sentinel2.logArchivo(pathLog+'L2A_GeoTiff.csv',fecha,tile,archivo,archivoProc,fechaLog)
+                    #fechaLog = processing_sentinel2.obtieneFechaLog()
+                    #processing_sentinel2.logArchivo(pathLog+'L2A_GeoTiff.csv',fecha,tile,archivo,archivoProc,fechaLog)
 
 #                except IndexError:
 #                except Exception as e:
@@ -322,7 +326,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                 print('Archivo: '+archivo+' ya fue procesado')
 
             print("Tiempo de procesamiento: ",time.time()-ini)
-
+ 
     # BORRA DIR DESCARGA
     #os.system('rm -r '+pathTmp+'*')
 
