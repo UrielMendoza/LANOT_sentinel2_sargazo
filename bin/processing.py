@@ -153,7 +153,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
         #    print('Error de descarga')
         #    pass
     
-    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QDG*')
+    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QDJ*')
 
     print(tilesDirs)
 
