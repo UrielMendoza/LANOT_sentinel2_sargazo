@@ -275,24 +275,10 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     if banderaSar == True:
                         banderaSar_log = 'si'
                         #totalSar = str((float(totalSar)+ float(totalSarMask))/2)
-                        processing_sentinel2.obtieneVertices(archivoProc,pathVertices,pathOutputPeta)
+                        totalSar = totalSarMask
+                        #processing_sentinel2.obtieneVertices(archivoProc,pathVertices,pathOutputPeta)
                     else:
                         banderaSar_log = 'no'
-
-                    # BANDERA DE SARGAZO , AREA TOTAL, LOG y DB
-                    print('6.3 Añadiendo a la base de datos y log...')
-                    fechaLog = processing_sentinel2.obtieneFechaLog()
-                    if banderaSar == True:
-                            banderaSar_log = 'si'
-                            #totalSar = str((float(totalSar)+ float(totalSarMask))/2)
-                            processing_sentinel2.obtieneVertices(archivoProc,pathVertices,pathOutputPeta)
-                            #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
-                            archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
-                            processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar,archivoCSV)
-                    else:
-                            banderaSar_log = 'no'
-                            #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
-                            processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar)
 
                     # COMPUESTO RGB
                     print('7. Creando compuesto RGB...')
@@ -303,10 +289,23 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     os.system('mkdir -p '+pathOutputGeoTiff+'TC/'+tile+'/'+anio)
                     processing_sentinel2.RGB_TC(tile,anio,fecha,fechaProc,'L2A','R20m',pathTmp+dirI,pathOutputGeoTiff,pathOutputPeta)
 
-                    # LOG
-                    print('7.3 Añadiendo log...')
                     #fechaLog = processing_sentinel2.obtieneFechaLog()
                     #processing_sentinel2.logArchivo(pathLog+'L2A_GeoTiff.csv',fecha,tile,archivo,archivoProc,fechaLog)
+                    # BANDERA DE SARGAZO , AREA TOTAL, LOG y DB
+                    print('8. Añadiendo a la base de datos y log...')
+                    fechaLog = processing_sentinel2.obtieneFechaLog()
+                    if banderaSar == True:
+                            banderaSar_log = 'si'
+                            #totalSar = str((float(totalSar)+ float(totalSarMask))/2)
+                            totalSar = totalSarMask
+                            processing_sentinel2.obtieneVertices(archivoProc,pathVertices,pathOutputPeta)
+                            #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
+                            archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
+                            processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar,archivoCSV)
+                    else:
+                            banderaSar_log = 'no'
+                            #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
+                            processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar)
 
 #                except IndexError:
 #                except Exception as e:

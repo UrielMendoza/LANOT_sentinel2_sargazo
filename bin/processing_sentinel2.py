@@ -230,7 +230,7 @@ def obtieneVertices(pathInput,pathOutput,pathOutputPeta):
     points = polys.copy()
     points = points.explode()
     points.geometry = points.geometry.apply(lambda x: MultiPoint(list(x.exterior.coords)))
-    nombre = pathOutput+pathInput.split('.')[0]+'_vertices.json'
+    nombre = pathOutput+pathInput.split('/')[-1].split('.')[0]+'_vertices.json'
     points.to_file(nombre,driver='GeoJSON')
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_vertices/')
