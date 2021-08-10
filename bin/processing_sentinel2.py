@@ -323,7 +323,7 @@ def nubesSombraMascara(cuadrante,pathTmp):
     cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
 
     b12 = aperturaDS(pathTmp+'B12.tif').ReadAsArray()
-    b11 = aperturaDS(pathTmp+'B11.tif').ReadAsArray()
+    #b11 = aperturaDS(pathTmp+'B11.tif').ReadAsArray()
     ref = aperturaDS(pathTmp+'B12.tif')
 
     #nubesMask = np.where((b12 > 1220) & (b11 > 395), 0, 1)
@@ -344,8 +344,8 @@ def nubesSombraMascara(cuadrante,pathTmp):
         df = df.buffer(250)
         df_g = df.unary_union
         df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
-        df.to_file(pathTmp+"cloudMaskShadow_b250_tmp.geojson", driver='GeoJSON')
-        os.system('gdal_rasterize -burn 8 -tr 20 20 -l cloudMaskShadow_b250_tmp '+pathTmp+'cloudMaskShadow_b250_tmp.geojson '+pathTmp+'cloudMaskShadow_b250_tmp.tif')
+        df.to_file(pathTmp+"cloudMaskShadow_b250_tmp.json", driver='GeoJSON')
+        os.system('gdal_rasterize -burn 8 -tr 20 20 -l cloudMaskShadow_b250_tmp '+pathTmp+'cloudMaskShadow_b250_tmp.json '+pathTmp+'cloudMaskShadow_b250_tmp.tif')
         os.system('gdal_calc.py -A '+pathTmp+'cloudMaskShadow_b250_tmp.tif --outfile='+pathTmp+'cloudMaskShadow_b250_bin_tmp.tif --calc="0*(A==8)+1*(A==0)"')
         os.system('gdal_translate -projwin '+cuadrante+' '+pathTmp+'cloudMaskShadow_b250_bin_tmp.tif '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.tif')
 
@@ -526,8 +526,9 @@ def entropiaNumpy(pathInput):
 	return nuMask """
 
 def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia):
+    # Nube baja con B12
     nuMask = dsRef.ReadAsArray()
-    b4 = dsRef.ReadAsArray()
+    b12 = dsRef.ReadAsArray()
     sar = dsSar.ReadAsArray()
 
     cont = 0
@@ -540,15 +541,15 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia):
     for i in range(nuMask.shape[0]):
         for j in range(nuMask.shape[1]):
             if sar[i,j] == 1:
-                if b4[i,j] >= nubeBaja:         
+                if b12[i,j] >= nubeBaja and entropia[i,j] >= entropiaMin:         
                     nuMask[i,j] = 0
-                    listaBanderas.append('NubeBaja')
+                    listaBanderas.append('NubeBaja y Entropia')
                     cont += 1
-                elif entropia[i,j] >= entropiaMin:
-                    nuMask[i,j] = 0
-                    listaBanderas.append('Entropia')
+                #elif entropia[i,j] >= entropiaMin:
+                #    nuMask[i,j] = 0
+                #    listaBanderas.append('Entropia')
                     #print('Valor de entropia',entropia[i,j])
-                    cont += 1    
+                #    cont += 1    
                 else:
                     nuMask[i,j] = 1
             else:

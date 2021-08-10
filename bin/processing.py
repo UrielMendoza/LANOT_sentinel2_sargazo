@@ -217,9 +217,11 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     if porcNube > 80.0 :
                         nubesBajas = 600
                     elif porcNube > 60.0:
-                        nubesBajas = 900
+                        #nubesBajas = 900
+                        nubesBajas = 600
                     else:
-                        nubesBajas = 2500
+                        #nubesBajas = 2500
+                        nubesBajas = 600
                     print('Procentaje de nubes ',porcNube)
                     print('Valor de temperatura para filtro nubes bajas: ',nubesBajas)                    
           
@@ -237,7 +239,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                         print('2.1. Remuestreando banda '+banda10+' a 20m...')
                         processing_sentinel2.remuestrea(pathTmp+banda10+'_20.tif',dsB10,20,20)
 
-                    ref = processing_sentinel2.aperturaDS(pathTmp+bandas20m[0]+'.tif')
+                    ref = processing_sentinel2.aperturaDS(pathTmp+bandas20m[6]+'.tif')
                     cuadrante = processing_sentinel2.obtieneCuadrante(ref)
                     
                     print('5. Aplicando algoritmo de deteccion de sargazo...')
