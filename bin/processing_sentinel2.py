@@ -547,7 +547,7 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia):
                 elif entropia[i,j] >= entropiaMin:
                     nuMask[i,j] = 0
                     listaBanderas.append('Entropia')
-                    print('Valor de entropia',entropia[i,j])
+                    #print('Valor de entropia',entropia[i,j])
                     cont += 1    
                 else:
                     nuMask[i,j] = 1
