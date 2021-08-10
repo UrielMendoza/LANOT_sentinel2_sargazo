@@ -181,7 +181,9 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
     df = df[df.DN == 1]
 
     if len(df)>= 1:
+        print('=============================================')
         print('Deteccion de sargazo sin mascara de tierra: ',len(df),' elementos')
+        print('=============================================')
         df['IDpoligono'] = range(1, len(df) + 1)
         df['tile'] = tile
         df['fecha'] = fecha
@@ -203,12 +205,15 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         totalSar = str(df['area'].sum())
         return nombre, banderaSar, totalSar
     else:
-        print('No deteccion de sargazo')
-        os.system('mkdir -p '+pathOutputEmpty+tile+'/'+anio)
-        nombre = pathOutputEmpty+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".txt"
-        f = open(nombre,'w')
-        f.write('No detección de sargazo')
-        f.close()
+        print('=========================')
+        print('NO DETECCIÓN DE SARGAZO')
+        print('=========================')
+        #os.system('mkdir -p '+pathOutputEmpty+tile+'/'+anio)
+        #nombre = pathOutputEmpty+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".txt"
+        nombre = ''
+        #f = open(nombre,'w')
+        #f.write('No detección de sargazo')
+        #f.close()
         #print('Tile:'+tile+'\nFecha:'+fecha)
         banderaSar = False
         totalSar = '0'
@@ -219,14 +224,16 @@ def obtieneVertices(pathInput,pathOutput):
     points = polys.copy()
     points = points.explode()
     points.geometry = points.geometry.apply(lambda x: MultiPoint(list(x.exterior.coords)))
-    points.to_file(pathOutput.split('.')[0]+'_vertices.json',driver='GeoJSON')
+    points.to_file(pathOutput+pathInput.split('.')[0]+'_vertices.json',driver='GeoJSON')
 
 def detfooMascaraVectorial(pathTmp):
     detfoo = 'MSK_DETFOO_B8A.json'
     df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar.json')
     df_mask = gpd.read_file(pathTmp+detfoo)
     res_difference = gpd.overlay(df, df_mask, how='difference')
-    print('Deteccion de sargazo con mascara detfoo: ',len(res_difference),' elementos')
+    print('=============================================')
+    print('Detección de sargazo con mascara detfoo: ',len(res_difference),' elementos')
+    print('=============================================')
     res_difference.to_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json', driver="GeoJSON")
 
 def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty):
@@ -236,7 +243,9 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
     df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar.json')
     df_mask = gpd.read_file(pathLM+'land_UTM16N_20m'+bufferLM+'.geojson')
     res_difference = gpd.overlay(df, df_mask, how='difference')
-    print('Deteccion de sargazo con mascara de tierra: ',len(res_difference),' elementos')
+    print('=============================================')
+    print('Detección de sargazo con mascara de tierra: ',len(res_difference),' elementos')
+    print('=============================================')
     os.system('mkdir -p '+pathOutput+tile+'/'+anio)
     nombre = pathOutput+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+fecha+'_'+fechaProc+".json"
     res_difference["geometry"] = [MultiPolygon([feature]) if type(feature) == Polygon \
@@ -246,11 +255,15 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
         totalSar = str(df['area'].sum())
         res_difference.to_file(nombre, driver="GeoJSON")
     else:
-        print('No deteccion de sargazo')
+        print('=========================')
+        print('NO DETECCIÓN DE SARGAZO')
+        print('=========================')
         os.system('mkdir -p '+pathOutputEmpty+tile+'/'+anio)
         nombre = pathOutputEmpty+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".txt"
         f = open(nombre,'w')
-        f.write('No detección de sargazo')
+        print('=========================')
+        print('NO DETECCIÓN DE SARGAZO')
+        print('=========================')
         f.close()
         #print('Tile:'+tile+'\nFecha:'+fecha)
         banderaSar = False

@@ -5,6 +5,7 @@ Created on Fri Nov 20 23:52:19 2020
 
 @author: urielm
 """
+from os import path
 import time
 from processing import sargazoL2A
 
@@ -16,8 +17,9 @@ if __name__ == "__main__":
     pathOutputEmpty = '/data/output/sentinel2/msi/l2/geojson/sargazo/'
     pathOutputGeoTiff = '/data/output/sentinel2/msi/l2/geotiff/'
     pathInputPeta = '/depot/sentinel2/input/sentinel2/L1C/'
+    pathVertices = '/data/output/sentinel2/msi/l2/geojson/sargazo_vertices/'
     pathTmp = '../test/tmp/manual/'
     pathLM = '../data/masks/'
     pathLog = '../../logs_sentinel2_sargazo/'
 
-    sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathInputPeta,pathLog,dateTime='automatico')
+    sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathInputPeta,pathVertices,pathLog,dateTime='automatico')

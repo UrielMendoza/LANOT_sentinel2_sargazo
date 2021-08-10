@@ -113,7 +113,7 @@ def manual():
 
     return start_date,end_date,region,landMask
 
-def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathInputPeta,pathLog,dateTime):
+def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathInputPeta,pathVertices,pathLog,dateTime):
 
     # MANUAL Y AUTOMATICO
     if dateTime == 'automatico':
@@ -271,7 +271,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     if banderaSar == True:
                         banderaSar_log = 'si'
                         totalSar = str((float(totalSar)+ float(totalSarMask))/2)
-                        processing_sentinel2.obtieneVertices(archivoProc,archivoProc)
+                        processing_sentinel2.obtieneVertices(archivoProc,pathVertices)
                     else:
                         banderaSar_log = 'no'
 
@@ -281,7 +281,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     if banderaSar == True:
                             banderaSar_log = 'si'
                             totalSar = str((float(totalSar)+ float(totalSarMask))/2)
-                            processing_sentinel2.obtieneVertices(archivoProc,archivoProc)
+                            processing_sentinel2.obtieneVertices(archivoProc,pathVertices)
                             processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
                             processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar,archivoCSV)
