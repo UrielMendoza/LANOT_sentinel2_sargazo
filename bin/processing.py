@@ -154,14 +154,14 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         #    print('Error de descarga')
         #    pass
     
-    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
+    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QDJ')
 
     print(tilesDirs)
 
     # ALGORITMO
     for tileDir in tilesDirs:
         
-        archivos = processing_sentinel2.listaArchivos(tileDir+'/*')
+        archivos = processing_sentinel2.listaArchivos(tileDir+'/*20210531*')
         archivos.sort()
         
         for archivo in archivos:
@@ -321,11 +321,11 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 
 #                finally:
                 # BORRA BASURA
-                    #os.system('rm -r '+pathTmp+'*.tif')
-                    #os.system('rm -r '+pathTmp+'*.geojson')
-                    #os.system('rm -r '+pathTmp+'*.csv')
-                    #os.system('rm -r '+pathTmp+'*.json')
-                    #os.system('rm -r '+pathTmp+'*.SAFE')
+                    os.system('rm -r '+pathTmp+'*.tif')
+                    os.system('rm -r '+pathTmp+'*.geojson')
+                    os.system('rm -r '+pathTmp+'*.csv')
+                    os.system('rm -r '+pathTmp+'*.json')
+                    os.system('rm -r '+pathTmp+'*.SAFE')
                 
             else:
                 print('Archivo: '+archivo+' ya fue procesado')
