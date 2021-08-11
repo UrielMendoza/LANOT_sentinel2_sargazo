@@ -255,6 +255,11 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
     print('=============================================')
     print('Detección de sargazo con mascara de tierra: ',len(res_difference),' elementos')
     print('=============================================')
+    df_maskCloud = gpd.read_file(pathTmp+'land_UTM16N_20m'+bufferLM+'.geojson')
+    res_difference = gpd.overlay(res_difference, df_maskCloud, how='difference')
+    print('=============================================')
+    print('Detección de sargazo con mascara de nubes: ',len(res_difference),' elementos')
+    print('=============================================')
     os.system('mkdir -p '+pathOutput+tile+'/'+anio)
     nombre = pathOutput+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+fecha+'_'+fechaProc+".json"
     res_difference["geometry"] = [MultiPolygon([feature]) if type(feature) == Polygon \
@@ -345,9 +350,11 @@ def nubesSombraMascara(cuadrante,pathTmp):
         df_g = df.unary_union
         df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
         df.to_file(pathTmp+"cloudMaskShadow_b250_tmp.json", driver='GeoJSON')
-        os.system('gdal_rasterize -burn 8 -tr 20 20 -l cloudMaskShadow_b250_tmp '+pathTmp+'cloudMaskShadow_b250_tmp.json '+pathTmp+'cloudMaskShadow_b250_tmp.tif')
-        os.system('gdal_calc.py -A '+pathTmp+'cloudMaskShadow_b250_tmp.tif --outfile='+pathTmp+'cloudMaskShadow_b250_bin_tmp.tif --calc="0*(A==8)+1*(A==0)"')
+        os.system('gdal_rasterize -burn 1 -tr 20 20 -l cloudMaskShadow_b250_tmp '+pathTmp+'cloudMaskShadow_b250_tmp.json '+pathTmp+'cloudMaskShadow_b250_tmp.tif')
+        os.system('gdal_calc.py -A '+pathTmp+'cloudMaskShadow_b250_tmp.tif --outfile='+pathTmp+'cloudMaskShadow_b250_bin_tmp.tif --calc="0*(A==1)+1*(A==0)"')
         os.system('gdal_translate -projwin '+cuadrante+' '+pathTmp+'cloudMaskShadow_b250_bin_tmp.tif '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.tif')
+        os.system('gdal_rasterize -tr 20 20 -l cloudMaskShadow_b250_bin_rec_tmp '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.tif')
+
 
         return banderaNub
 
@@ -422,7 +429,7 @@ def sargazoBinNumpy(pathInput):
     # MASCARA DE NUBES SLC
     #os.system('gdal_calc.py -A '+pathInput+'alg_tmp_numpy.tif -B '+pathInput+'cloudMask_b250_bin_rec_tmp.tif --outfile='+pathInput+'alg_mask_tmp_numpy.tif --calc="A*B"')
     # MASCARA DE NUBES Y SOMBRA B12
-    os.system('gdal_calc.py -A '+pathInput+'alg_tmp_numpy.tif -B '+pathInput+'cloudMaskShadow_b250_bin_rec_tmp.tif --outfile='+pathInput+'alg_mask_tmp_numpy.tif --calc="A*B"')
+    #os.system('gdal_calc.py -A '+pathInput+'alg_tmp_numpy.tif -B '+pathInput+'cloudMaskShadow_b250_bin_rec_tmp.tif --outfile='+pathInput+'alg_mask_tmp_numpy.tif --calc="A*B"')
 
 def entropiaNumpy(pathInput):
     ds = gdal.Open(pathInput+'B12.tif')
@@ -638,8 +645,9 @@ def insertSargazoDB(conect,cur,crs,pathInput):
 	with open(pathInput, 'r') as f:
 		reader = csv.reader(f)
 		next(reader)
-		for row in reader:
-			print('Añadiendo a DB: ', row)
+        print('Añadiendo a DB')
+        for row in reader:
+			#print('Añadiendo a DB: ', row)
 			cur.execute("INSERT INTO sargazo VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)		
 	cur.execute("SELECT * from sargazo")
 	row = cur.fetchall()

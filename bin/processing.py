@@ -146,7 +146,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         print('1. Descargando...')
         print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
         #download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
-        
+
         # Reste dias para prueba
         #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
         #download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=2), end_date - datetime.timedelta(days=2), pathTmp, unzip=False)
@@ -259,7 +259,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     print('5.5 Procesando sargazo sin filtro...')
                     #processing_sentinel2.sargazoBin(banderaNub,'L2A',pathTmp,pathTmp)
                     processing_sentinel2.sargazoBinNumpy(pathTmp)
-                    dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_mask_tmp_numpy.tif')
+                    dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_tmp_numpy.tif')
                     print('5.6 Obteniendo entropia...')
                     entropia = processing_sentinel2.entropiaNumpy(pathTmp)
                     print('5.7 Procesando sargazo con filtro...')
