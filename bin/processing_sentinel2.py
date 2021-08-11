@@ -647,10 +647,10 @@ def insertSargazoDB(conect,cur,crs,pathInput):
         next(reader)
         for row in reader:
 			#print('Añadiendo a DB: ', row)
-            cur.execute("INSERT INTO sargazo VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)		
-	cur.execute("SELECT * from sargazo")
-	row = cur.fetchall()
-	conect.commit()
+            cur.execute("INSERT INTO sargazo VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)
+        cur.execute("SELECT * from sargazo")
+    row = cur.fetchall()
+    conect.commit()
 
 def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar):
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
