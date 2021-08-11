@@ -11,6 +11,7 @@ from processing import sargazoL2A
 if __name__ == "__main__":
 
     # DIRECTORIOS
+    pathInputL1C = '/data/input/sentinel2/L1C/'
     pathInput = '/data/output/sentinel2/msi/L2A/'
     pathOutput = '/data/output/sentinel2/msi/l2/geojson/sargazo/'
     pathOutputEmpty = '/data/output/sentinel2/msi/l2/geojson/sargazo/'
@@ -22,4 +23,4 @@ if __name__ == "__main__":
     pathLM = '../data/masks/'
     pathLog = '../../logs_sentinel2_sargazo/'
 
-    sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputPeta,pathInputPeta,pathVertices,pathLog,dateTime='semiManual')
+    sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputPeta,pathInputPeta,pathVertices,pathLog,dateTime='semiManual')

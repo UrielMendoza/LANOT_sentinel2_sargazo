@@ -12,6 +12,7 @@ from os import system
 if __name__ == "__main__":
 
     # DIRECTORIOS
+    pathInputL1C = '/data/input/sentinel2/L1C/'
     pathInput = '/data/output/sentinel2/msi/L2A/'
     pathOutput = '/data/output/sentinel2/msi/l2/geojson/sargazo/'
     pathOutputEmpty = '/data/output/sentinel2/msi/l2/geojson/sargazo/'
@@ -43,7 +44,7 @@ if __name__ == "__main__":
 
         if respuesta == 1:
             ini = time.time()
-            sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputPeta,pathInputPeta,pathVertices,pathLog,dateTime='manual')
+            sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputPeta,pathInputPeta,pathVertices,pathLog,dateTime='manual')
             print("Tiempo de procesamiento: ",time.time()-ini)
             break
         elif respuesta == 2:

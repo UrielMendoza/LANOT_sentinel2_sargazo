@@ -113,7 +113,7 @@ def manual():
 
     return start_date,end_date,region,landMask
 
-def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputPeta,pathInputPeta,pathVertices,pathLog,dateTime):
+def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputPeta,pathInputPeta,pathVertices,pathLog,dateTime):
 
     # MANUAL Y AUTOMATICO
     if dateTime == 'automatico':
@@ -145,7 +145,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
         # DESCARGA
         print('1. Descargando...')
         print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
-        download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
+        #download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
         # Reste dias para prueba
         #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
         #download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=2), end_date - datetime.timedelta(days=2), pathTmp, unzip=False)
@@ -153,7 +153,7 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
         #    print('Error de descarga')
         #    pass
     
-    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QDJ*')
+    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QDJ')
 
     print(tilesDirs)
 
@@ -183,9 +183,12 @@ def sargazoL2A(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeo
                     compresion = processing_sentinel2.tipoCompresion(archivo)
                     processing_sentinel2.descomprime(archivo,compresion,pathTmp)
 
-                    # MANDA A PETA L1C
-                    print('2.1 Moviendo L1C a peta...')
-                    os.system('scp '+archivo+' lanotadm@stratus:'+pathInputPeta)
+                    # MANDA A PETA y DATA L1C
+                    print('2.1 Moviendo L1C a data y peta...')
+                    os.system('mkdir -p '+pathInputL1C+tile+'/'+anio)
+                    os.system('cp '+archivo+' '+pathInputL1C+tile+'/'+anio+'/')
+                    # MANDA A PETA
+                    os.system('scp '+archivo+' lanotadm@stratus:'+pathInputPeta)                   
 
                     # CORRECCION ATMOSFERICA
                     print('3. Correción atmosferica...')
