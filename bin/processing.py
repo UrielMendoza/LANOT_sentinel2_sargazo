@@ -203,13 +203,12 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 
                     # COMPRIME Y MUEVE EL L2 CORREGIDO
                     print('3.1 Moviendo L2A a data y peta...')
+                    # MANDA A DATA
                     os.system('mkdir -p '+pathInput+tile+'/'+anio)
                     os.system('zip -r '+pathTmp+dirI+'.zip '+pathTmp+dirI)
                     archivol2 = pathInput+tile+'/'+anio+'/'+dirI+'.zip'
                     # MANDA A PETA
                     os.system('scp '+archivol2+' lanotadm@stratus:'+pathOutputPeta+'L2A/')
-                    # MANDA A DATA
-                    os.system('mv '+pathTmp+dirI+'.zip '+pathInput+tile+'/'+anio)
                     print(l2a)
                     print(dirI)
                     #print(fecha)
@@ -322,9 +321,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 #                finally:
                 # BORRA BASURA
                     os.system('rm -r '+pathTmp+'*.tif')
-                    os.system('rm -r '+pathTmp+'*.geojson')
+                    os.system('rm -r '+pathTmp+'*json')
                     os.system('rm -r '+pathTmp+'*.csv')
-                    os.system('rm -r '+pathTmp+'*.json')
                     os.system('rm -r '+pathTmp+'*.SAFE')
                 
             else:
