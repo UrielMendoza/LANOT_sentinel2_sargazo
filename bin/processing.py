@@ -146,6 +146,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         print('1. Descargando...')
         print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
         #download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
+        
         # Reste dias para prueba
         #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
         #download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=2), end_date - datetime.timedelta(days=2), pathTmp, unzip=False)
@@ -196,7 +197,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     pathCFG = '../../sen2cor/2.9/cfg/L2A_GIPP.xml'
                     print(dirI)
                     print(pathTmp)
-                    processing_sentinel2.sen2core(pathSen2core,pathCFG,pathTmp+dirI,pathTmp,'10')
+                    #processing_sentinel2.sen2core(pathSen2core,pathCFG,pathTmp+dirI,pathTmp,'10')
                     l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*')[0]
                     dirI = processing_sentinel2.nomDir(l2a,'L2A')
 
