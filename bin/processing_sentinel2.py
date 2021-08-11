@@ -255,7 +255,7 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
     print('=============================================')
     print('Detección de sargazo con mascara de tierra: ',len(res_difference),' elementos')
     print('=============================================')
-    df_maskCloud = gpd.read_file(pathTmp+'land_UTM16N_20m'+bufferLM+'.geojson')
+    df_maskCloud = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
     res_difference = gpd.overlay(res_difference, df_maskCloud, how='difference')
     print('=============================================')
     print('Detección de sargazo con mascara de nubes: ',len(res_difference),' elementos')
@@ -352,9 +352,11 @@ def nubesSombraMascara(cuadrante,pathTmp):
         df.to_file(pathTmp+"cloudMaskShadow_b250_tmp.json", driver='GeoJSON')
         os.system('gdal_rasterize -burn 1 -tr 20 20 -l cloudMaskShadow_b250_tmp '+pathTmp+'cloudMaskShadow_b250_tmp.json '+pathTmp+'cloudMaskShadow_b250_tmp.tif')
         os.system('gdal_calc.py -A '+pathTmp+'cloudMaskShadow_b250_tmp.tif --outfile='+pathTmp+'cloudMaskShadow_b250_bin_tmp.tif --calc="0*(A==1)+1*(A==0)"')
-        os.system('gdal_translate -projwin '+cuadrante+' '+pathTmp+'cloudMaskShadow_b250_bin_tmp.tif '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.tif')
-        os.system('gdal_rasterize -burn 1 -tr 20 20 -l cloudMaskShadow_b250_bin_rec_tmp '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.tif')
-
+        #os.system('gdal_translate -projwin '+cuadrante+' '+pathTmp+'cloudMaskShadow_b250_bin_tmp.tif '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.tif')
+        os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_b250_bin_tmp.tif '+pathTmp+'cloudMaskShadow_b250_bin_tmp.json ')
+        df = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_tmp.json')
+        df = df[df['DN'] == 0]
+        df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
 
         return banderaNub
 
