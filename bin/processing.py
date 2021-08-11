@@ -206,9 +206,10 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     # MANDA A DATA
                     os.system('mkdir -p '+pathInput+tile+'/'+anio)
                     os.system('zip -r '+pathTmp+dirI+'.zip '+pathTmp+dirI)
+                    os.system('cp '+pathTmp+dirI+'.zip '+pathInput+tile+'/'+anio)
                     archivol2 = pathInput+tile+'/'+anio+'/'+dirI+'.zip'
                     # MANDA A PETA
-                    os.system('scp '+archivol2+' lanotadm@stratus:'+pathOutputPeta+'L2A/')
+                    os.system('scp '+pathTmp+dirI+'.zip lanotadm@stratus:'+pathOutputPeta+'L2A/')
                     print(l2a)
                     print(dirI)
                     #print(fecha)
