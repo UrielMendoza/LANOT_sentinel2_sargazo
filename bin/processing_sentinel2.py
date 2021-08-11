@@ -353,7 +353,7 @@ def nubesSombraMascara(cuadrante,pathTmp):
         os.system('gdal_rasterize -burn 1 -tr 20 20 -l cloudMaskShadow_b250_tmp '+pathTmp+'cloudMaskShadow_b250_tmp.json '+pathTmp+'cloudMaskShadow_b250_tmp.tif')
         os.system('gdal_calc.py -A '+pathTmp+'cloudMaskShadow_b250_tmp.tif --outfile='+pathTmp+'cloudMaskShadow_b250_bin_tmp.tif --calc="0*(A==1)+1*(A==0)"')
         os.system('gdal_translate -projwin '+cuadrante+' '+pathTmp+'cloudMaskShadow_b250_bin_tmp.tif '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.tif')
-        os.system('gdal_rasterize -tr 20 20 -l cloudMaskShadow_b250_bin_rec_tmp '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.tif')
+        os.system('gdal_rasterize -burn 1 -tr 20 20 -l cloudMaskShadow_b250_bin_rec_tmp '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.tif')
 
 
         return banderaNub
