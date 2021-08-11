@@ -641,11 +641,10 @@ def conexionDB():
     return conect,cur
 
 def insertSargazoDB(conect,cur,crs,pathInput):
-
+    print('Añadiendo a DB')
 	with open(pathInput, 'r') as f:
 		reader = csv.reader(f)
 		next(reader)
-        print('Añadiendo a DB')
         for row in reader:
 			#print('Añadiendo a DB: ', row)
 			cur.execute("INSERT INTO sargazo VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)		
