@@ -197,18 +197,18 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         df["area_km2"] = df['geometry'].area*0.000001
         gdf = gpd.read_file(pathLM+'land_UTM16N_20m_distance.geojson')
         distances = []
-        df['distCosta'] = None
+        df['distCosta_km'] = None
         for i in range(len(df)):
-            distance = round(gdf['geometry'].iloc[0].distance(df['geometry'].iloc[i]),2)
+            distance = gdf['geometry'].iloc[0].distance(df['geometry'].iloc[i])*0.001
             #print(distance)
             #df['distCosta'].iloc[i] = distance
             distances.append(distance)
-        df['distCosta'] = distances
+        df['distCosta_km'] = distances
         df = df.drop(columns=['DN'])      
         df.to_file(pathInput+'alg_mask_filter_tmp_sar.json', driver="GeoJSON")
         banderaSar = True
         nombre = None
-        totalSar = str(df['area'].sum())
+        totalSar = str(df['area_km2'].sum())
         return nombre, banderaSar, totalSar
     else:
         print('=========================')
@@ -267,7 +267,7 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
     if len(res_difference)>= 1:
         banderaSar = True
         # Km2
-        totalSar = str(df['area'].sum()*0.000001)
+        totalSar = str(df['area_km2'].sum()*0.000001)
         res_difference.to_file(nombre, driver="GeoJSON")
         # MANDA A PETA
         os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo/')
