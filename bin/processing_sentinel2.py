@@ -194,7 +194,7 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         df['tile'] = tile
         df['fecha'] = fecha
         df['fechaDia'] = fechaDia
-        df["area"] = round(df['geometry'].area,2)
+        df["area_km2"] = df['geometry'].area*0.000001
         gdf = gpd.read_file(pathLM+'land_UTM16N_20m_distance.geojson')
         distances = []
         df['distCosta'] = None
@@ -266,7 +266,8 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
     else feature for feature in res_difference["geometry"]]
     if len(res_difference)>= 1:
         banderaSar = True
-        totalSar = str(df['area'].sum())
+        # Km2
+        totalSar = str(df['area'].sum()*0.000001)
         res_difference.to_file(nombre, driver="GeoJSON")
         # MANDA A PETA
         os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo/')
@@ -557,7 +558,6 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia):
                 elif entropia[i,j] >= entropiaMin:
                     nuMask[i,j] = 0
                     listaBanderas.append('Entropia')
-                    print('Valor de entropia',entropia[i,j])
                     cont += 1    
                 else:
                     nuMask[i,j] = 1

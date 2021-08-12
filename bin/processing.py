@@ -303,7 +303,6 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     if banderaSar == True:
                             banderaSar_log = 'si'
                             #totalSar = str((float(totalSar)+ float(totalSarMask))/2)
-                            totalSar = totalSarMask
                             processing_sentinel2.obtieneVertices(archivoProc,pathVertices,pathOutputPeta)
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
@@ -321,7 +320,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 
 #                finally:
                 # BORRA BASURA
-                    os.system('rm -r '+pathTmp+'*.tif')
+                    #os.system('rm -r '+pathTmp+'*.tif')
                     os.system('rm -r '+pathTmp+'*json')
                     os.system('rm -r '+pathTmp+'*.csv')
                     os.system('rm -r '+pathTmp+'*.zip')
