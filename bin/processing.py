@@ -197,7 +197,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     pathCFG = '../../sen2cor/2.9/cfg/L2A_GIPP.xml'
                     print(dirI)
                     print(pathTmp)
-                    processing_sentinel2.sen2core(pathSen2core,pathCFG,pathTmp+dirI,pathTmp,'10')
+                    #processing_sentinel2.sen2core(pathSen2core,pathCFG,pathTmp+dirI,pathTmp,'10')
                     l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*')[0]
                     dirI = processing_sentinel2.nomDir(l2a,'L2A')
 
@@ -243,7 +243,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         print('2.1. Remuestreando banda '+banda10+' a 20m...')
                         processing_sentinel2.remuestrea(pathTmp+banda10+'_20.tif',dsB10,20,20)
 
-                    ref = processing_sentinel2.aperturaDS(pathTmp+bandas20m[-1]+'.tif')
+                    ref = processing_sentinel2.aperturaDS(pathTmp+bandas20m[-2]+'.tif')
+                    scl = processing_sentinel2.aperturaDS(pathTmp+bandas20m[-1]+'.tif')
                     cuadrante = processing_sentinel2.obtieneCuadrante(ref)
                     
                     print('5. Aplicando algoritmo de deteccion de sargazo...')
@@ -255,7 +256,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     #banderaNub = processing_sentinel2.nubesMascara(cuadrante,pathTmp+bandas20m[-1]+'.tif',pathTmp)
                     banderaNub = processing_sentinel2.nubesSombraMascara(cuadrante,pathTmp)
                     print('5.4 Procesando mascara detfoo...')
-                    #processing_sentinel2.detfooMascara(200,pathTmp+dirI,pathTmp)
+                    processing_sentinel2.detfooMascara(200,pathTmp+dirI,pathTmp)
                     print('5.5 Procesando sargazo sin filtro...')
                     #processing_sentinel2.sargazoBin(banderaNub,'L2A',pathTmp,pathTmp)
                     processing_sentinel2.sargazoBinNumpy(pathTmp)
@@ -263,7 +264,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     print('5.6 Obteniendo entropia...')
                     entropia = processing_sentinel2.entropiaNumpy(pathTmp)
                     print('5.7 Procesando sargazo con filtro...')
-                    nuMask = processing_sentinel2.pixelNubesBajasN(ref,dsSar,nubesBajas,entropia)
+                    nuMask = processing_sentinel2.pixelNubesBajasN(ref,dsSar,nubesBajas,entropia,scl)
                     processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')
 
                     # POLIGONIZACION

@@ -369,7 +369,7 @@ def detfooMascara(detfoo_dist,pathInput,pathOutput):
 
     gdf = gdf.sort_values(by=['gml_id'])
     gdf_crs = gdf.crs
-    ext = gdf.iloc[0].geometry.bounds
+    #ext = gdf.iloc[0].geometry.bounds
 
     detfoot_buffers = []
 
@@ -535,13 +535,16 @@ def entropiaNumpy(pathInput):
 
 	return nuMask """
 
-def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia):
+def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia,dsSCL):
     # Nube baja con B12
     nuMask = dsRef.ReadAsArray()
     b12 = dsRef.ReadAsArray()
     sar = dsSar.ReadAsArray()
+    scl = dsSCL.ReadAsArray()
 
-    cont = 0
+    contB12 = 0
+    contEnt = 0
+    contSCL = 0
     listaBanderas = []
 
     #Entropia
@@ -555,20 +558,26 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia):
 #                    nuMask[i,j] = 0
 #                    listaBanderas.append('NubeBaja y Entropia')
 #                   cont += 1
+                if scl[i,j] >= nubeBaja:
+                    nuMask[i,j] = 0
+                    listaBanderas.append('Nube baja')
+                    contB12 += 1 
                 if entropia[i,j] >= entropiaMin:
                     nuMask[i,j] = 0
                     listaBanderas.append('Entropia')
-                    cont += 1    
+                    contEnt += 1    
                 if (b12[i,j] == 7) or (b12[i,j] == 8) or (b12[i,j] == 9) or (b12[i,j] == 10):
                     nuMask[i,j] = 0
                     listaBanderas.append('SCL')
-                    cont += 1  
+                    contSCL += 1  
                 else:
                     nuMask[i,j] = 1
             else:
                 nuMask[i,j] = 0
     print(set(listaBanderas))
-    print('Filtrados: ',cont)
+    print('Filtrados Nube Baja: ',contB12)
+    print('Filtrados Entropia: ',contEnt)
+    print('Filtrados SCL: ',contSCL)
 
     return nuMask
 
