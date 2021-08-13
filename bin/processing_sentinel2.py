@@ -208,7 +208,7 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         df.to_file(pathInput+'alg_mask_filter_tmp_sar.json', driver="GeoJSON")
         banderaSar = True
         nombre = None
-        totalSar = str(df['area_km2'].sum())
+        totalSar = str(round(df['area_km2'].sum(),4))
         return nombre, banderaSar, totalSar
     else:
         print('=========================')
@@ -267,7 +267,7 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
     if len(res_difference)>= 1:
         banderaSar = True
         # Km2
-        totalSar = str(df['area_km2'].sum()*0.000001)
+        totalSar = str(round(df['area_km2'].sum()*0.000001,4))
         res_difference.to_file(nombre, driver="GeoJSON")
         # MANDA A PETA
         os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo/')
@@ -555,13 +555,13 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia):
 #                    nuMask[i,j] = 0
 #                    listaBanderas.append('NubeBaja y Entropia')
 #                   cont += 1
-                #if entropia[i,j] >= entropiaMin:
-                #    nuMask[i,j] = 0
-                #    listaBanderas.append('Entropia')
-                #    cont += 1    
-                if (b12[i,j] == 8 and entropia[i,j] >= entropiaMin) or (b12[i,j] == 9 and entropia[i,j] >= entropiaMin) or (b12[i,j] == 10 and entropia[i,j] >= entropiaMin):
+                if entropia[i,j] >= entropiaMin:
                     nuMask[i,j] = 0
-                    listaBanderas.append('Entropia y SCL')
+                    listaBanderas.append('Entropia')
+                    cont += 1    
+                if (b12[i,j] == 7) or (b12[i,j] == 8) or (b12[i,j] == 9) or (b12[i,j] == 10):
+                    nuMask[i,j] = 0
+                    listaBanderas.append('SCL')
                     cont += 1  
                 else:
                     nuMask[i,j] = 1
