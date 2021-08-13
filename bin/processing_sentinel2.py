@@ -194,12 +194,12 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         df['tile'] = tile
         df['fecha'] = fecha
         df['fechaDia'] = fechaDia
-        df["area_km2"] = df['geometry'].area*0.000001
+        df["area_km2"] = round(df['geometry'].area*0.000001,4)
         gdf = gpd.read_file(pathLM+'land_UTM16N_20m_distance.geojson')
         distances = []
         df['distCosta_km'] = None
         for i in range(len(df)):
-            distance = gdf['geometry'].iloc[0].distance(df['geometry'].iloc[i])*0.001
+            distance = round(gdf['geometry'].iloc[0].distance(df['geometry'].iloc[i])*0.001,4)
             #print(distance)
             #df['distCosta'].iloc[i] = distance
             distances.append(distance)
