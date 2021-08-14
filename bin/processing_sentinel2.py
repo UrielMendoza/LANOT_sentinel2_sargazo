@@ -562,20 +562,19 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia,dsSCL):
                     nuMask[i,j] = 0
                     listaBanderas.append('Nube baja')
                     contB12 += 1 
-                    pass
-                    if entropia[i,j] >= entropiaMin:
-                        nuMask[i,j] = 0
-                        listaBanderas.append('Entropia')
-                        contEnt += 1
-                        pass    
-                        if (scl[i,j] == 7) or (scl[i,j] == 8) or (scl[i,j] == 9) or (scl[i,j] == 10):
-                            nuMask[i,j] = 0
-                            listaBanderas.append('SCL')
-                            contSCL += 1  
+                elif entropia[i,j] >= entropiaMin:
+                    nuMask[i,j] = 0
+                    listaBanderas.append('Entropia')
+                    contEnt += 1    
+                elif (scl[i,j] == 7) or (scl[i,j] == 8) or (scl[i,j] == 9) or (scl[i,j] == 10):
+                    nuMask[i,j] = 0
+                    listaBanderas.append('SCL')
+                    contSCL += 1  
                 else:
                     nuMask[i,j] = 1
             else:
                 nuMask[i,j] = 0
+
     print(set(listaBanderas))
     print('Filtrados Nube Baja: ',contB12)
     print('Filtrados Entropia: ',contEnt)
@@ -639,6 +638,7 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia,dsSCL):
 
 def creaCSV(pathInput,pathOutput):
     gdf = gpd.read_file(pathInput)
+    gdf.area_km2 = round(gdf.area_km2,4)
     crs = gdf.crs['init'].split(':')[-1]
     archivoCSV = pathOutput+pathInput.split('/')[-1].split('.')[0]+'.csv'
     gdf.to_csv(archivoCSV,index=False)
