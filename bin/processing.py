@@ -262,7 +262,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     processing_sentinel2.sargazoBinNumpy(pathTmp)
                     dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_tmp_numpy.tif')
                     print('5.6 Obteniendo entropia...')
-                    entropia = processing_sentinel2.entropiaNumpy(pathTmp)
+                    #entropia = processing_sentinel2.entropiaNumpy(pathTmp)
+                    entropia = None
                     print('5.7 Procesando sargazo con filtro...')
                     nuMask = processing_sentinel2.pixelNubesBajasN(ref,dsSar,nubesBajas,entropia,scl)
                     processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')

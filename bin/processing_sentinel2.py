@@ -188,7 +188,7 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
 
     if len(df)>= 1:
         print('=============================================')
-        print('Deteccion de sargazo sin mascara de tierra: ',len(df),' elementos')
+        print('Deteccion de sargazo con filtros: ',len(df),' elementos')
         print('=============================================')
         df['IDpoligono'] = range(1, len(df) + 1)
         df['tile'] = tile
@@ -362,7 +362,7 @@ def nubesSombraMascara(cuadrante,pathTmp):
     else:
         print("Buffer de nubes")
         banderaNub = True
-        df = df.buffer(400)
+        df = df.buffer(500)
         df_g = df.unary_union
         df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
         df.to_file(pathTmp+"cloudMaskShadow_b250_tmp.json", driver='GeoJSON')
@@ -551,11 +551,16 @@ def entropiaNumpy(pathInput):
 	return nuMask """
 
 def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia,dsSCL):
+
     # Nube baja con B12
     nuMask = dsRef.ReadAsArray()
     b12 = dsRef.ReadAsArray()
     sar = dsSar.ReadAsArray()
     scl = dsSCL.ReadAsArray()
+
+    print('=============================================')
+    print('Detección de sargazo algoritmo: ',len(sar[sar == 1]),' elementos')
+    print('=============================================')
 
     contB12 = 0
     contEnt = 0
@@ -581,7 +586,7 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia,dsSCL):
 #                    nuMask[i,j] = 0
 #                    listaBanderas.append('Entropia')
 #                    contEnt += 1    
-                elif (scl[i,j] == 6) or (scl[i,j] == 7) or (scl[i,j] == 8) or (scl[i,j] == 9) or (scl[i,j] == 10):
+                elif (scl[i,j] == 7) or (scl[i,j] == 8) or (scl[i,j] == 9) or (scl[i,j] == 10):
                     nuMask[i,j] = 0
                     listaBanderas.append('SCL')
                     contSCL += 1  
