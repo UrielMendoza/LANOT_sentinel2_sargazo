@@ -307,7 +307,7 @@ def aguaMascara(cuadrante,pathSCL,pathTmp):
     #os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'aguaMask.tif --calc="0*(A!=2)+0*(A!=3)+0*(A!=10)+1*(A==2)+1*(A==3)+1*(A==10)"')
     os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'aguaMask.tif --calc="0*(A!=2)+1*(A==2)"')
 
-def nubesMascara(cuadrante,pathSCL,pathTmp):
+def nubesMascara(cuadrante,bufferNubes,pathSCL,pathTmp):
     cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
 
     # Esta parte es para eficientizar la poligonizacion de las nubes
@@ -324,7 +324,7 @@ def nubesMascara(cuadrante,pathSCL,pathTmp):
     else:
         print("Buffer de nubes")
         banderaNub = True
-        df = df.buffer(250)
+        df = df.buffer(bufferNubes)
         df_g = df.unary_union
         df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
         df.to_file(pathTmp+"cloudMask_b250_tmp.geojson", driver='GeoJSON')
@@ -339,7 +339,7 @@ def nubesMascara(cuadrante,pathSCL,pathTmp):
 
         return banderaNub
 
-def nubesSombraMascara(cuadrante,pathTmp):
+def nubesSombraMascara(cuadrante,bufferNubes,pathTmp):
 
     cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
 
@@ -362,7 +362,7 @@ def nubesSombraMascara(cuadrante,pathTmp):
     else:
         print("Buffer de nubes")
         banderaNub = True
-        df = df.buffer(500)
+        df = df.buffer(bufferNubes)
         df_g = df.unary_union
         df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
         df.to_file(pathTmp+"cloudMaskShadow_b250_tmp.json", driver='GeoJSON')

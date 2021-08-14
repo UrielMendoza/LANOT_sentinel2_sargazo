@@ -218,14 +218,17 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     # PORCENTAJE DE NUBES
                     print('3.2 Porcentaje de nubes')
                     porcNube = processing_sentinel2.obtienePorcentajeNube(pathTmp+dirI)
-                    if porcNube > 80.0 :
+                    if porcNube > 60.0 :
                         nubesBajas = 600
-                    elif porcNube > 60.0:
+                        bufferNubes = 200
+                    elif porcNube > 30.0:
                         #nubesBajas = 900
-                        nubesBajas = 600
+                        nubesBajas = 800
+                        bufferNubes = 400
                     else:
                         #nubesBajas = 2500
-                        nubesBajas = 600
+                        nubesBajas = 1000
+                        bufferNubes = 800
                     print('Procentaje de nubes ',porcNube)
                     print('Valor de temperatura para filtro nubes bajas: ',nubesBajas)                    
           
@@ -253,8 +256,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     print('5.2 Procesando mascara agua...')
                     #processing_sentinel2.aguaMascara(cuadrante,pathTmp+bandas20m[-1]+'.tif',pathTmp)
                     print('5.3 Procesando mascara nubes altas...')
-                    #banderaNub = processing_sentinel2.nubesMascara(cuadrante,pathTmp+bandas20m[-1]+'.tif',pathTmp)
-                    banderaNub = processing_sentinel2.nubesSombraMascara(cuadrante,pathTmp)
+                    #banderaNub = processing_sentinel2.nubesMascara(cuadrante,bufferNubes,pathTmp+bandas20m[-1]+'.tif',pathTmp)
+                    banderaNub = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,pathTmp)
                     print('5.4 Procesando mascara detfoo...')
                     processing_sentinel2.detfooMascara(200,pathTmp+dirI,pathTmp)
                     print('5.5 Procesando sargazo sin filtro...')
