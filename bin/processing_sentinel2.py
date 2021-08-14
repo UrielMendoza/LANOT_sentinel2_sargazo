@@ -256,15 +256,20 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
     print('Detección de sargazo con mascara de tierra: ',len(res_difference),' elementos')
     print('=============================================')
     df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
-    res_difference = gpd.overlay(res_difference,  df_maskCloudShadow, how='difference')
+    res_difference = gpd.overlay(res_difference, df_maskCloudShadow, how='difference')
     print('=============================================')
     print('Detección de sargazo con mascara de nubes/sombra: ',len(res_difference),' elementos')
     print('=============================================')
-    df_maskCloud = gpd.read_file(pathTmp+'cloudMask_b250_bin_rec_mask_tmp.json')
-    res_difference = gpd.overlay(res_difference, df_maskCloud, how='difference')
+    df_detfooMask = gpd.read_file(pathTmp+'MSK_DETFOO_B8A.json')
+    res_difference = gpd.overlay(res_difference, df_detfooMask, how='difference')
     print('=============================================')
-    print('Detección de sargazo con mascara de nubes: ',len(res_difference),' elementos')
+    print('Detección de sargazo con mascara detfoo: ',len(res_difference),' elementos')
     print('=============================================')
+    #df_maskCloud = gpd.read_file(pathTmp+'cloudMask_b250_bin_rec_mask_tmp.json')
+    #res_difference = gpd.overlay(res_difference, df_maskCloud, how='difference')
+    #print('=============================================')
+    #print('Detección de sargazo con mascara de nubes: ',len(res_difference),' elementos')
+    #print('=============================================')
     os.system('mkdir -p '+pathOutput+tile+'/'+anio)
     nombre = pathOutput+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+fecha+'_'+fechaProc+".json"
     res_difference["geometry"] = [MultiPolygon([feature]) if type(feature) == Polygon \
@@ -357,7 +362,7 @@ def nubesSombraMascara(cuadrante,pathTmp):
     else:
         print("Buffer de nubes")
         banderaNub = True
-        df = df.buffer(250)
+        df = df.buffer(400)
         df_g = df.unary_union
         df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
         df.to_file(pathTmp+"cloudMaskShadow_b250_tmp.json", driver='GeoJSON')
@@ -576,7 +581,7 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia,dsSCL):
 #                    nuMask[i,j] = 0
 #                    listaBanderas.append('Entropia')
 #                    contEnt += 1    
-                elif (scl[i,j] == 7) or (scl[i,j] == 8) or (scl[i,j] == 9) or (scl[i,j] == 10):
+                elif (scl[i,j] == 6) or (scl[i,j] == 7) or (scl[i,j] == 8) or (scl[i,j] == 9) or (scl[i,j] == 10):
                     nuMask[i,j] = 0
                     listaBanderas.append('SCL')
                     contSCL += 1  
