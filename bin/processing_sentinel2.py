@@ -255,7 +255,12 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
     print('=============================================')
     print('Detección de sargazo con mascara de tierra: ',len(res_difference),' elementos')
     print('=============================================')
-    df_maskCloud = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
+    df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
+    res_difference = gpd.overlay(res_difference,  df_maskCloudShadow, how='difference')
+    print('=============================================')
+    print('Detección de sargazo con mascara de nubes/sombra: ',len(res_difference),' elementos')
+    print('=============================================')
+    df_maskCloud = gpd.read_file(pathTmp+'cloudMask_b250_bin_rec_mask_tmp.json')
     res_difference = gpd.overlay(res_difference, df_maskCloud, how='difference')
     print('=============================================')
     print('Detección de sargazo con mascara de nubes: ',len(res_difference),' elementos')
@@ -302,7 +307,7 @@ def nubesMascara(cuadrante,pathSCL,pathTmp):
 
     # Esta parte es para eficientizar la poligonizacion de las nubes
     #os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cirrusMask.tif --calc="0*(A!=8)"')
-    os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cirrusMask.tif --calc="0*(A!=8)+0*(A!=9)+0*(A!=10)+1*(A==8)+1*(A==9)+1*(A==10)"')
+    os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cirrusMask.tif --calc="0*(A!=7)+0*(A!=8)+0*(A!=9)+0*(A!=10)+1*(A==7)+1*(A==8)+1*(A==9)+1*(A==10)"')
 
     os.system('gdal_polygonize.py '+pathTmp+'cirrusMask.tif -f "GeoJSON" '+pathTmp+'SCL_tmp.json')
     df = gpd.read_file(pathTmp+'SCL_tmp.json')
@@ -314,13 +319,18 @@ def nubesMascara(cuadrante,pathSCL,pathTmp):
     else:
         print("Buffer de nubes")
         banderaNub = True
-        df = df.buffer(350)
+        df = df.buffer(250)
         df_g = df.unary_union
         df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
         df.to_file(pathTmp+"cloudMask_b250_tmp.geojson", driver='GeoJSON')
         os.system('gdal_rasterize -burn 8 -tr 20 20 -l cloudMask_b250_tmp '+pathTmp+'cloudMask_b250_tmp.geojson '+pathTmp+'cloudMask_b250_tmp.tif')
         os.system('gdal_calc.py -A '+pathTmp+'cloudMask_b250_tmp.tif --outfile='+pathTmp+'cloudMask_b250_bin_tmp.tif --calc="0*(A==8)+1*(A==0)"')
         os.system('gdal_translate -projwin '+cuadrante+' '+pathTmp+'cloudMask_b250_bin_tmp.tif '+pathTmp+'cloudMask_b250_bin_rec_tmp.tif')
+
+        os.system('gdal_polygonize.py '+pathTmp+'cloudMask_b250_bin_rec_tmp.tif -f "GeoJSON" '+pathTmp+'cloudMask_b250_bin_rec_tmp.json')
+        df = gpd.read_file(pathTmp+'cloudMask_b250_bin_rec_tmp.json')
+        df = df[df['DN'] == 0]
+        df.to_file(pathTmp+"cloudMask_b250_bin_rec_mask_tmp.json", driver='GeoJSON')
 
         return banderaNub
 
