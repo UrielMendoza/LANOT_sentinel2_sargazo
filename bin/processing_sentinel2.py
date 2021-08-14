@@ -558,7 +558,7 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia,dsSCL):
 #                    nuMask[i,j] = 0
 #                    listaBanderas.append('NubeBaja y Entropia')
 #                   cont += 1
-                if scl[i,j] >= nubeBaja:
+                if b12[i,j] >= nubeBaja:
                     nuMask[i,j] = 0
                     listaBanderas.append('Nube baja')
                     contB12 += 1 
@@ -566,7 +566,7 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia,dsSCL):
                     nuMask[i,j] = 0
                     listaBanderas.append('Entropia')
                     contEnt += 1    
-                if (b12[i,j] == 7) or (b12[i,j] == 8) or (b12[i,j] == 9) or (b12[i,j] == 10):
+                if (scl[i,j] == 7) or (scl[i,j] == 8) or (scl[i,j] == 9) or (scl[i,j] == 10):
                     nuMask[i,j] = 0
                     listaBanderas.append('SCL')
                     contSCL += 1  
