@@ -230,7 +230,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         nubesBajas = 1000
                         bufferNubes = 800
                     print('Procentaje de nubes ',porcNube)
-                    print('Valor de temperatura para filtro nubes bajas: ',nubesBajas)                    
+                    print('Valor de temperatura para filtro nubes bajas: ',nubesBajas)
+                    print('Valor de buffer para nubes: ',bufferNubes)                  
           
                     print('4. Convirtiendo a GeoTIFF...')
                     for banda20 in bandas20m:
