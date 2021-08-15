@@ -143,8 +143,8 @@ def verificaL2A(tile,fecha,pathInput):
         return False
 
 def copiaL2A(tile,fecha,pathInput,pathOutput):
-    archivo = glob(pathInput+tile+'/*'+fecha+'*'+tile+'*')
-    os.system('cp '+archivo[0]+' '+pathOutput)
+    archivo = glob(pathInput+tile+'/*'+fecha+'*'+tile+'*')[0]
+    os.system('cp '+archivo+' '+pathOutput)
     return archivo
 
 def aperturaDS(pathBand):
