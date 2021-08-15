@@ -80,7 +80,7 @@ def search_products(tile=None, date=None, search_string=None, product_type="L1C"
 
 # ------------------------------------------------------------------------------
 
-def download_products(products, datadir, unzip=False, max_retries=3, verbose=True):
+def download_products(products, datadir, unzip=False, max_retries=5, verbose=True):
   """Downloads a set of Sentinel-2 products.
   Parameters:
     products : dict

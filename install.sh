@@ -18,7 +18,7 @@ mkdir -p ./test/geotiff/TC/;
 mkdir -p ./test/geotiff/sargazo/;
 mkdir -p ./test/tmp/automatico/;
 mkdir -p ./test/tmp/manual/;
-mkdir -p ./test/tmp/historico/;
+mkdir -p ./test/tmp/semi_manual/;
 wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_UTM16N_20m.geojson;
 wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_UTM16N_20m_distance.geojson;
 wget -P ./data/masks/ http://132.247.103.154/tmp/sargazo/data/masks/land_sargazo_UTM16N_20m.tif;

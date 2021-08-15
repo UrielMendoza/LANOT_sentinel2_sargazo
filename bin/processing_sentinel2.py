@@ -96,6 +96,9 @@ def listaBandas(pathInput,nivel,resolucion,banda):
     print("Archivo usado:"+archivoBanda[0])
     return archivoBanda[0]
 
+def remplazaProcesado(nombre,tile,fecha):
+    archivo = glob('')    
+
 def tipoCompresion(pathInput):
     compresion = pathInput.split('/')[-1].split('.')[-1]
     return compresion
@@ -118,6 +121,11 @@ def obtieneFecha(pathDir):
     fecha = pathDir.split('/')[-1].split('.')[0].split('_')[2]
     fecha = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     return fecha.strftime('%Y%m%dT%H%M%S')
+
+def obtieneFechaImaProc(pathDir):
+    fecha = pathDir.split('/')[-1].split('.')[0].split('_')[-1]
+    #fecha = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
+    return fecha
 
 def descomprime(pathInput,compresion,pathOutput):
     if compresion == 'gz':
@@ -167,17 +175,17 @@ def remuestrea(pathOutput,ds,dimx,dimy):
     gdal.Translate(pathOutput,ds,options=gdal.TranslateOptions(xRes=dimx,yRes=dimy))
 
 def RGB(r,g,b,tile,anio,fecha,fechaProc,pathOutputGeoTiff,pathOutputPeta):
-    nombre = pathOutputGeoTiff+'sargazo/'+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+'_'+fechaProc+".tif"
+    nombre = pathOutputGeoTiff+'sargazo/'+tile+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+'_'+fechaProc+".tif"
     os.system('gdal_merge.py -separate -co PHOTOMETRIC=RGB -o '+nombre+' '+r+' '+g+' '+b)
     # MANDA A PETA
-    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/sargazo/')
+    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/sargazo/'+tile+'/')
 
 def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTiff,pathOutputPeta):
     dirTC = listaBandas(pathInput,nivel,resolucion,'TCI')
-    nombre = pathOutputGeoTiff+'TC/'+tile+'/'+anio+'/'+'S2_MSI_TC_'+tile+'_'+fecha+'_'+fechaProc+'.tif'
+    nombre = pathOutputGeoTiff+'TC/'+tile+'/'+'S2_MSI_TC_'+tile+'_'+fecha+'_'+fechaProc+'.tif'
     os.system('gdal_translate '+dirTC+' '+nombre)
     # MANDA A PETA
-    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/TC/')
+    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/TC/'+tile+'/')
 
 def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutputEmpty):
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
@@ -214,8 +222,8 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         print('=========================')
         print('NO DETECCIÓN DE SARGAZO')
         print('=========================')
-        #os.system('mkdir -p '+pathOutputEmpty+tile+'/'+anio)
-        #nombre = pathOutputEmpty+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".txt"
+        #os.system('mkdir -p '+pathOutputEmpty+tile+'/')
+        #nombre = pathOutputEmpty+tile+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".txt"
         nombre = ''
         #f = open(nombre,'w')
         #f.write('No detección de sargazo')
@@ -245,7 +253,7 @@ def detfooMascaraVectorial(pathTmp):
     print('=============================================')
     res_difference.to_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json', driver="GeoJSON")
 
-def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta):
+def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta):
     # CON DETFOO
     #df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json')
     # SIN DETFOO
@@ -270,23 +278,26 @@ def tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pat
     #print('=============================================')
     #print('Detección de sargazo con mascara de nubes: ',len(res_difference),' elementos')
     #print('=============================================')
-    os.system('mkdir -p '+pathOutput+tile+'/'+anio)
-    nombre = pathOutput+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+fecha+'_'+fechaProc+".json"
+    os.system('mkdir -p '+pathOutput+tile+'/')
+    nombre = pathOutput+tile+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+fecha+'_'+fechaProc+".json"
     res_difference["geometry"] = [MultiPolygon([feature]) if type(feature) == Polygon \
     else feature for feature in res_difference["geometry"]]
     if len(res_difference)>= 1:
         banderaSar = True
         # Km2
         totalSar = str(round(df['area_km2'].sum()*0.000001,4))
+        # ARCHIVO FINAL
+
+        # MANDA A DATA
         res_difference.to_file(nombre, driver="GeoJSON")
         # MANDA A PETA
-        os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo/')
+        os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo/'+tile+'/')
     else:
         print('=========================')
         print('NO DETECCIÓN DE SARGAZO')
         print('=========================')
-        #os.system('mkdir -p '+pathOutputEmpty+tile+'/'+anio)
-        #nombre = pathOutputEmpty+tile+'/'+anio+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".txt"
+        #os.system('mkdir -p '+pathOutputEmpty+tile+'/')
+        #nombre = pathOutputEmpty+tile+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+'_'+fecha+".txt"
         #f = open(nombre,'w')
         #print('=========================')
         #print('NO DETECCIÓN DE SARGAZO')
@@ -689,10 +700,10 @@ def insertSargazoDB(conect,cur,crs,pathInput):
     row = cur.fetchall()
     conect.commit()
 
-def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar):
+def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar):
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     fechaDia = time.strftime('%Y-%m-%d')
-
+    fechaproc = obtieneFechaProc()
     print('Añadiendo log a DB: ')
     cur.execute("INSERT INTO sargazo_log VALUES (DEFAULT, '"+pathl2a+"', '"+pathsargazo+"', '"+fecha+"', '"+fechaproc+"', '"+fechaDia+"', '"+tile+"','"+sargazo+"','"+totalsar+"')")
     cur.execute("SELECT * from sargazo_log")
@@ -705,7 +716,7 @@ def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsa
     conect,cur = conexionDB()
     try:
         insertSargazoDB(conect,cur,crs,pathInput)
-        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar)
+        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar)
         print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
@@ -717,7 +728,7 @@ def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsa
 def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar):
     conect,cur = conexionDB()
     try:        
-        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar)
+        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar)
         #print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')

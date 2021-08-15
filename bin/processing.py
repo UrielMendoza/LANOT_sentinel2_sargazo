@@ -145,7 +145,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         # DESCARGA
         print('1. Descargando...')
         print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
-        #download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
+        download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
 
         # Reste dias para prueba
         #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
@@ -169,6 +169,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
             ini = time.time()
             print('Procesando: '+archivo)
             fecha = processing_sentinel2.obtieneFecha(archivo)
+            fechaImaProc = processing_sentinel2.obtieneFechaImaProc(archivo)
             tile = processing_sentinel2.obtieneTile(archivo)
             anio = processing_sentinel2.obtieneAnio(archivo)
             dirI = processing_sentinel2.nomDir(archivo,'L2A')
@@ -186,10 +187,10 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 
                     # MANDA A PETA y DATA L1C
                     print('2.1 Moviendo L1C a data y peta...')
-                    os.system('mkdir -p '+pathInputL1C+tile+'/'+anio)
-                    os.system('cp '+archivo+' '+pathInputL1C+tile+'/'+anio+'/')
+                    os.system('mkdir -p '+pathInputL1C+tile+'/')
+                    os.system('cp '+archivo+' '+pathInputL1C+tile+'/')
                     # MANDA A PETA
-                    os.system('scp '+archivo+' lanotadm@stratus:'+pathInputPeta)                   
+                    os.system('scp '+archivo+' lanotadm@stratus:'+pathInputPeta+tile+'/')                   
 
                     # CORRECCION ATMOSFERICA
                     print('3. Correción atmosferica...')
@@ -204,12 +205,12 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     # COMPRIME Y MUEVE EL L2 CORREGIDO
                     print('3.1 Moviendo L2A a data y peta...')
                     # MANDA A DATA
-                    os.system('mkdir -p '+pathInput+tile+'/'+anio)
+                    os.system('mkdir -p '+pathInput+tile+'/')
                     os.system('zip -r '+pathTmp+dirI+'.zip '+pathTmp+dirI)
-                    os.system('cp '+pathTmp+dirI+'.zip '+pathInput+tile+'/'+anio)
-                    archivol2 = pathInput+tile+'/'+anio+'/'+dirI+'.zip'
+                    os.system('cp '+pathTmp+dirI+'.zip '+pathInput+tile+'/')
+                    archivol2 = pathInput+tile+'/'+dirI+'.zip'
                     # MANDA A PETA
-                    os.system('scp '+pathTmp+dirI+'.zip lanotadm@stratus:'+pathOutputPeta+'L2A/')
+                    os.system('scp '+pathTmp+dirI+'.zip lanotadm@stratus:'+pathOutputPeta+'L2A/'+tile+'/')
                     print(l2a)
                     print(dirI)
                     #print(fecha)
@@ -275,12 +276,11 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     # POLIGONIZACION
                     print('6 Procesando poligonizacion...')
                     archivoProc,banderaSar,totalSar = processing_sentinel2.poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty)
-                    fechaProc = processing_sentinel2.obtieneFechaProc()
                     if banderaSar == True:
-                        print('6.1 Aplicando mascara detfoo vectorial...')
+                        #print('6.1 Aplicando mascara detfoo vectorial...')
                         #processing_sentinel2.detfooMascaraVectorial(pathTmp)
-                        print('6.2 Aplicando mascara de tierra vectorial...')
-                        banderaSar, totalSarMask, archivoProc = processing_sentinel2.tierraMascaraVectorial(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta)
+                        print('6.2 Aplicando mascaras vectoriales...')
+                        banderaSar, totalSarMask, archivoProc = processing_sentinel2.mascarasVectoriales(tile,anio,fecha,fechaImaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta)
                         banderaSar_log = 'si'
                     
                     # BANDERA DE SARGAZO Y AREA TOTAL
@@ -295,11 +295,11 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     # COMPUESTO RGB
                     print('7. Creando compuesto RGB...')
                     print('7.1 Creando compuesto RGB FC...')
-                    os.system('mkdir -p '+pathOutputGeoTiff+'sargazo/'+tile+'/'+anio)                
-                    processing_sentinel2.RGB(pathTmp+bandas20m[4]+'.tif',pathTmp+bandas20m[3]+'.tif',pathTmp+bandas20m[2]+'.tif',tile,anio,fecha,fechaProc,pathOutputGeoTiff,pathOutputPeta)
+                    os.system('mkdir -p '+pathOutputGeoTiff+'sargazo/'+tile+'/')                
+                    processing_sentinel2.RGB(pathTmp+bandas20m[4]+'.tif',pathTmp+bandas20m[3]+'.tif',pathTmp+bandas20m[2]+'.tif',tile,anio,fecha,fechaImaProc,pathOutputGeoTiff,pathOutputPeta)
                     print('7.2 Creando compuesto RGB TC...')
-                    os.system('mkdir -p '+pathOutputGeoTiff+'TC/'+tile+'/'+anio)
-                    processing_sentinel2.RGB_TC(tile,anio,fecha,fechaProc,'L2A','R20m',pathTmp+dirI,pathOutputGeoTiff,pathOutputPeta)
+                    os.system('mkdir -p '+pathOutputGeoTiff+'TC/'+tile+'/')
+                    processing_sentinel2.RGB_TC(tile,anio,fecha,fechaImaProc,'L2A','R20m',pathTmp+dirI,pathOutputGeoTiff,pathOutputPeta)
 
                     #fechaLog = processing_sentinel2.obtieneFechaLog()
                     #processing_sentinel2.logArchivo(pathLog+'L2A_GeoTiff.csv',fecha,tile,archivo,archivoProc,fechaLog)
@@ -307,14 +307,14 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     print('8. Añadiendo a la base de datos y log...')
                     fechaLog = processing_sentinel2.obtieneFechaLog()
                     if banderaSar == True:
-                            banderaSar_log = 'si'
+                            #banderaSar_log = 'si'
                             #totalSar = str((float(totalSar)+ float(totalSarMask))/2)
                             processing_sentinel2.obtieneVertices(archivoProc,pathVertices,pathOutputPeta)
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
                             processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar,archivoCSV)
                     else:
-                            banderaSar_log = 'no'
+                            #banderaSar_log = 'no'
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar)
 
