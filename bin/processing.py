@@ -208,7 +208,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         print('3.1 Moviendo L2A a data y peta...')
                         # MANDA A DATA
                         os.system('mkdir -p '+pathInput+tile+'/')
-                        os.system('zip -r '+pathTmp+dirI.split('.')[0]+'.zip '+pathTmp+dirI)
+                        os.chdir(pathTmp)
+                        os.system('zip -r '+dirI.split('.')[0]+'.zip '+dirI)
                         os.system('cp '+pathTmp+dirI.split('.')[0]+'.zip '+pathInput+tile+'/')
                         archivol2 = pathInput+tile+'/'+dirI.split('.')[0]+'.zip'
                         # MANDA A PETA
