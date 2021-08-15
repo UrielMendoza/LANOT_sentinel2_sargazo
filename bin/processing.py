@@ -195,17 +195,25 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     # CORRECCION ATMOSFERICA
                     print('3. Correción atmosferica...')
                     if processing_sentinel2.verificaL2A(tile,fecha,pathInput) == True:
+                        # COPIA DE DATA
                         archivoL2A = processing_sentinel2.copiaL2A(tile,fecha,pathInput,pathTmp)
-                        print('AQUI'+pathTmp+archivoL2A.split('/')[-1])
                         processing_sentinel2.descomprime(pathTmp+archivoL2A.split('/')[-1],pathTmp)
+                        l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*.SAFE')[0]
+                        dirI = processing_sentinel2.nomDir(l2a,'L2A')
+                        print(l2a)
+                        print(dirI)
                     else:
                         # SEN2CORE
                         pathSen2core = '../Sen2Cor-02.09.00-Linux64/bin/'
                         pathCFG = '../../sen2cor/2.9/cfg/L2A_GIPP.xml'
                         processing_sentinel2.sen2core(pathSen2core,pathCFG,pathTmp+dirI,pathTmp,'10')
-
                         # COMPRIME Y MUEVE EL L2 CORREGIDO
                         print('3.1 Moviendo L2A a data y peta...')
+                        #print(pathTmp)
+                        l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*.SAFE')[0]
+                        dirI = processing_sentinel2.nomDir(l2a,'L2A')
+                        print(l2a)
+                        print(dirI)
                         # MANDA A DATA
                         os.system('mkdir -p '+pathInput+tile+'/')
                         os.chdir(pathTmp)
@@ -216,12 +224,6 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         os.system('scp '+pathTmp+dirI.split('.')[0]+'.zip lanotadm@stratus:'+pathOutputPeta+'L2A/'+tile+'/')
                         #print(fecha)
                         #print(dirI)
-
-                    #print(pathTmp)
-                    l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*.SAFE')[0]
-                    dirI = processing_sentinel2.nomDir(l2a,'L2A')
-                    print(l2a)
-                    print(dirI)
 
                     # PORCENTAJE DE NUBES
                     print('3.2 Porcentaje de nubes')
