@@ -196,6 +196,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     print('3. Correción atmosferica...')
                     if processing_sentinel2.verificaL2A(tile,fecha,pathInput) == True:
                         archivoL2A = processing_sentinel2.copiaL2A(tile,fecha,pathInput,pathTmp)
+                        print('AQUI'+pathTmp+archivoL2A.split('/')[-1])
                         processing_sentinel2.descomprime(pathTmp+archivoL2A.split('/')[-1],pathTmp)
                     else:
                         # SEN2CORE

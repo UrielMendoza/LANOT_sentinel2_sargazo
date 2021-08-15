@@ -136,7 +136,6 @@ def descomprime(pathInput,pathOutput):
 
 def verificaL2A(tile,fecha,pathInput):
     archivo = glob(pathInput+tile+'/*'+fecha+'*'+tile+'*')
-    print('AQUI',archivo)
     if len(archivo) >= 1:
         return True
     else:
