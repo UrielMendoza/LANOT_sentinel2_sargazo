@@ -127,11 +127,23 @@ def obtieneFechaImaProc(pathDir):
     #fecha = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     return fecha
 
-def descomprime(pathInput,compresion,pathOutput):
+def descomprime(pathInput,pathOutput):
+    compresion = tipoCompresion(pathInput) 
     if compresion == 'gz':
         os.system('tar -xvzf '+pathInput+' -C '+pathOutput)
     elif compresion == 'zip':
         os.system('unzip '+pathInput+' -d '+pathOutput)
+
+def verificaL2A(tile,fecha,pathInput):
+    archivo = glob(pathInput+tile+'/*'+fecha+'*'+tile+'*')
+    if len(archivo) >= 1:
+        return True
+    else:
+        return False
+
+def copiaL2A(tile,fecha,pathInput,pathOutput):
+    archivo = glob(pathInput+tile+'/*'+fecha+'*'+tile+'*')
+    os.system('cp '+archivo+' '+pathOutput)
 
 def aperturaDS(pathBand):
     ds = gdal.Open(pathBand)

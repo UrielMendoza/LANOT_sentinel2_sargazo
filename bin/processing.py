@@ -182,8 +182,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 #                try:
                     # INICIA PROCESO
                     print('2. Descomprimiendo...')
-                    compresion = processing_sentinel2.tipoCompresion(archivo)
-                    processing_sentinel2.descomprime(archivo,compresion,pathTmp)
+                    #compresion = processing_sentinel2.tipoCompresion(archivo)
+                    processing_sentinel2.descomprime(archivo,pathTmp)
 
                     # MANDA A PETA y DATA L1C
                     print('2.1 Moviendo L1C a data y peta...')
@@ -194,11 +194,18 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 
                     # CORRECCION ATMOSFERICA
                     print('3. Correción atmosferica...')
-                    pathSen2core = '../Sen2Cor-02.09.00-Linux64/bin/'
-                    pathCFG = '../../sen2cor/2.9/cfg/L2A_GIPP.xml'
+                    if processing_sentinel2.verificaL2A(tile,fecha,pathInput) == True:
+                        archivoL2A = glob(pathInput+tile+'/*'+fecha+'*'+tile+'*')[0]
+                        #processing_sentinel2.copiaL2A(tile,fecha,pathInput,pathTmp)
+                        processing_sentinel2.descomprime(archivoL2A,pathTmp)
+                    else:
+                        # SEN2CORE
+                        pathSen2core = '../Sen2Cor-02.09.00-Linux64/bin/'
+                        pathCFG = '../../sen2cor/2.9/cfg/L2A_GIPP.xml'
+                        processing_sentinel2.sen2core(pathSen2core,pathCFG,pathTmp+dirI,pathTmp,'10')
+
                     print(dirI)
-                    print(pathTmp)
-                    processing_sentinel2.sen2core(pathSen2core,pathCFG,pathTmp+dirI,pathTmp,'10')
+                    #print(pathTmp)
                     l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*')[0]
                     dirI = processing_sentinel2.nomDir(l2a,'L2A')
 
