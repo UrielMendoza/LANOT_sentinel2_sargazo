@@ -204,24 +204,23 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         pathCFG = '../../sen2cor/2.9/cfg/L2A_GIPP.xml'
                         processing_sentinel2.sen2core(pathSen2core,pathCFG,pathTmp+dirI,pathTmp,'10')
 
-                    print(dirI)
-                    #print(pathTmp)
-                    l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*')[0]
-                    dirI = processing_sentinel2.nomDir(l2a,'L2A')
+                        # COMPRIME Y MUEVE EL L2 CORREGIDO
+                        print('3.1 Moviendo L2A a data y peta...')
+                        # MANDA A DATA
+                        os.system('mkdir -p '+pathInput+tile+'/')
+                        os.system('zip -r '+pathTmp+dirI.split('.')[0]+'.zip '+pathTmp+dirI)
+                        os.system('cp '+pathTmp+dirI.split('.')[0]+'.zip '+pathInput+tile+'/')
+                        archivol2 = pathInput+tile+'/'+dirI.split('.')[0]+'.zip'
+                        # MANDA A PETA
+                        os.system('scp '+pathTmp+dirI.split('.')[0]+'.zip lanotadm@stratus:'+pathOutputPeta+'L2A/'+tile+'/')
+                        #print(fecha)
+                        #print(dirI)
 
-                    # COMPRIME Y MUEVE EL L2 CORREGIDO
-                    print('3.1 Moviendo L2A a data y peta...')
-                    # MANDA A DATA
-                    os.system('mkdir -p '+pathInput+tile+'/')
-                    os.system('zip -r '+pathTmp+dirI+'.zip '+pathTmp+dirI)
-                    os.system('cp '+pathTmp+dirI+'.zip '+pathInput+tile+'/')
-                    archivol2 = pathInput+tile+'/'+dirI+'.zip'
-                    # MANDA A PETA
-                    os.system('scp '+pathTmp+dirI+'.zip lanotadm@stratus:'+pathOutputPeta+'L2A/'+tile+'/')
+                    #print(pathTmp)
+                    l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*.SAFE')[0]
+                    dirI = processing_sentinel2.nomDir(l2a,'L2A')
                     print(l2a)
                     print(dirI)
-                    #print(fecha)
-                    #print(dirI)
 
                     # PORCENTAJE DE NUBES
                     print('3.2 Porcentaje de nubes')
