@@ -145,6 +145,7 @@ def verificaL2A(tile,fecha,pathInput):
 def copiaL2A(tile,fecha,pathInput,pathOutput):
     archivo = glob(pathInput+tile+'/*'+fecha+'*'+tile+'*')
     os.system('cp '+archivo+' '+pathOutput)
+    return archivo
 
 def aperturaDS(pathBand):
     ds = gdal.Open(pathBand)

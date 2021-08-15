@@ -195,9 +195,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     # CORRECCION ATMOSFERICA
                     print('3. Correción atmosferica...')
                     if processing_sentinel2.verificaL2A(tile,fecha,pathInput) == True:
-                        archivoL2A = glob(pathInput+tile+'/*'+fecha+'*'+tile+'*')[0]
-                        #processing_sentinel2.copiaL2A(tile,fecha,pathInput,pathTmp)
-                        processing_sentinel2.descomprime(archivoL2A.split('/')[-1],pathTmp)
+                        archivoL2A = processing_sentinel2.copiaL2A(tile,fecha,pathInput,pathTmp)
+                        processing_sentinel2.descomprime(pathTmp+archivoL2A.split('/')[-1],pathTmp)
                     else:
                         # SEN2CORE
                         pathSen2core = '../Sen2Cor-02.09.00-Linux64/bin/'
