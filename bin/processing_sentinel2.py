@@ -44,8 +44,8 @@ def obtieneArchivoZip(pathArchivo):
     archivo = pathArchivo.split('/')[-1].split('.')[0]+'.zip'
     return archivo
 
-def sen2core(pathSen2Core,pathCFG,pathInput,pathOutput,resolution):
-    os.system(pathSen2Core+'L2A_Process --resolution '+resolution+' --GIP_L2A '+pathCFG+' --output_dir '+pathOutput+' '+pathInput)
+def sen2cor(pathSen2Cor,pathCFG,pathInput,pathOutput,resolution):
+    os.system(pathSen2Cor+'L2A_Process --resolution '+resolution+' --GIP_L2A '+pathCFG+' --output_dir '+pathOutput+' '+pathInput)
 
 def verificaLog(pathLog,archivo):
     file = open(pathLog,'r')
@@ -284,7 +284,7 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
     df_detfooMask = gpd.read_file(pathTmp+'MSK_DETFOO_B8A.json')
     res_difference = gpd.overlay(res_difference, df_detfooMask, how='difference')
     print('=============================================')
-    print('Detección de sargazo con mascara detfoo: ',len(res_difference),' elementos')
+    print('Detección de sargazo con mascara detfoo y entropia: ',len(res_difference),' elementos')
     print('=============================================')
     #df_maskCloud = gpd.read_file(pathTmp+'cloudMask_b250_bin_rec_mask_tmp.json')
     #res_difference = gpd.overlay(res_difference, df_maskCloud, how='difference')
@@ -298,7 +298,7 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
     if len(res_difference)>= 1:
         banderaSar = True
         # Km2
-        totalSar = str(round(df['area_km2'].sum()*0.000001,4))
+        totalSar = str(round(df['area_km2'].sum(),4))
         # ARCHIVO FINAL
 
         # MANDA A DATA

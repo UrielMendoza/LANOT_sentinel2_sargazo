@@ -206,11 +206,11 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         print(l2a)
                         print(dirI)
                     else:
-                        # SEN2CORE
+                        # SEN2COR
                         print('No ha sido corregido atmosfericamente, porcesando con Se2Cor...')
-                        pathSen2core = '../Sen2Cor-02.09.00-Linux64/bin/'
+                        pathSen2cor = '../Sen2Cor-02.09.00-Linux64/bin/'
                         pathCFG = '../../sen2cor/2.9/cfg/L2A_GIPP.xml'
-                        processing_sentinel2.sen2core(pathSen2core,pathCFG,pathTmp+dirI,pathTmp,'10')
+                        processing_sentinel2.sen2cor(pathSen2cor,pathCFG,pathTmp+dirI,pathTmp,'10')
                         # COMPRIME Y MUEVE EL L2 CORREGIDO
                         print('3.1 Moviendo L2A a data y peta...')
                         #print(pathTmp)
@@ -344,7 +344,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     os.system('rm -r '+pathTmp+'*json')
                     os.system('rm -r '+pathTmp+'*.csv')
                     os.system('rm -r '+pathTmp+'*.zip')
-                    #os.system('rm -r '+pathTmp+'*.SAFE')
+                    os.system('rm -r '+pathTmp+'*.SAFE')
                 
             else:
                 print('Archivo: '+archivo+' ya fue procesado')
