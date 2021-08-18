@@ -217,7 +217,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         # MANDA A DATA
                         os.system('mkdir -p '+pathInput+tile+'/')
                         os.chdir(pathTmp)
-                        os.system('zip -r '+dirI.split('.')[0]+'.zip '+dirI)
+                        os.system('zip '+dirI.split('.')[0]+'.zip '+dirI)
                         os.system('cp '+pathTmp+dirI.split('.')[0]+'.zip '+pathInput+tile+'/')
                         archivol2 = pathInput+tile+'/'+dirI.split('.')[0]+'.zip'
                         # MANDA A PETA
@@ -335,10 +335,10 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 
 #                finally:
                 # BORRA BASURA
-                    #os.system('rm -r '+pathTmp+'*.tif')
-                    #os.system('rm -r '+pathTmp+'*json')
-                    #os.system('rm -r '+pathTmp+'*.csv')
-                    #os.system('rm -r '+pathTmp+'*.zip')
+                    os.system('rm -r '+pathTmp+'*.tif')
+                    os.system('rm -r '+pathTmp+'*json')
+                    os.system('rm -r '+pathTmp+'*.csv')
+                    os.system('rm -r '+pathTmp+'*.zip')
                     #os.system('rm -r '+pathTmp+'*.SAFE')
                 
             else:
