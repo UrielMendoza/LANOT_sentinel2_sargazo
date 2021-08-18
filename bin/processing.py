@@ -203,6 +203,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         processing_sentinel2.descomprime(pathTmp+archivoL2A.split('/')[-1],pathTmp)
                         l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*.SAFE')[0]
                         dirI = processing_sentinel2.nomDir(l2a,'L2A')
+                        archivol2 = pathInput+tile+'/'+dirI.split('.')[0]+'.zip'
                         print(l2a)
                         print(dirI)
                     else:
