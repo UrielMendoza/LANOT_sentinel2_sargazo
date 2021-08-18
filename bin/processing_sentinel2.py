@@ -683,7 +683,7 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia,dsSCL):
 def creaCSV(pathInput,pathOutput):
     gdf = gpd.read_file(pathInput)
     gdf.area_km2 = round(gdf.area_km2,4)
-    crs = gdf.crs['init'].split(':')[-1]
+    crs = gdf.crs.srs.split(':')[-1]
     archivoCSV = pathOutput+pathInput.split('/')[-1].split('.')[0]+'.csv'
     gdf.to_csv(archivoCSV,index=False)
 

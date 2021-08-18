@@ -198,6 +198,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     print('3. Correción atmosferica...')
                     if processing_sentinel2.verificaL2A(tile,fecha,pathInput) == True:
                         # COPIA DE DATA
+                        print('Ya fue corregido anteriormente')
                         archivoL2A = processing_sentinel2.copiaL2A(tile,fecha,pathInput,pathTmp)
                         processing_sentinel2.descomprime(pathTmp+archivoL2A.split('/')[-1],pathTmp)
                         l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*.SAFE')[0]
@@ -206,6 +207,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         print(dirI)
                     else:
                         # SEN2CORE
+                        print('No ha sido corregido atmosfericamente, porcesando con Se2Cor...')
                         pathSen2core = '../Sen2Cor-02.09.00-Linux64/bin/'
                         pathCFG = '../../sen2cor/2.9/cfg/L2A_GIPP.xml'
                         processing_sentinel2.sen2core(pathSen2core,pathCFG,pathTmp+dirI,pathTmp,'10')
