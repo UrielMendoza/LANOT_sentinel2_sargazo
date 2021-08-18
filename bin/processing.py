@@ -115,6 +115,8 @@ def manual():
 
 def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputPeta,pathInputPeta,pathVertices,pathLog,dateTime):
 
+    owd = os.getcwd()
+
     # MANUAL Y AUTOMATICO
     if dateTime == 'automatico':
         start_date,end_date,region,landMask = automatico()
@@ -225,6 +227,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         #print(fecha)
                         #print(dirI)
 
+                    os.chdir(owd)
                     # PORCENTAJE DE NUBES
                     print('3.2 Porcentaje de nubes')
                     porcNube = processing_sentinel2.obtienePorcentajeNube(pathTmp+dirI)
