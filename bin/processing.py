@@ -156,14 +156,14 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         #    print('Error de descarga')
         #    pass
     
-    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
+    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QDF')
 
     print(tilesDirs)
 
     # ALGORITMO
     for tileDir in tilesDirs:
         
-        archivos = processing_sentinel2.listaArchivos(tileDir+'/*')
+        archivos = processing_sentinel2.listaArchivos(tileDir+'/*20160924*')
         archivos.sort()
         
         for archivo in archivos:
