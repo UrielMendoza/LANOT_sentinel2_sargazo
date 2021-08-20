@@ -272,7 +272,7 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
     #df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json')
     # SIN DETFOO
     df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar.json')
-    df_mask = gpd.read_file(pathLM+'land_UTM16N_20m'+bufferLM+'.geojson')
+    df_mask = gpd.read_file(pathLM+'land_UTM16N_20m_1.geojson')
     res_difference = gpd.overlay(df, df_mask, how='difference')
     print('=============================================')
     print('Detección de sargazo con mascara de tierra: ',len(res_difference),' elementos')
@@ -293,7 +293,7 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
     #print('Detección de sargazo con mascara de nubes: ',len(res_difference),' elementos')
     #print('=============================================')
     os.system('mkdir -p '+pathOutput+tile+'/')
-    nombre = pathOutput+tile+'/'+'S2_MSI_SAR_'+tile+'_'+bufferLM+fecha+'_'+fechaProc+".json"
+    nombre = pathOutput+tile+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+'_'+fechaProc+".json"
     res_difference["geometry"] = [MultiPolygon([feature]) if type(feature) == Polygon \
     else feature for feature in res_difference["geometry"]]
     if len(res_difference)>= 1:
