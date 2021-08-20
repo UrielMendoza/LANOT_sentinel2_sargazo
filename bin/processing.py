@@ -151,7 +151,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 
         # Reste dias para prueba
         #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
-        daysDelta = 4
+        daysDelta = 3
         download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=daysDelta), end_date - datetime.timedelta(days=daysDelta), pathTmp, unzip=False)
         #except AttributeError:
         #    print('Error de descarga')
