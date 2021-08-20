@@ -216,7 +216,8 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         df['fecha'] = fecha
         df['fechaDia'] = fechaDia
         df["area_km2"] = round(df['geometry'].area*0.000001,4)
-        gdf = gpd.read_file(pathLM+'land_UTM16N_20m_distance.geojson')
+        #gdf = gpd.read_file(pathLM+'land_UTM16N_20m_distance.geojson')
+        gdf = gpd.read_file(pathLM+'land_UTM16N_20m_1.geojson')
         distances = []
         df['distCosta_km'] = None
         for i in range(len(df)):
@@ -713,23 +714,23 @@ def insertSargazoDB(conect,cur,crs,pathInput):
     row = cur.fetchall()
     conect.commit()
 
-def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar):
+def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube):
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     fechaDia = time.strftime('%Y-%m-%d')
     fechaproc = obtieneFechaProc()
     print('Añadiendo log a DB: ')
-    cur.execute("INSERT INTO sargazo_log VALUES (DEFAULT, '"+pathl2a+"', '"+pathsargazo+"', '"+fecha+"', '"+fechaproc+"', '"+fechaDia+"', '"+tile+"','"+sargazo+"','"+totalsar+"')")
+    cur.execute("INSERT INTO sargazo_log VALUES (DEFAULT, '"+pathl2a+"', '"+pathsargazo+"', '"+fecha+"', '"+fechaproc+"', '"+fechaDia+"', '"+tile+"','"+sargazo+"','"+totalsar+"','"+porcNube+"')")
     cur.execute("SELECT * from sargazo_log")
     row = cur.fetchall()
     conect.commit()
 
 #Abrimos conexión con la base de datos
 
-def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar,pathInput):
+def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar,porcNube,pathInput):
     conect,cur = conexionDB()
     try:
         insertSargazoDB(conect,cur,crs,pathInput)
-        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar)
+        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube)
         print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
@@ -738,10 +739,10 @@ def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsa
         conect.close()
     conect.close()
 
-def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar):
+def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar,porcNube):
     conect,cur = conexionDB()
     try:        
-        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar)
+        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube)
         #print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
@@ -793,3 +794,18 @@ def enviaMail(fecha,tile,error):
     session.sendmail(sender_address, receiver_address, text)
     session.quit()
     print('Mail enviado')
+
+def createMosaic(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
+    tiles = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
+    archivosTiff = []
+    for tile in tiles:
+        archivoTiff = glob.glob(pathInput+'/'+compuesto+'/'+tile+'/*'+fecha+'*')[0]
+        archivosTiff.append(archivoTiff)
+
+    archivosTiffString = " ".join(archivosTiff)
+    os.system('gdal_merge.py -o '+pathInput+'/'+compuesto+'/mosaicos/latest_'+compuesto+'.tif -of gtiff '+archivosTiffString)
+
+    # MANDA A PETA
+    os.system('scp '+pathInput+'/'+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')
+    # MANDA A CUMULUS
+    os.system('scp '+pathInput+'/'+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')

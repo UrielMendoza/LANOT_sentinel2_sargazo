@@ -18,7 +18,7 @@ def semiManual():
     start_date = None
     end_date = None
     region = "sargazo1"
-    landMask = "land_sargazo_UTM16N_20m.tif"
+    landMask = "land_sargazo_UTM16N_20m_1.tif"
     #nubesBajas = 900
     return start_date,end_date,region,landMask
 
@@ -26,7 +26,7 @@ def automatico():
     start_date = datetime.datetime.now()
     end_date = datetime.datetime.now()
     region = "sargazo1"
-    landMask = "land_sargazo_UTM16N_20m.tif"
+    landMask = "land_sargazo_UTM16N_20m_1.tif"
     #nubesBajas = 900
     return start_date,end_date,region,landMask
 
@@ -95,7 +95,7 @@ def manual():
         if resLM == 1 or resLM == 2 or resLM == 3:
             break
     if resLM == 1:
-        landMask = "land_sargazo_UTM16N_20m.tif"
+        landMask = "land_sargazo_UTM16N_20m_1.tif"
     elif resLM == 2:
         landMask = "land_sargazo_UTM16N_20m_b2km.tif"
     elif resLM == 3:
@@ -113,7 +113,7 @@ def manual():
 
     return start_date,end_date,region,landMask
 
-def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputPeta,pathInputPeta,pathVertices,pathLog,dateTime):
+def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,dateTime):
 
     owd = os.getcwd()
 
@@ -234,9 +234,15 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     # PORCENTAJE DE NUBES
                     print('3.2 Porcentaje de nubes')
                     porcNube = processing_sentinel2.obtienePorcentajeNube(pathTmp+dirI)
+                    print('Procentaje de nubes ',porcNube)
                     if porcNube > 60.0 :
-                        nubesBajas = 600
-                        bufferNubes = 200
+                        #nubesBajas = 600
+                        #bufferNubes = 200
+                        print('=============================================')
+                        print('Imágen con exceso de nubosidad, no se procesara')
+                        print('=============================================')
+                        # SE PASA A OTRA IMAGEN
+                        break
                     elif porcNube > 30.0:
                         #nubesBajas = 900
                         nubesBajas = 800
@@ -245,7 +251,6 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         #nubesBajas = 2500
                         nubesBajas = 1000
                         bufferNubes = 400
-                    print('Procentaje de nubes ',porcNube)
                     print('Valor de temperatura para filtro nubes bajas: ',nubesBajas)
                     print('Valor de buffer para nubes: ',bufferNubes)                  
           
@@ -306,6 +311,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         #processing_sentinel2.obtieneVertices(archivoProc,pathVertices,pathOutputPeta)
                     else:
                         banderaSar_log = 'no'
+                        totalSar = '0'
 
                     # COMPUESTO RGB
                     print('7. Creando compuesto RGB...')
@@ -327,11 +333,11 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                             processing_sentinel2.obtieneVertices(archivoProc,pathVertices,pathOutputPeta)
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
-                            processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar,archivoCSV)
+                            processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar,str(porcNube),archivoCSV)
                     else:
                             #banderaSar_log = 'no'
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
-                            processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar)
+                            processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar,str(porcNube))
 
 #                except IndexError:
 #                except Exception as e:
@@ -350,10 +356,18 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
             else:
                 print('Archivo: '+archivo+' ya fue procesado')
 
-            print("Tiempo de procesamiento: ",time.time()-ini)
+            
  
     # BORRA DIR DESCARGA
     #os.system('rm -r '+pathTmp+'*')
+    if dateTime == 'automatico':
+        print('9. Procesando mosaico ...')
+        # MOSAICO TC
+        processing_sentinel2.createMosaic(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+        # MOSAICO SARGAZO
+        processing_sentinel2.createMosaic(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+        
+        print("Tiempo de procesamiento: ",time.time()-ini)
 
 
 
