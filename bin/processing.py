@@ -310,7 +310,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     print('5.7 Procesando sargazo con filtro...')
                     nuMask = processing_sentinel2.pixelNubesBajasN(ref,dsSar,nubesBajas,entropia,scl)
                     processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')
-                    nuMask = None
+                    del nuMask 
 
                     # POLIGONIZACION
                     print('6 Procesando poligonizacion...')
