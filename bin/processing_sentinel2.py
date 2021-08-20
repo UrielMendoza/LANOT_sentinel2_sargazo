@@ -799,10 +799,12 @@ def createMosaic(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     tiles = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
     archivosTiff = []
     for tile in tiles:
-        print('AQUI'+pathInput+'/'+compuesto+'/'+tile+'/*'+fecha+'*')
-        archivoTiff = glob(pathInput+'/'+compuesto+'/'+tile+'/*'+fecha+'*')[0]
-        archivosTiff.append(archivoTiff)
-
+        #print('AQUI '+pathInput+'/'+compuesto+'/'+tile+'/*'+fecha+'*')
+        try:
+            archivoTiff = glob(pathInput+'/'+compuesto+'/'+tile+'/*'+fecha+'*')[0]
+            archivosTiff.append(archivoTiff)
+        except IndexError:
+            continue        
     archivosTiffString = " ".join(archivosTiff)
     os.system('gdal_merge.py -o '+pathInput+'/'+compuesto+'/mosaicos/latest_'+compuesto+'.tif -of gtiff '+archivosTiffString)
 
