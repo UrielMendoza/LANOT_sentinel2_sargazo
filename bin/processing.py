@@ -157,7 +157,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         #    pass
     
     tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QEG')
-
+    numImagenes = len(tilesDirs)
     print(tilesDirs)
 
     # ALGORITMO
@@ -362,7 +362,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
  
     # BORRA DIR DESCARGA
     #os.system('rm -r '+pathTmp+'*')
-    if dateTime == 'automatico':
+    if dateTime == 'automatico' and numImagenes != 0:
         print('9. Procesando mosaico ...')
         # MOSAICO TC
         processing_sentinel2.createMosaic(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
