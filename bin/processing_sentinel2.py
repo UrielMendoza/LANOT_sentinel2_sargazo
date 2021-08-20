@@ -301,7 +301,7 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
         # Km2
         totalSar = str(round(df['area_km2'].sum(),4))
         # ARCHIVO FINAL
-
+        
         # MANDA A DATA
         res_difference.to_file(nombre, driver="GeoJSON")
         # MANDA A PETA
