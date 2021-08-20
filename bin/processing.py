@@ -242,6 +242,20 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         print('=============================================')
                         print('Imágen con exceso de nubosidad, no se procesara')
                         print('=============================================')
+                        # HACE LOS COMPUESTOS RGB PARA EL MOSAICO
+                        print('4. Convirtiendo a GeoTIFF...')
+                        for banda20 in bandas20m:
+                            dirB20 = processing_sentinel2.listaBandas(pathTmp+dirI,'L2A','R20m',banda20)
+                            dsB20 = processing_sentinel2.aperturaDS(dirB20)
+                            processing_sentinel2.imgToGeoTIF(dsB20,banda20,pathTmp)
+                        # COMPUESTO RGB
+                        print('5. Creando compuesto RGB...')
+                        print('5.1 Creando compuesto RGB FC...')
+                        os.system('mkdir -p '+pathOutputGeoTiff+'sargazo/'+tile+'/')                
+                        processing_sentinel2.RGB(pathTmp+bandas20m[4]+'.tif',pathTmp+bandas20m[3]+'.tif',pathTmp+bandas20m[2]+'.tif',tile,anio,fecha,fechaImaProc,pathOutputGeoTiff,pathOutputPeta)
+                        print('5.2 Creando compuesto RGB TC...')
+                        os.system('mkdir -p '+pathOutputGeoTiff+'TC/'+tile+'/')
+                        processing_sentinel2.RGB_TC(tile,anio,fecha,fechaImaProc,'L2A','R20m',pathTmp+dirI,pathOutputGeoTiff,pathOutputPeta)
                         # SE PASA A OTRA IMAGEN
                         os.system('rm -r '+pathTmp+'*.zip')
                         os.system('rm -r '+pathTmp+'*.SAFE')

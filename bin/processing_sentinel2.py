@@ -799,6 +799,7 @@ def createMosaic(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     tiles = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
     archivosTiff = []
     for tile in tiles:
+        print('AQUI'+pathInput+'/'+compuesto+'/'+tile+'/*'+fecha+'*')
         archivoTiff = glob(pathInput+'/'+compuesto+'/'+tile+'/*'+fecha+'*')[0]
         archivosTiff.append(archivoTiff)
 
