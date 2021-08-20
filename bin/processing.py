@@ -156,14 +156,14 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         #    print('Error de descarga')
         #    pass
     
-    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QDF')
+    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QEG')
 
     print(tilesDirs)
 
     # ALGORITMO
     for tileDir in tilesDirs:
         
-        archivos = processing_sentinel2.listaArchivos(tileDir+'/*20160924*')
+        archivos = processing_sentinel2.listaArchivos(tileDir+'/*20210625*')
         archivos.sort()
         
         for archivo in archivos:
@@ -242,6 +242,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         print('Imágen con exceso de nubosidad, no se procesara')
                         print('=============================================')
                         # SE PASA A OTRA IMAGEN
+                        os.system('rm -r '+pathTmp+'*.zip')
+                        os.system('rm -r '+pathTmp+'*.SAFE')
                         break
                     elif porcNube > 30.0:
                         #nubesBajas = 900
