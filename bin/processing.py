@@ -257,6 +257,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         os.system('mkdir -p '+pathOutputGeoTiff+'TC/'+tile+'/')
                         processing_sentinel2.RGB_TC(tile,anio,fecha,fechaImaProc,'L2A','R20m',pathTmp+dirI,pathOutputGeoTiff,pathOutputPeta)
                         # SE PASA A OTRA IMAGEN
+                        os.system('rm -r '+pathTmp+'*.tif')
                         os.system('rm -r '+pathTmp+'*.zip')
                         os.system('rm -r '+pathTmp+'*.SAFE')
                         break
