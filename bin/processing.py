@@ -157,14 +157,14 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         #    print('Error de descarga')
         #    pass
     
-    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QEG')
+    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
     numImagenes = len(tilesDirs)
     print(tilesDirs)
 
     # ALGORITMO
     for tileDir in tilesDirs:
         
-        archivos = processing_sentinel2.listaArchivos(tileDir+'/*20210625*')
+        archivos = processing_sentinel2.listaArchivos(tileDir+'/*2021*')
         archivos.sort()
         
         for archivo in archivos:
@@ -361,8 +361,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 
             
  
-    # BORRA DIR DESCARGA
-    #os.system('rm -r '+pathTmp+'*')
+
     if dateTime == 'automatico' and numImagenes != 0:
         print('9. Procesando mosaico ...')
         # MOSAICO TC
@@ -371,6 +370,9 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         processing_sentinel2.createMosaic(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
         
         print("Tiempo de procesamiento: ",time.time()-ini)
+
+    # BORRA DIR DESCARGA
+    #os.system('rm -r '+pathTmp+'*')
 
 
 
