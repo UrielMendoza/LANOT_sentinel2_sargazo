@@ -256,6 +256,12 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         print('5.2 Creando compuesto RGB TC...')
                         os.system('mkdir -p '+pathOutputGeoTiff+'TC/'+tile+'/')
                         processing_sentinel2.RGB_TC(tile,anio,fecha,fechaImaProc,'L2A','R20m',pathTmp+dirI,pathOutputGeoTiff,pathOutputPeta)
+                        # AGREGA A LA DB
+                        archivoProc = ''
+                        fechaLog = processing_sentinel2.obtieneFechaLog()
+                        banderaSar_log = 'no_procesado'
+                        totalSar = '0'
+                        processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar,str(porcNube))
                         # SE PASA A OTRA IMAGEN
                         os.system('rm -r '+pathTmp+'*.tif')
                         os.system('rm -r '+pathTmp+'*.zip')

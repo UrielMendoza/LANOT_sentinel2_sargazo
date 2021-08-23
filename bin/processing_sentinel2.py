@@ -301,7 +301,7 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
         # Km2
         totalSar = str(round(df['area_km2'].sum(),4))
         # ARCHIVO FINAL
-        
+
         # MANDA A DATA
         res_difference.to_file(nombre, driver="GeoJSON")
         # MANDA A PETA
@@ -611,7 +611,7 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia,dsSCL):
 #                    nuMask[i,j] = 0
 #                    listaBanderas.append('Entropia')
 #                    contEnt += 1    
-                elif (scl[i,j] == 3) or (scl[i,j] == 8) or (scl[i,j] == 9) or (scl[i,j] == 10):
+                elif (scl[i,j] == 3) or (scl[i,j] == 8) or (scl[i,j] == 9) or (scl[i,j] == 10) or (scl[i,j] == 11):
                     nuMask[i,j] = 0
                     listaBanderas.append('SCL')
                     contSCL += 1  
