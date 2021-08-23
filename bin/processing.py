@@ -157,14 +157,14 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         #    print('Error de descarga')
         #    pass
     
-    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
+    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QEJ')
     numImagenes = len(tilesDirs)
     print(tilesDirs)
 
     # ALGORITMO
     for tileDir in tilesDirs:
         
-        archivos = processing_sentinel2.listaArchivos(tileDir+'/*2021*')
+        archivos = processing_sentinel2.listaArchivos(tileDir+'/*20180726*')
         archivos.sort()
         
         for archivo in archivos:
@@ -236,7 +236,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     print('3.2 Porcentaje de nubes')
                     porcNube = processing_sentinel2.obtienePorcentajeNube(pathTmp+dirI)
                     print('Procentaje de nubes ',porcNube)
-                    if porcNube > 60.0 :
+                    if porcNube >= 80.0 :
                         #nubesBajas = 600
                         #bufferNubes = 200
                         print('=============================================')
