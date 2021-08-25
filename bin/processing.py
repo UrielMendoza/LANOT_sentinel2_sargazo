@@ -5,6 +5,7 @@ Created on Fri Nov 20 23:52:19 2020
 
 @author: urielm
 """
+
 import os
 import time
 import datetime
@@ -115,6 +116,7 @@ def manual():
 
 def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,dateTime):
 
+    iniTotal = time.time()
     owd = os.getcwd()
 
     # MANUAL Y AUTOMATICO
@@ -143,46 +145,61 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
     tiles = base.tiles[region]
      
     if dateTime != 'semiManual':
-        #try:
-        # DESCARGA
-        print('1. Descargando...')
-        print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
-        #download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
+        try:
+            # DESCARGA
+            print('1. Descargando...')
+            print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
+            #download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
 
-        # Reste dias para prueba
-        #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
-        daysDelta = 3
-        download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=daysDelta), end_date - datetime.timedelta(days=daysDelta), pathTmp, unzip=False)
-        #except AttributeError:
-        #    print('Error de descarga')
+            # Reste dias para prueba
+            #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
+            daysDelta = 3
+            download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=daysDelta), end_date - datetime.timedelta(days=daysDelta), pathTmp, unzip=False)
+        except Exception as e:
+            print('***Error en la descarga***')
+            processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',e)
+            processing_sentinel2.enviaMail(start_date.strftime('%Y%m%d')+'-'+end_date.strftime('%Y%m%d'),'descarga',e)
         #    pass
     
-    tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QEJ')
-    numImagenes = len(tilesDirs)
-    print(tilesDirs)
+    try:
+        tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QDJ')
+        numImagenes = len(tilesDirs)
+        print(tilesDirs)
+    except Exception as e:
+        print('***Error en listar archivos***')
+        processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',e)
+        processing_sentinel2.enviaMail('lista','lista',e)
 
     # ALGORITMO
-    for tileDir in tilesDirs:
+    for tileDir in tilesDirs:        
+        try:
+            archivos = processing_sentinel2.listaArchivos(tileDir+'/*20210817*')
+            archivos.sort()
+        except Exception as e:
+            print('***Error en listar archivos***')
+            processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',e)
+            processing_sentinel2.enviaMail('lista','lista',e)
         
-        archivos = processing_sentinel2.listaArchivos(tileDir+'/*20180726*')
-        archivos.sort()
-        
-        for archivo in archivos:
-            
-            ini = time.time()
-            print('Procesando: '+archivo)
-            fecha = processing_sentinel2.obtieneFecha(archivo)
-            fechaImaProc = processing_sentinel2.obtieneFechaImaProc(archivo)
-            tile = processing_sentinel2.obtieneTile(archivo)
-            anio = processing_sentinel2.obtieneAnio(archivo)
-            dirI = processing_sentinel2.nomDir(archivo,'L2A')
-            print("Fecha: "+fecha)
-            print("Tile: "+tile)
+        for archivo in archivos:            
+            try:
+                iniTProc = time.time()
+                print('Procesando: '+archivo)
+                fecha = processing_sentinel2.obtieneFecha(archivo)
+                fechaImaProc = processing_sentinel2.obtieneFechaImaProc(archivo)
+                tile = processing_sentinel2.obtieneTile(archivo)
+                anio = processing_sentinel2.obtieneAnio(archivo)
+                dirI = processing_sentinel2.nomDir(archivo,'L2A')
+                print("Fecha: "+fecha)
+                print("Tile: "+tile)
+            except Exception as e:
+                print('***Error en obtener datos***')
+                processing_sentinel2.agregaErrorSargazoDB(archivo,'',fecha,tile,e)
+                processing_sentinel2.enviaMail(fecha,tile,e)
 
             # COMPRUEBA LOG
             #if not processing_sentinel2.verificaLog(pathLog+nomLog,archivo):
             if processing_sentinel2.verificaSargazoDB(tile,fecha) == 0:                   
-#                try:
+                try:
                     # INICIA PROCESO
                     print('2. Descomprimiendo...')
                     #compresion = processing_sentinel2.tipoCompresion(archivo)
@@ -190,6 +207,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 
                     # MANDA A PETA y DATA L1C
                     print('2.1 Moviendo L1C a data y peta...')
+                    archivol1c = pathInputL1C+tile+'/'+archivo
                     os.system('mkdir -p '+pathInputL1C+tile+'/')
                     os.system('cp '+archivo+' '+pathInputL1C+tile+'/')
                     # MANDA A PETA
@@ -359,19 +377,21 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                             processing_sentinel2.obtieneVertices(archivoProc,pathVertices,pathOutputPeta)
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
-                            processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar,str(porcNube),archivoCSV)
+                            tproc = time.time()-iniTProc/60
+                            processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,tile,banderaSar_log,totalSar,str(porcNube),str(tproc),archivoCSV)
                     else:
                             #banderaSar_log = 'no'
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
-                            processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar,str(porcNube))
+                            processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,tile,banderaSar_log,totalSar,str(porcNube))
 
 #                except IndexError:
-#                except Exception as e:
-                    #print('Hay un error en la imagen: ', archivo)
+                except Exception as e:
+                    print('***Error en el procesamiento***')
                     #pass
-#                    processing_sentinel2.enviaMail(fecha, tile, e)
+                    processing_sentinel2.agregaErrorSargazoDB(archivol1c,archivol2,fecha,tile,e)
+                    processing_sentinel2.enviaMail(fecha, tile, e)
 
-#                finally:
+                finally:
                 # BORRA BASURA
                     os.system('rm -r '+pathTmp+'*.tif')
                     os.system('rm -r '+pathTmp+'*json')
@@ -382,20 +402,24 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
             else:
                 print('Archivo: '+archivo+' ya fue procesado')
 
+    try:
+        if dateTime == 'automatico' and numImagenes != 0:
+            print('9. Procesando mosaico ...')
+            # MOSAICO TC
+            processing_sentinel2.createMosaic(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+            # MOSAICO SARGAZO
+            processing_sentinel2.createMosaic(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
             
- 
-
-    if dateTime == 'automatico' and numImagenes != 0:
-        print('9. Procesando mosaico ...')
-        # MOSAICO TC
-        processing_sentinel2.createMosaic(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
-        # MOSAICO SARGAZO
-        processing_sentinel2.createMosaic(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
-        
-        print("Tiempo de procesamiento: ",time.time()-ini)
-
+            print("Tiempo de procesamiento total: ",time.time()-iniTotal)
+    except Exception as e:
+        print('***Error en el mosaico***')
+        #pass
+        processing_sentinel2.agregaErrorSargazoDB('','',fecha,'',e)
+        processing_sentinel2.enviaMail(fecha, 'mosaico', e)
     # BORRA DIR DESCARGA
-    #os.system('rm -r '+pathTmp+'*')
+    # NO DESCOMENTAR EN SEMIMANUAL PORQUE BORRA IMAGENES
+    if dateTime == 'automatico':
+        os.system('rm -r '+pathTmp+'*')
 
 
 

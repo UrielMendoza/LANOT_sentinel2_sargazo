@@ -26,6 +26,7 @@ import csv
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import ssl
 
 def obtienePorcentajeNube(pathInput):
     mydoc = minidom.parse(pathInput+'/MTD_MSIL2A.xml')
@@ -690,7 +691,6 @@ def creaCSV(pathInput,pathOutput):
 
     return archivoCSV,crs
 
-
 def conexionDB():
     conect = psycopg2.connect(
             host = "132.247.103.145",
@@ -714,32 +714,42 @@ def insertSargazoDB(conect,cur,crs,pathInput):
     row = cur.fetchall()
     conect.commit()
 
-def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube):
+def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc):
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     fechaDia = time.strftime('%Y-%m-%d')
     fechaproc = obtieneFechaProc()
     print('Añadiendo log a DB: ')
-    cur.execute("INSERT INTO sargazo_log VALUES (DEFAULT, '"+pathl2a+"', '"+pathsargazo+"', '"+fecha+"', '"+fechaproc+"', '"+fechaDia+"', '"+tile+"','"+sargazo+"','"+totalsar+"','"+porcNube+"')")
+    cur.execute("INSERT INTO sargazo_log VALUES (DEFAULT, '"+pathl2a+"', '"+pathsargazo+"', '"+fecha+"', '"+fechaproc+"', '"+fechaDia+"', '"+tile+"','"+sargazo+"','"+totalsar+"','"+porcNube+"','"+tproc+"')")
     cur.execute("SELECT * from sargazo_log")
     row = cur.fetchall()
     conect.commit()
 
-#Abrimos conexión con la base de datos
+def insertSargazoLogErrorDB(conect,cur,pathl1c,pathl2a,fecha,tile,tiperror):
+    time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
+    fechaDia = time.strftime('%Y-%m-%d')
+    fechaproc = obtieneFechaProc()
+    print('Añadiendo log a DB: ')
+    cur.execute("INSERT INTO sargazo_logerror VALUES (DEFAULT, '"+pathl1c+"', '"+pathl2a+"', '"+fecha+"', '"+fechaproc+"', '"+fechaDia+"', '"+tile+"','"+tiperror+"')")
+    cur.execute("SELECT * from sargazo_logerror")
+    row = cur.fetchall()
+    conect.commit()
 
-def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar,porcNube,pathInput):
+
+def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc,pathInput):
     conect,cur = conexionDB()
     try:
         insertSargazoDB(conect,cur,crs,pathInput)
-        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube)
+        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc)
         print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
+        enviaMail(fecha, tile, e)
         # Mandar correo
         cur.close()
         conect.close()
     conect.close()
 
-def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar,porcNube):
+def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube):
     conect,cur = conexionDB()
     try:        
         insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube)
@@ -747,12 +757,25 @@ def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,fechaproc,tile,sargazo,totalsar,
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo
+        enviaMail(fecha, tile, e)
         cur.close()
         conect.close()
     conect.close()
 
-def verificaSargazoDB(tile,fecha):
-	
+def agregaErrorSargazoDB(pathl1c,pathl2a,fecha,tile,tiperror):
+    conect,cur = conexionDB()
+    try:        
+        insertSargazoLogErrorDB(conect,cur,pathl1c,pathl2a,fecha,tile,tiperror)
+        #print ("Se agrego a la DB archivo: "+pathInput)
+    except Exception as e:
+        print(f'Ocurrio un error en la transacción DB: {e}')
+        # Mandar correo
+        enviaMail(fecha, tile, e)
+        cur.close()
+        conect.close()
+    conect.close()
+
+def verificaSargazoDB(tile,fecha):	
     conect,cur = conexionDB()
     try:
         cur.execute("SELECT * FROM sargazo_log where tile = '"+tile+"' AND fecha = '"+fecha+"'")
@@ -762,6 +785,7 @@ def verificaSargazoDB(tile,fecha):
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB log: {e}')
         # Mandar correo
+        enviaMail(fecha, tile, e)
         cur.close()
         conect.close()
     conect.close()
@@ -777,8 +801,8 @@ def enviaMail(fecha,tile,error):
 
     #The mail addresses and password
     sender_address = 'alertaslanot@gmail.com'
-    sender_pass = 'alertaslanot'
-    receiver_address = 'alertaslanot@gmail.com'
+    sender_pass = 'aet9iMei'
+    receiver_address = 'urielmendozacastillo@gmail.com'
     #Setup the MIME
     message = MIMEMultipart()
     message['From'] = sender_address
@@ -787,13 +811,15 @@ def enviaMail(fecha,tile,error):
     #The body and the attachments for the mail
     message.attach(MIMEText(mail_content, 'plain'))
     #Create SMTP session for sending the mail
-    session = smtplib.SMTP('smtp.gmail.com', 587) #use gmail with port
+    port = 465
+    context = ssl.create_default_context()
+    session = smtplib.SMTP_SSL('smtp.gmail.com', port, context=context) #use gmail with port
     session.starttls() #enable security
     session.login(sender_address, sender_pass) #login with mail_id and password
     text = message.as_string()
     session.sendmail(sender_address, receiver_address, text)
     session.quit()
-    print('Mail enviado')
+    print('Mail enviado...')
 
 def createMosaic(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     tiles = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
