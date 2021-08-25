@@ -162,7 +162,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         #    pass
     
     try:
-        tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*T16QDJ')
+        tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
         numImagenes = len(tilesDirs)
         print(tilesDirs)
     except Exception as e:
@@ -173,7 +173,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
     # ALGORITMO
     for tileDir in tilesDirs:        
         try:
-            archivos = processing_sentinel2.listaArchivos(tileDir+'/*20210817*')
+            archivos = processing_sentinel2.listaArchivos(tileDir+'/*')
             archivos.sort()
         except Exception as e:
             print('***Error en listar archivos***')
