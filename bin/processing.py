@@ -168,7 +168,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
     except Exception as e:
         print('***Error en listar archivos***')
         processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',str(e))
-        processing_sentinel2.enviaMail('lista','lista',str(e))
+        processing_sentinel2.enviaMail((start_date.strftime('%Y%m%d')+'-'+end_date.strftime('%Y%m%d'),'lista',str(e))
 
     # ALGORITMO
     for tileDir in tilesDirs:        
@@ -178,7 +178,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         except Exception as e:
             print('***Error en listar archivos***')
             processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',str(e))
-            processing_sentinel2.enviaMail('lista','lista',str(e))
+            processing_sentinel2.enviaMail((start_date.strftime('%Y%m%d')+'-'+end_date.strftime('%Y%m%d'),'lista',str(e))
         
         for archivo in archivos:            
             try:

@@ -814,12 +814,12 @@ def enviaMail(fecha,tile,error):
     port = 465
     context = ssl.create_default_context()
     session = smtplib.SMTP_SSL('smtp.gmail.com', port, context=context) #use gmail with port
-    session.starttls() #enable security
+    #session.starttls() #enable security
     session.login(sender_address, sender_pass) #login with mail_id and password
     text = message.as_string()
     session.sendmail(sender_address, receiver_address, text)
     session.quit()
-    print('Mail enviado...')
+    print('Mail de error enviado...')
 
 def createMosaic(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     tiles = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
