@@ -730,7 +730,7 @@ def insertSargazoLogErrorDB(conect,cur,pathl1c,pathl2a,fecha,tile,tiperror):
     fechaDia = time.strftime('%Y-%m-%d')
     fechaproc = obtieneFechaProc()
     print('Añadiendo log a DB: ')
-    cur.execute("INSERT INTO sargazo_logerror VALUES (DEFAULT, '"+pathl1c+"', '"+pathl2a+"', '"+fecha+"', '"+fechaproc+"', '"+fechaDia+"', '"+tile+"','"+tiperror+"')")
+    cur.execute("INSERT INTO sargazo_logerror VALUES (DEFAULT, '"+pathl1c+"', '"+pathl2a+"', '"+fecha+"', '"+fechaproc+"', '"+fechaDia+"', '"+tile+"', '"+tiperror+"')")
     cur.execute("SELECT * from sargazo_logerror")
     row = cur.fetchall()
     conect.commit()
@@ -745,8 +745,7 @@ def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo
-        linea = str(traceback.extract_stack()[-1][1])
-        enviaMail(fecha, tile, str(e),linea)
+        enviaMail(fecha, tile, traceback.format_exc())
         cur.close()
         conect.close()
     conect.close()
@@ -759,8 +758,7 @@ def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,t
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo
-        linea = str(traceback.extract_stack()[-1][1])
-        enviaMail(fecha, tile, str(e),linea)
+        enviaMail(fecha, tile, traceback.format_exc())
         cur.close()
         conect.close()
     conect.close()
@@ -773,8 +771,7 @@ def agregaErrorSargazoDB(pathl1c,pathl2a,fecha,tile,tiperror):
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo
-        linea = str(traceback.extract_stack()[-1][1])
-        enviaMail(fecha, tile,traceback.format_exc(),linea)
+        enviaMail(fecha, tile,traceback.format_exc())
         cur.close()
         conect.close()
     conect.close()
@@ -789,20 +786,18 @@ def verificaSargazoDB(tile,fecha):
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB log: {e}')
         # Mandar correo
-        linea = str(traceback.extract_stack()[-1][1])
-        enviaMail(fecha, tile, str(e),linea)
+        enviaMail(fecha, tile, traceback.format_exc())
         cur.close()
         conect.close()
     conect.close()
     
     return len(row)
 
-def enviaMail(fecha,tile,error,linea):
+def enviaMail(fecha,tile,error):
     mail_content = '''El proceso de deteccion de sargazo con sentinel-2 tuvo un error de ejecución:
     \nFecha: '''+fecha+'''
     \nTile: '''+tile+'''
-    \nError: '''+error+'''
-    \nNumero linea: '''+linea
+    \nError: '''+error
 
     #The mail addresses and password
     sender_address = 'alertaslanot@gmail.com'

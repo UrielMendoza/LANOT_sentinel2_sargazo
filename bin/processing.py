@@ -158,9 +158,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
             #download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=daysDelta), end_date - datetime.timedelta(days=daysDelta), pathTmp, unzip=False)
         except Exception as e:
             print('***Error en la descarga***')
-            processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',str(e))
-            linea = str(traceback.extract_stack()[-1][1])
-            processing_sentinel2.enviaMail(start_date.strftime('%Y%m%d')+'-'+end_date.strftime('%Y%m%d'),'descarga',traceback.format_exc(),linea)
+            processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',traceback.format_exc())
+            processing_sentinel2.enviaMail(start_date.strftime('%Y%m%d')+'-'+end_date.strftime('%Y%m%d'),'descarga',traceback.format_exc())
         #    pass
     
     try:
@@ -169,9 +168,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         print(tilesDirs)
     except Exception as e:
         print('***Error en listar archivos***')
-        processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',str(e))
-        linea = str(traceback.extract_stack()[-1][1])
-        processing_sentinel2.enviaMail((start_date.strftime('%Y%m%d')+'-'+end_date.strftime('%Y%m%d'),'lista',str(e)),linea)
+        processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',traceback.format_exc())
+        processing_sentinel2.enviaMail(start_date.strftime('%Y%m%d')+'-'+end_date.strftime('%Y%m%d'),'lista',traceback.format_exc())
 
     # ALGORITMO
     for tileDir in tilesDirs:        
@@ -180,9 +178,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
             archivos.sort()
         except Exception as e:
             print('***Error en listar archivos***')
-            processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',str(e))
-            linea = str(traceback.extract_stack()[-1][1])
-            processing_sentinel2.enviaMail((start_date.strftime('%Y%m%d')+'-'+end_date.strftime('%Y%m%d'),'lista',str(e)),linea)
+            processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',traceback.format_exc())
+            processing_sentinel2.enviaMail(start_date.strftime('%Y%m%d')+'-'+end_date.strftime('%Y%m%d'),'lista',traceback.format_exc())
         
         for archivo in archivos:            
             try:
@@ -197,9 +194,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                 print("Tile: "+tile)
             except Exception as e:
                 print('***Error en obtener datos***')
-                processing_sentinel2.agregaErrorSargazoDB(archivo,'',fecha,tile,str(e))
-                linea = str(traceback.extract_stack()[-1][1])
-                processing_sentinel2.enviaMail(fecha,tile,str(e),linea)
+                processing_sentinel2.agregaErrorSargazoDB(archivo,'',fecha,tile,traceback.format_exc())
+                processing_sentinel2.enviaMail(fecha,tile,traceback.format_exc())
 
             # COMPRUEBA LOG
             #if not processing_sentinel2.verificaLog(pathLog+nomLog,archivo):
@@ -394,9 +390,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                 except Exception as e:
                     print('***Error en el procesamiento***')
                     #pass
-                    processing_sentinel2.agregaErrorSargazoDB(archivol1c,archivol2,fecha,tile,str(e))
-                    linea = str(traceback.extract_stack()[-1][1])
-                    processing_sentinel2.enviaMail(fecha,tile,str(e),linea)
+                    processing_sentinel2.agregaErrorSargazoDB(archivol1c,archivol2,fecha,tile,traceback.format_exc())
+                    processing_sentinel2.enviaMail(fecha,tile,traceback.format_exc())
 
                 finally:
                 # BORRA BASURA
@@ -418,12 +413,12 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
             processing_sentinel2.createMosaic(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
             
             print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
+
     except Exception as e:
         print('***Error en el mosaico***')
         #pass
-        processing_sentinel2.agregaErrorSargazoDB('','',fecha,'',str(e))
-        linea = str(traceback.extract_stack()[-1][1])
-        processing_sentinel2.enviaMail(fecha,'mosaico',str(e),linea)
+        processing_sentinel2.agregaErrorSargazoDB('','',fecha,'',traceback.format_exc())
+        processing_sentinel2.enviaMail(fecha,'mosaico',traceback.format_exc())
     # BORRA DIR DESCARGA
     # NO DESCOMENTAR EN SEMIMANUAL PORQUE BORRA IMAGENES
     if dateTime == 'automatico':
