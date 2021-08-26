@@ -150,7 +150,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
             # DESCARGA
             print('1. Descargando...')
             print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
-            download_datasets.search_and_download_datasets(tiles, 'error', end_date, pathTmp, unzip=False)
+            download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
 
             # Reste dias para prueba
             #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
@@ -164,7 +164,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
     
     try:
         tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
-        numImagenes = len(tilesDirs)
+        numImagenes = len(tilesDirsl)
         print(tilesDirs)
     except Exception as e:
         print('***Error en listar archivos***')
