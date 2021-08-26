@@ -743,7 +743,7 @@ def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube
         print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
-        enviaMail(fecha, tile, e)
+        enviaMail(fecha, tile, str(e))
         # Mandar correo
         cur.close()
         conect.close()
@@ -757,7 +757,7 @@ def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,t
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo
-        enviaMail(fecha, tile, e)
+        enviaMail(fecha, tile, str(e))
         cur.close()
         conect.close()
     conect.close()
@@ -770,7 +770,7 @@ def agregaErrorSargazoDB(pathl1c,pathl2a,fecha,tile,tiperror):
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo
-        enviaMail(fecha, tile, e)
+        enviaMail(fecha, tile, str(e))
         cur.close()
         conect.close()
     conect.close()
@@ -785,7 +785,7 @@ def verificaSargazoDB(tile,fecha):
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB log: {e}')
         # Mandar correo
-        enviaMail(fecha, tile, e)
+        enviaMail(fecha, tile, str(e))
         cur.close()
         conect.close()
     conect.close()
