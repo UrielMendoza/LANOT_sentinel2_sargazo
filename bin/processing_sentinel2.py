@@ -774,7 +774,7 @@ def agregaErrorSargazoDB(pathl1c,pathl2a,fecha,tile,tiperror):
         print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo
         linea = str(traceback.extract_stack()[-1][1])
-        enviaMail(fecha, tile, str(e),linea)
+        enviaMail(fecha, tile,traceback.format_exc(),linea)
         cur.close()
         conect.close()
     conect.close()
@@ -798,8 +798,7 @@ def verificaSargazoDB(tile,fecha):
     return len(row)
 
 def enviaMail(fecha,tile,error,linea):
-    mail_content = '''
-    El proceso de deteccion de sargazo con sentinel-2 tuvo un error de ejecución:
+    mail_content = '''El proceso de deteccion de sargazo con sentinel-2 tuvo un error de ejecución:
     \nFecha: '''+fecha+'''
     \nTile: '''+tile+'''
     \nError: '''+error+'''
