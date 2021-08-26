@@ -411,7 +411,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
             # MOSAICO SARGAZO
             processing_sentinel2.createMosaic(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
             
-            print("Tiempo de procesamiento total: ",time.time()-iniTotal)
+            print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
     except Exception as e:
         print('***Error en el mosaico***')
         #pass
