@@ -174,7 +174,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
     # ALGORITMO
     for tileDir in tilesDirs:        
         try:
-            archivos = processing_sentinel2.listaArchivos(tileDirf+'/*')
+            archivos = processing_sentinel2.listaArchivos(tileDir+'/*')
             archivos.sort()
         except Exception as e:
             print('***Error en listar archivos***')
@@ -191,7 +191,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                 anio = processing_sentinel2.obtieneAnio(archivo)
                 dirI = processing_sentinel2.nomDir(archivo,'L2A')
                 print("Fecha: "+fecha)
-                print("Tile: "+tile)
+                print("Tile: "+tiler)
             except Exception as e:
                 print('***Error en obtener datos***')
                 processing_sentinel2.agregaErrorSargazoDB(archivo,'',fecha,tile,traceback.format_exc().replace("'",""))
