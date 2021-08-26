@@ -158,7 +158,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
             #download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=daysDelta), end_date - datetime.timedelta(days=daysDelta), pathTmp, unzip=False)
         except Exception as e:
             print('***Error en la descarga***')
-            processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',traceback.format_exc().replace("''",""))
+            processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'','')
             processing_sentinel2.enviaMail(start_date.strftime('%Y%m%d')+'-'+end_date.strftime('%Y%m%d'),'descarga',traceback.format_exc().replace("''",""))
         #    pass
     
