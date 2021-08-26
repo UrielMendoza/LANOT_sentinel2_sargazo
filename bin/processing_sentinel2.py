@@ -749,10 +749,10 @@ def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube
         conect.close()
     conect.close()
 
-def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube):
+def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc):
     conect,cur = conexionDB()
     try:        
-        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube)
+        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc)
         #print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')

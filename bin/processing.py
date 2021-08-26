@@ -149,7 +149,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
             # DESCARGA
             print('1. Descargando...')
             print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
-            download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
+            download_datasets.search_and_download_datasets('error', start_date, end_date, pathTmp, unzip=False)
 
             # Reste dias para prueba
             #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
@@ -377,12 +377,13 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                             processing_sentinel2.obtieneVertices(archivoProc,pathVertices,pathOutputPeta)
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
-                            tproc = time.time()-iniTProc/60
+                            tproc = round((time.time()-iniTProc)/60,2)
                             processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,tile,banderaSar_log,totalSar,str(porcNube),str(tproc),archivoCSV)
                     else:
                             #banderaSar_log = 'no'
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
-                            processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,tile,banderaSar_log,totalSar,str(porcNube))
+                            tproc = round((time.time()-iniTProc)/60,2)
+                            processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,tile,banderaSar_log,totalSar,str(porcNube),str(tproc))
 
 #                except IndexError:
                 except Exception as e:
