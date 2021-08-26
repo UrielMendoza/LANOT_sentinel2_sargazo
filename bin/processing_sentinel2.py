@@ -27,6 +27,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import ssl
+import traceback
 
 def obtienePorcentajeNube(pathInput):
     mydoc = minidom.parse(pathInput+'/MTD_MSIL2A.xml')
@@ -743,8 +744,9 @@ def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube
         print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
-        enviaMail(fecha, tile, str(e))
         # Mandar correo
+        linea = str(traceback.extract_stack()[-1][1])
+        enviaMail(fecha, tile, str(e),linea)
         cur.close()
         conect.close()
     conect.close()
@@ -757,7 +759,8 @@ def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,t
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo
-        enviaMail(fecha, tile, str(e))
+        linea = str(traceback.extract_stack()[-1][1])
+        enviaMail(fecha, tile, str(e),linea)
         cur.close()
         conect.close()
     conect.close()
@@ -770,7 +773,8 @@ def agregaErrorSargazoDB(pathl1c,pathl2a,fecha,tile,tiperror):
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo
-        enviaMail(fecha, tile, str(e))
+        linea = str(traceback.extract_stack()[-1][1])
+        enviaMail(fecha, tile, str(e),linea)
         cur.close()
         conect.close()
     conect.close()
@@ -785,19 +789,21 @@ def verificaSargazoDB(tile,fecha):
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB log: {e}')
         # Mandar correo
-        enviaMail(fecha, tile, str(e))
+        linea = str(traceback.extract_stack()[-1][1])
+        enviaMail(fecha, tile, str(e),linea)
         cur.close()
         conect.close()
     conect.close()
     
     return len(row)
 
-def enviaMail(fecha,tile,error):
+def enviaMail(fecha,tile,error,linea):
     mail_content = '''
     El proceso de deteccion de sargazo con sentinel-2 tuvo un error de ejecución:
     \nFecha: '''+fecha+'''
     \nTile: '''+tile+'''
-    \nError: '''+error
+    \nError: '''+error+'''
+    \nNumero linea: '''+linea
 
     #The mail addresses and password
     sender_address = 'alertaslanot@gmail.com'
