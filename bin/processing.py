@@ -210,10 +210,15 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     print('2.1 Moviendo L1C a data y peta...')
                     archivol1c = pathInputL1C+tile+'/'+archivo
                     os.system('mkdir -p '+pathInputL1C+tile+'/')
-                    os.system('cp '+archivo+' '+pathInputL1C+tile+'/')
+                    os.system('cp '+archivok+' '+pathInputL1C+tile+'/')
                     # MANDA A PETA
-                    os.system('scp '+archivok+' lanotadm@stratus:'+pathInputPeta+tile+'/')                   
-
+                    os.system('scp '+archivo+' lanotadm@stratus:'+pathInputPeta+tile+'/')                   
+                except Exception as e:
+                    print('***Error en el procesamiento***')
+                    #pass
+                    processing_sentinel2.agregaErrorSargazoDB(archivol1c,'',fecha,tile,traceback.format_exc().replace("'",""))
+                    processing_sentinel2.enviaMail(fecha,tile,traceback.format_exc().replace("'",""))
+                try:
                     # CORRECCION ATMOSFERICA
                     print('3. Correción atmosferica...')
                     if processing_sentinel2.verificaL2A(tile,fecha,pathInput) == True:
