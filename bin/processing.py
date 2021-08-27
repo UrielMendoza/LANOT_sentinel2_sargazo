@@ -191,7 +191,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                 anio = processing_sentinel2.obtieneAnio(archivo)
                 dirI = processing_sentinel2.nomDir(archivo,'L2A')
                 print("Fecha: "+fecha)
-                print("Tile: "+tiler)
+                print("Tile: "+tile)
             except Exception as e:
                 print('***Error en obtener datos***')
                 processing_sentinel2.agregaErrorSargazoDB(archivo,'',fecha,tile,traceback.format_exc().replace("'",""))
@@ -212,7 +212,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     os.system('mkdir -p '+pathInputL1C+tile+'/')
                     os.system('cp '+archivo+' '+pathInputL1C+tile+'/')
                     # MANDA A PETA
-                    os.system('scp '+archivo+' lanotadm@stratus:'+pathInputPeta+tile+'/')                   
+                    os.system('scp '+archivok+' lanotadm@stratus:'+pathInputPeta+tile+'/')                   
 
                     # CORRECCION ATMOSFERICA
                     print('3. Correción atmosferica...')
