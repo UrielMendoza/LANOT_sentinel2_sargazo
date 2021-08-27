@@ -210,7 +210,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     print('2.1 Moviendo L1C a data y peta...')
                     archivol1c = pathInputL1C+tile+'/'+archivo
                     os.system('mkdir -p '+pathInputL1C+tile+'/')
-                    os.system('cp '+archivok+' '+pathInputL1C+tile+'/')
+                    os.system('cp '+archivo+' '+pathInputL1C+tile+'/')
                     # MANDA A PETA
                     os.system('scp '+archivo+' lanotadm@stratus:'+pathInputPeta+tile+'/')                   
                 except Exception as e:
@@ -311,7 +311,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 
                     for banda10 in bandas10m:
                         print(banda10)
-                        dirB10 = processing_sentinel2.listaBandas(pathTmp+dirI,'L2A','R10m',banda10)
+                        dirB10 = processing_sentinel2.listaBandas(pathTmpk+dirI,'L2A','R10m',banda10)
                         dsB10 = processing_sentinel2.aperturaDS(dirB10)
                         processing_sentinel2.imgToGeoTIF(dsB10,banda10,pathTmp)
                         print('2.1. Remuestreando banda '+banda10+' a 20m...')
