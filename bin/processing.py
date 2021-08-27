@@ -223,7 +223,9 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     print('3. Correción atmosferica...')
                     if processing_sentinel2.verificaL2A(tile,fecha,pathInput) == True:
                         # COPIA DE DATA
+                        print('=============================================')
                         print('Ya fue corregido anteriormente')
+                        print('=============================================')
                         archivoL2A = processing_sentinel2.copiaL2A(tile,fecha,pathInput,pathTmp)
                         processing_sentinel2.descomprime(pathTmp+archivoL2A.split('/')[-1],pathTmp)
                         l2a = glob(pathTmp+'*MSIL2A*'+fecha+'*'+tile+'*.SAFE')[0]
@@ -336,10 +338,10 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     processing_sentinel2.sargazoBinNumpy(pathTmp)
                     dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_tmp_numpy.tif')
                     print('5.6 Obteniendo entropia...')
-                    #entropia = processing_sentinel2.entropiaNumpy(pathTmp)
-                    entropia = None
+                    entropia = processing_sentinel2.entropiaNumpy(pathTmp)
+                    #entropia = None
                     print('5.7 Procesando sargazo con filtro...')
-                    nuMask = processing_sentinel2.pixelNubesBajasN(ref,dsSar,nubesBajas,entropia,scl)
+                    nuMask = processing_sentinel2.filtroPixel(ref,dsSar,nubesBajas,entropia,scl,pathTmp)
                     processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')
                     del nuMask 
 

@@ -186,6 +186,19 @@ def obtieneCuadrante(ds):
 
     return [xmin,ymax,xmax,ymin]
 
+def obtieneParametrosGeoTrasform(ds):
+    geo = ds.GetGeoTransform()
+    nx = ds.RasterXSize
+    ny = ds.RasterYSize
+    xmin = geo[0]
+    ymax = geo[3]
+    xres = geo[1]
+    yres = geo[5]
+    xmax = xmin + xres*nx
+    ymin = ymax + yres*ny
+
+    return nx,ny,xmin,ymax,xres,yres,xmax,ymin
+
 def remuestrea(pathOutput,ds,dimx,dimy):
     gdal.Translate(pathOutput,ds,options=gdal.TranslateOptions(xRes=dimx,yRes=dimy))
 
@@ -284,11 +297,11 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
     print('=============================================')
     print('Detección de sargazo con mascara de nubes/sombra: ',len(res_difference),' elementos')
     print('=============================================')
-    df_detfooMask = gpd.read_file(pathTmp+'MSK_DETFOO_B8A.json')
-    res_difference = gpd.overlay(res_difference, df_detfooMask, how='difference')
-    print('=============================================')
-    print('Detección de sargazo con mascara detfoo y entropia: ',len(res_difference),' elementos')
-    print('=============================================')
+    #df_detfooMask = gpd.read_file(pathTmp+'MSK_DETFOO_B8A.json')
+    #res_difference = gpd.overlay(res_difference, df_detfooMask, how='difference')
+    #print('=============================================')
+    #print('Detección de sargazo con mascara detfoo y entropia: ',len(res_difference),' elementos')
+    #print('=============================================')
     #df_maskCloud = gpd.read_file(pathTmp+'cloudMask_b250_bin_rec_mask_tmp.json')
     #res_difference = gpd.overlay(res_difference, df_maskCloud, how='difference')
     #print('=============================================')
@@ -390,12 +403,16 @@ def nubesSombraMascara(cuadrante,bufferNubes,pathTmp):
         print("Buffer de nubes")
         banderaNub = True
         df = df.buffer(bufferNubes)
+        print("Disolviendo Buffer")
         df_g = df.unary_union
         df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
         df.to_file(pathTmp+"cloudMaskShadow_b250_tmp.json", driver='GeoJSON')
+        print("Rasterizando Buffer")
         os.system('gdal_rasterize -burn 1 -tr 20 20 -l cloudMaskShadow_b250_tmp '+pathTmp+'cloudMaskShadow_b250_tmp.json '+pathTmp+'cloudMaskShadow_b250_tmp.tif')
+        print("Filtrando Buffer")
         os.system('gdal_calc.py -A '+pathTmp+'cloudMaskShadow_b250_tmp.tif --outfile='+pathTmp+'cloudMaskShadow_b250_bin_tmp.tif --calc="0*(A==1)+1*(A==0)"')
         #os.system('gdal_translate -projwin '+cuadrante+' '+pathTmp+'cloudMaskShadow_b250_bin_tmp.tif '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.tif')
+        print("Poligonizando Buffer Filtrado")
         os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_b250_bin_tmp.tif -f "GeoJSON" '+pathTmp+'cloudMaskShadow_b250_bin_tmp.json ')
         df = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_tmp.json')
         df = df[df['DN'] == 0]
@@ -577,13 +594,15 @@ def entropiaNumpy(pathInput):
 
 	return nuMask """
 
-def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia,dsSCL):
+def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp):
 
     # Nube baja con B12
     nuMask = dsRef.ReadAsArray()
     b12 = dsRef.ReadAsArray()
     sar = dsSar.ReadAsArray()
     scl = dsSCL.ReadAsArray()
+    df_detfoo = gpd.read_file(pathTmp+'MSK_DETFOO_B8A.json')
+    nx,ny,xmin,ymax,xres,yres,xmax,ymin = obtieneParametrosGeoTrasform(dsRef)
 
     print('=============================================')
     print('Detección de sargazo algoritmo: ',len(sar[sar == 1]),' elementos')
@@ -595,16 +614,23 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia,dsSCL):
     listaBanderas = []
 
     #Entropia
-    entropiaMin = 5.8
+    entropiaMin = 5.0
     #entropiaMin = 1000
 
     for i in range(nuMask.shape[0]):
         for j in range(nuMask.shape[1]):
             if sar[i,j] == 1:
-#                if b12[i,j] >= nubeBaja and entropia[i,j] >= entropiaMin:         
-#                    nuMask[i,j] = 0
-#                    listaBanderas.append('NubeBaja y Entropia')
-#                   cont += 1
+                #ENTROPIA CON DETFOO                
+                y = (i*yres + ymax) + yres/2
+                x = (j*xres + xmin) + xres/2
+                sargazoPunto = Point(x,y)
+                for k in range(len(df_detfoo)):
+                    if df_detfoo.iloc[k].geometry.contains(sargazoPunto) == True and entropia[i,j] >= entropiaMin:
+                        nuMask[i,j] = 0
+                        listaBanderas.append('Entropia')
+                        contEnt += 1 
+                        continue
+                # NUBE BAJA B12
                 if b12[i,j] >= nubeBaja:
                     nuMask[i,j] = 0
                     listaBanderas.append('Nube baja')
@@ -612,7 +638,8 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia,dsSCL):
 #                elif entropia[i,j] >= entropiaMin:
 #                    nuMask[i,j] = 0
 #                    listaBanderas.append('Entropia')
-#                    contEnt += 1    
+#                    contEnt += 1   
+                # SCL
                 elif (scl[i,j] == 3) or (scl[i,j] == 8) or (scl[i,j] == 9) or (scl[i,j] == 10) or (scl[i,j] == 11):
                     nuMask[i,j] = 0
                     listaBanderas.append('SCL')
@@ -626,6 +653,9 @@ def pixelNubesBajasN(dsRef,dsSar,nubeBaja,entropia,dsSCL):
     print('Filtrados Nube Baja: ',contB12)
     print('Filtrados Entropia: ',contEnt)
     print('Filtrados SCL: ',contSCL)
+    print('=============================================')
+    print('Detección de sargazo algoritmo con filtro de pixel: ',len(nuMask[nuMask == 1]),' elementos')
+    print('=============================================')
 
     return nuMask
 
