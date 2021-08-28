@@ -17,14 +17,14 @@ Copernicus_password = "lanot_2020"
 tiles = {}
 
 # Contiene Cancun
-tiles["Cancun"] = ["16QEJ"]
+tiles["cancun"] = ["16QEJ"]
 
 # Coastal tiles of the Riviera Maya from Cancun to Tulum
-tiles["Cancun_Tulum"] = ["16QEJ", "16QDH", "16QEH", "16QDG", "16QEG", "16QDF", "16QEF"]
+tiles["cancun_tulum"] = ["16QEJ", "16QDH", "16QEH", "16QDG", "16QEG", "16QDF", "16QEF"]
 
 # The complete "Mexican Caribbean", extending to about Cuba eastward and
 # down to Honduras southward
-tiles["Mexican_Caribbean"] = [
+tiles["mexican_caribbean"] = [
 "16QEJ", "16QFJ", "16QGJ", "16QHJ",
 "16QDH", "16QEH", "16QFH", "16QGH", "16QHH",
 "16QDG", "16QEG", "16QFG", "16QGG", "16QHG",
@@ -35,7 +35,7 @@ tiles["Mexican_Caribbean"] = [
 ]
 
 # The French Antilles: Guadeloupe and Martinique
-tiles["French_Antilles"] = [
+tiles["french_Antilles"] = [
 "20QND", "20QPD", "20QQD",
 "20PNC", "20PPC", "20PQC",
 "20PNB", "20PPB", "20PQB",
@@ -43,17 +43,22 @@ tiles["French_Antilles"] = [
 ]
 
 # The French Guiana; 22NCL contains Cayenne
-tiles["Guyane"] = [
+tiles["guyane"] = [
 "21NZG", "21NHZ", "22NBM", "22NBN", "22NCN", "22NCM", "22NCL", "22NDN",
 "22NDM", "22NDL", "22NEM", "22NEL"
 ]
 
 # Sargazo1: Region de monitoreo de sargazo
-tiles['sargazo1'] = [
+tiles['sargazo_1'] = [
 "16QDJ","16QEJ","16QDH","16QEH","16QDG","16QEG","16QDF","16QEF"
 ]
 
-tiles["Prueba"] = [
+# Mascara Tierra: Region para generar las mascaras de tierra por año
+tiles['mascara_tierra'] = [
+"16QCJ","16QDJ","16QEJ","16QCH","16QDH","16QEH","16QCG","16QDG","16QEG","16QCF","16QDF","16QEF","16QCE","16QDE","16QEE"
+]
+
+tiles["prueba"] = [
 "16QEG"
 ]
 # ------------------------------------------------------------------------------

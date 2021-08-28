@@ -19,7 +19,7 @@ import traceback
 def semiManual():
     start_date = None
     end_date = None
-    region = "sargazo1"
+    region = "sargazo_1"
     landMask = "land_sargazo_UTM16N_20m_1.tif"
     #nubesBajas = 900
     return start_date,end_date,region,landMask
@@ -27,7 +27,7 @@ def semiManual():
 def automatico():
     start_date = datetime.datetime.now()
     end_date = datetime.datetime.now()
-    region = "sargazo1"
+    region = "sargazo_1"
     landMask = "land_sargazo_UTM16N_20m_1.tif"
     #nubesBajas = 900
     return start_date,end_date,region,landMask
@@ -69,25 +69,27 @@ def manual():
     # Catalogo de dias 
     print("=================\n")
     print("REGION")
-    print("Regiones disponibles establecidas por PATH/ROW: \n1. Cancun\n2. Cancun-Tulum\n3. Sargazo1\n4. Caribe Mexicano\n5. Antillas francesas\n6. Guyanan\n7. Prueba\n")
+    print("Regiones disponibles establecidas por PATH/ROW: \n1. sargazo_1\n2. Cancun\n3. Cancun-Tulum\n4. Caribe Mexicano\n5. Antillas francesas\n6. Guyane\n7. Mascara Tierra\n8.prueba\n")
     while True:
         resR = int(input())
-        if resR == 1 or resR == 2 or resR == 3 or resR == 4 or resR == 5 or resR == 6 or resR == 7:
+        if resR == 1 or resR == 2 or resR == 3 or resR == 4 or resR == 5 or resR == 6 or resR == 7 or resR == 8:
             break
     if resR == 1:
-        region = "Cancun"
+        region = "sargazo_1"
     elif resR == 2:
-        region = "Cancun_Tulum"
+        region = "cancun"
     elif resR == 3:
-        region = "sargazo1"
+        region = "cancun_tulum"
     elif resR == 4:
-        region = "Mexican_Caribbean"
+        region = "mexican_caribbean"
     elif resR == 5:
-        region = "French_Antilles"
+        region = "french_antilles"
     elif resR == 6:
-        region = "Guyane"
+        region = "guyane"
     elif resR == 7:
-        region = "Prueba"
+        region = "mascara_tierra"
+    elif resR == 8:
+        region = "prueba"
     # Opcion PathRow
     print("=================\n")
     print("PARAMETROS")
