@@ -224,7 +224,7 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
 
     if len(df)>= 1:
         print('=============================================')
-        print('Deteccion de sargazo con filtros: ',len(df),' elementos')
+        print('Deteccion de sargazo con filtro de pixel: ',len(df),' elementos')
         print('=============================================')
         df['IDpoligono'] = range(1, len(df) + 1)
         df['tile'] = tile
@@ -627,7 +627,7 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp):
                 for k in range(len(df_detfoo)):
                     if df_detfoo.iloc[k].geometry.contains(sargazoPunto) == True and entropia[i,j] >= entropiaMin:
                         nuMask[i,j] = 0
-                        listaBanderas.append('Entropia')
+                        listaBanderas.append('Entropia y Detfoo')
                         contEnt += 1 
                         continue
                 # NUBE BAJA B12
@@ -651,11 +651,11 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp):
 
     print(set(listaBanderas))
     print('Filtrados Nube Baja: ',contB12)
-    print('Filtrados Entropia: ',contEnt)
+    print('Filtrados Entropia y Detfoo: ',contEnt)
     print('Filtrados SCL: ',contSCL)
-    print('=============================================')
-    print('Detección de sargazo algoritmo con filtro de pixel: ',len(nuMask[nuMask == 1]),' elementos')
-    print('=============================================')
+    #print('=============================================')
+    #print('Detección de sargazo algoritmo con filtro de pixel: ',len(nuMask[nuMask == 1]),' elementos')
+    #print('=============================================')
 
     return nuMask
 
