@@ -316,7 +316,7 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
     if len(res_difference)>= 1:
         banderaSar = True
         # Km2
-        totalSar = str(round(df['area_km2'].sum(),4))
+        totalSar = str(round(res_difference['area_km2'].sum(),4))
         # ARCHIVO FINAL
 
         # MANDA A DATA
