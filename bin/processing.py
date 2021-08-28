@@ -350,15 +350,11 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     # POLIGONIZACION
                     print('6 Procesando poligonizacion...')
                     archivoProc,banderaSar,totalSar = processing_sentinel2.poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty)
-                    print('AQUI ES LO DEL AREA1')
-                    print(totalSar)
                     if banderaSar == True:
                         #print('6.1 Aplicando mascara detfoo vectorial...')
                         #processing_sentinel2.detfooMascaraVectorial(pathTmp)
                         print('6.2 Aplicando mascaras vectoriales...')
                         banderaSar, totalSarMask, archivoProc = processing_sentinel2.mascarasVectoriales(tile,anio,fecha,fechaImaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta)
-                        print('AQUI ES LO DEL AREA2')
-                        print(totalSarMask)
                         banderaSar_log = 'si'
                     
                     # BANDERA DE SARGAZO Y AREA TOTAL
@@ -366,8 +362,6 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         banderaSar_log = 'si'
                         #totalSar = str((float(totalSar)+ float(totalSarMask))/2)
                         totalSar = totalSarMask
-                        print('AQUI ES LO DEL AREA3')
-                        print(totalSar)
                         #processing_sentinel2.obtieneVertices(archivoProc,pathVertices,pathOutputPeta)
                     else:
                         banderaSar_log = 'no'

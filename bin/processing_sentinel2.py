@@ -246,8 +246,6 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         banderaSar = True
         nombre = None
         totalSar = str(round(df['area_km2'].sum(),4))
-        print('AQUI ES LO DEL AREA0')
-        print(totalSar)
         return nombre, banderaSar, totalSar
     else:
         print('=========================')
