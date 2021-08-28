@@ -379,7 +379,7 @@ def nubesMascara(cuadrante,bufferNubes,pathSCL,pathTmp):
 
         return banderaNub
 
-def nubesSombraMascara(cuadrante,bufferNubes,pathTmp):
+def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathTmp):
 
     cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
 
@@ -399,6 +399,9 @@ def nubesSombraMascara(cuadrante,bufferNubes,pathTmp):
         print("No buffer de nubes")
         banderaNub = False
         return banderaNub
+    elif porcNube >= 40.0:
+        banderaNub = True
+        df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
     else:
         print("Buffer de nubes")
         banderaNub = True

@@ -330,7 +330,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     #processing_sentinel2.aguaMascara(cuadrante,pathTmp+bandas20m[-1]+'.tif',pathTmp)
                     print('5.3 Procesando mascara nubes altas...')
                     #banderaNub = processing_sentinel2.nubesMascara(cuadrante,bufferNubes,pathTmp+bandas20m[-1]+'.tif',pathTmp)
-                    banderaNub = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,pathTmp)
+                    banderaNub = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathTmp)
                     print('5.4 Procesando mascara detfoo...')
                     processing_sentinel2.detfooMascara(200,pathTmp+dirI,pathTmp)
                     print('5.5 Procesando sargazo sin filtro...')
