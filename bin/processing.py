@@ -199,6 +199,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                 print('***Error en obtener datos***')
                 processing_sentinel2.agregaErrorSargazoDB(archivo,'',fecha,tile,traceback.format_exc().replace("'",""))
                 processing_sentinel2.enviaMail(fecha,tile,traceback.format_exc().replace("'",""))
+                continue
 
             # COMPRUEBA LOG Y TILES
             #if not processing_sentinel2.verificaLog(pathLog+nomLog,archivo):
@@ -223,6 +224,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     #pass
                     processing_sentinel2.agregaErrorSargazoDB(archivol1c,'',fecha,tile,traceback.format_exc().replace("'",""))
                     processing_sentinel2.enviaMail(fecha,tile,traceback.format_exc().replace("'",""))
+                    continue
                 try:
                     # CORRECCION ATMOSFERICA
                     print('3. Correción atmosferica...')
@@ -405,6 +407,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     #pass
                     processing_sentinel2.agregaErrorSargazoDB(archivol1c,archivol2,fecha,tile,traceback.format_exc().replace("'",""))
                     processing_sentinel2.enviaMail(fecha,tile,traceback.format_exc().replace("'",""))
+                    continue
 
                 finally:
                 # BORRA BASURA
