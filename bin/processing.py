@@ -199,9 +199,9 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                 processing_sentinel2.agregaErrorSargazoDB(archivo,'',fecha,tile,traceback.format_exc().replace("'",""))
                 processing_sentinel2.enviaMail(fecha,tile,traceback.format_exc().replace("'",""))
 
-            # COMPRUEBA LOG
+            # COMPRUEBA LOG Y TILES
             #if not processing_sentinel2.verificaLog(pathLog+nomLog,archivo):
-            if processing_sentinel2.verificaSargazoDB(tile,fecha) == 0 and tile in tiles == False:                   
+            if (processing_sentinel2.verificaSargazoDB(tile,fecha) == 0) and (tile in tiles == True):                   
                 try:
                     #====================
                     # INICIA PROCESO
