@@ -202,7 +202,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 
             # COMPRUEBA LOG Y TILES
             #if not processing_sentinel2.verificaLog(pathLog+nomLog,archivo):
-            if (processing_sentinel2.verificaSargazoDB(tile,fecha) == 0) and (tile in tiles == True):                   
+            if (processing_sentinel2.verificaSargazoDB(tile,fecha) == 0) and (tile[1:] in tiles == True):                   
                 try:
                     #====================
                     # INICIA PROCESO
