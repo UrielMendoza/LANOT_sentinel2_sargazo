@@ -146,7 +146,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
     bandas20m = ('B02','B03','B04','B05','B8A','B11','B12','SCL')
     bandas10m = ['B08']
     tiles = base.tiles[region]
-     
+    
     if dateTime != 'semiManual':
         try:
             # DESCARGA
@@ -201,9 +201,11 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 
             # COMPRUEBA LOG
             #if not processing_sentinel2.verificaLog(pathLog+nomLog,archivo):
-            if processing_sentinel2.verificaSargazoDB(tile,fecha) == 0:                   
+            if processing_sentinel2.verificaSargazoDB(tile,fecha) == 0 and tile in tiles == True:                   
                 try:
+                    #====================
                     # INICIA PROCESO
+                    # ===================
                     print('2. Descomprimiendo...')
                     #compresion = processing_sentinel2.tipoCompresion(archivo)
                     processing_sentinel2.descomprime(archivo,pathTmp)
