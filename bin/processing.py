@@ -201,7 +201,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
 
             # COMPRUEBA LOG
             #if not processing_sentinel2.verificaLog(pathLog+nomLog,archivo):
-            if processing_sentinel2.verificaSargazoDB(tile,fecha) == 0 and tile in tiles == True:                   
+            if processing_sentinel2.verificaSargazoDB(tile,fecha) == 0 and tile in tiles == False:                   
                 try:
                     #====================
                     # INICIA PROCESO
@@ -413,7 +413,9 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     os.system('rm -r '+pathTmp+'*.SAFE')
                 
             else:
+                print('======================================')
                 print('Archivo: '+archivo+' ya fue procesado')
+                print('======================================')
 
     try:
         if dateTime == 'automatico' and numImagenes != 0:
