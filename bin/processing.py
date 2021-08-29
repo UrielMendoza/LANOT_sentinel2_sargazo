@@ -195,6 +195,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                 dirI = processing_sentinel2.nomDir(archivo,'L2A')
                 print("Fecha: "+fecha)
                 print("Tile: "+tile)
+                print(tile[1:])
             except Exception as e:
                 print('***Error en obtener datos***')
                 processing_sentinel2.agregaErrorSargazoDB(archivo,'',fecha,tile,traceback.format_exc().replace("'",""))
