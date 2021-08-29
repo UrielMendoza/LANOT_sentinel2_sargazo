@@ -146,6 +146,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
     bandas20m = ('B02','B03','B04','B05','B8A','B11','B12','SCL')
     bandas10m = ['B08']
     tiles = base.tiles[region]
+    print(tiles)
     
     if dateTime != 'semiManual':
         try:
