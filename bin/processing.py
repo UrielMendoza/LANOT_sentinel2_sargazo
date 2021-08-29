@@ -293,7 +293,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         banderaSar_log = 'no_p'
                         totalSar = '0'
                         print('6. Añadiendo a la base de datos log...')
-                        processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,fechaLog,tile,banderaSar_log,totalSar,str(porcNube))
+                        tproc = round((time.time()-iniTProc)/60,2)
+                        processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,tile,banderaSar_log,totalSar,str(porcNube),str(tproc))
                         # SE PASA A OTRA IMAGEN
                         os.system('rm -r '+pathTmp+'*.tif')
                         os.system('rm -r '+pathTmp+'*.zip')
