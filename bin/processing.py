@@ -166,9 +166,15 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         #    pass
     
     try:
-        tilesDirs = processing_sentinel2.listaArchivos(pathInputL1C+'*')
+        if dateTime == 'automatico':
+            tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
+        elif dateTime == 'manual':
+            tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
+        elif dateTime == 'semiManual':
+            tilesDirs = processing_sentinel2.listaArchivos(pathInputL1C+'*')
         numImagenes = len(tilesDirs)
         print(tilesDirs)
+
     except Exception as e:
         print('***Error en listar archivos***')
         processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',traceback.format_exc().replace("'",""))
@@ -177,8 +183,13 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
     # ALGORITMO
     for tileDir in tilesDirs:        
         try:
-            archivos = processing_sentinel2.listaArchivos(tileDir+'/*2018*')
+            if dateTime == 'semiManual':
+                anioProc = '2018'
+                archivos = processing_sentinel2.listaArchivos(tileDir+'/*'+anioProc+'*')
+            else:
+                archivos = processing_sentinel2.listaArchivos(tileDir+'/*')
             archivos.sort()
+            
         except Exception as e:
             print('***Error en listar archivos***')
             processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',traceback.format_exc().replace("'",""))
@@ -439,7 +450,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
         processing_sentinel2.enviaMail(fecha,'mosaico',traceback.format_exc().replace("'",""))
     # BORRA DIR DESCARGA
     # NO DESCOMENTAR EN SEMIMANUAL PORQUE BORRA IMAGENES
-    if dateTime == 'automatico':
+    if dateTime == 'automatico' or dateTime == 'manual':
         os.system('rm -r '+pathTmp+'*')
 
 
