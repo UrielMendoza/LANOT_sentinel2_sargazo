@@ -153,7 +153,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
             # DESCARGA
             print('1. Descargando...')
             print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
-            download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathInputL1C, unzip=False)
+            download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
 
             # Reste dias para prueba
             #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
