@@ -177,7 +177,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
     # ALGORITMO
     for tileDir in tilesDirs:        
         try:
-            archivos = processing_sentinel2.listaArchivos(tileDir+'/*2019*')
+            archivos = processing_sentinel2.listaArchivos(tileDir+'/*2018*')
             archivos.sort()
         except Exception as e:
             print('***Error en listar archivos***')
