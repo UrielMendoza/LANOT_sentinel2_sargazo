@@ -6,7 +6,7 @@ from processing_sentinel2 import obtieneTile,obtieneAnio
 pathInput = '/data/input/sentinel2/depot/'
 pathOutput = '/data/input/sentinel2/L1C/'
 
-archivos = glob(pathInput+'*')
+archivos = glob(pathInput+'*.zip')
 
 for archivo in archivos:
 
