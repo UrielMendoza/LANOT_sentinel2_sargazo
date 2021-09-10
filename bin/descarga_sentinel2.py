@@ -34,7 +34,7 @@ def automatico():
 
 def manual():
     print("=================")
-    print("Ejecucion manual")
+    print("Descarga Sentinel-2")
     print("=================\n")
     #try:
     print("=================\n")
