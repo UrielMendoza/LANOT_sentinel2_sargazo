@@ -168,5 +168,23 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
     print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
 
 
+if __name__ == "__main__":
+
+    # DIRECTORIOS
+    pathInputL1C = '/data/input/sentinel2/L1C/'
+    pathInput = '/data/output/sentinel2/L2A/'
+    pathOutput = '/data/output/sentinel2/l2/geojson/sargazo/'
+    pathOutputEmpty = '/data/output/sentinel2/l2/geojson/sargazo/'
+    pathOutputGeoTiff = '/data/output/sentinel2/l2/geotiff/'
+    pathOutputWeb = '/home/sargazo/data/'
+    pathOutputPeta = '/depot/sentinel2/output/'
+    pathInputPeta = '/depot/sentinel2/input/L1C/'
+    pathVertices = '/data/output/sentinel2/l2/geojson/sargazo_vertices/'
+    pathTmp = '/data/input/sentinel2/tmp/manual/'
+    pathLM = '../data/masks/'
+    pathLog = '../../logs_sentinel2_sargazo/'
+
+    sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,dateTime='manual')
+
 
 
