@@ -184,7 +184,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
     for tileDir in tilesDirs:        
         try:
             if dateTime == 'semiManual':
-                anioProc = '2017'
+                anioProc = '2016'
                 archivos = processing_sentinel2.listaArchivos(tileDir+'/*'+anioProc+'*')
             else:
                 archivos = processing_sentinel2.listaArchivos(tileDir+'/*')
