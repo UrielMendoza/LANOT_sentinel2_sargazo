@@ -57,7 +57,7 @@ def lee_poligonos(filename, image):
 
     for i in data['features']:
         p = i['geometry']['coordinates']
-        print(p)
+        #print(p)
         a = i['properties']['area_km2']
         #print(type(p), p[0][0], a)
         area += a
@@ -193,7 +193,7 @@ if __name__ == '__main__':
     title = "Sargazo "+fecha_str+" Z"
     draw_text(im_in.width-15, im_in.height - 75, title, 2)
     print("area ", area)
-    areakm2 = area*1e-6
+    #areakm2 = area*1e-6
     areatext = "Area = {:5.4f} km2".format(areakm2)
     print(areatext)
     draw_text(im_in.width-15, im_in.height - 40, areatext, 2)
