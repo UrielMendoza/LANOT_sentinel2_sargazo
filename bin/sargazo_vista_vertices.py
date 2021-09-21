@@ -194,7 +194,7 @@ if __name__ == '__main__':
     draw_text(im_in.width-15, im_in.height - 75, title, 2)
     print("area ", area)
     #areakm2 = area*1e-6
-    areatext = "Area = {:5.4f} km2".format(areakm2)
+    areatext = "Area = {:5.4f} km2".format(area)
     print(areatext)
     draw_text(im_in.width-15, im_in.height - 40, areatext, 2)
 
