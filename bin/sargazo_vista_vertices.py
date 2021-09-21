@@ -159,7 +159,7 @@ if __name__ == '__main__':
 
     # Crear la imagen base con todos los mosaicos
     mosaicos = ''
-    for path in Path('/data/output/sentinel2/l2/geotiff').rglob('*'+label+'*.tif'):
+    for path in Path('/data/output/sentinel2/l2/geotiff/TC').rglob('*'+label+'*.tif'):
         print(path, type(path))
         mosaicos += str(path) + ' '
 
@@ -185,7 +185,7 @@ if __name__ == '__main__':
     im_in.paste(logo, (10, 140))
 
     draw = aggdraw.Draw(im_in)
-    #p = aggdraw.Pen("white", 0.5)
+    p = aggdraw.Pen("white", 0.5)
     b = aggdraw.Brush((0,0,0), 100)
     white = (255, 255, 255)
     font = aggdraw.Font(white, "/usr/share/fonts/truetype/ttf-bitstream-vera/VeraMono.ttf", 30)
