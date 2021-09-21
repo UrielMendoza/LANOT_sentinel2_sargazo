@@ -163,8 +163,8 @@ if __name__ == '__main__':
         print(path, type(path))
         mosaicos += str(path) + ' '
 
-    print("gdal_merge.py -o tmp.tif "+mosaicos)
-    os.system("gdal_merge.py -o tmp.tif "+mosaicos)
+    print("gdal_merge.py -o tmp.tif -of gtiff "+mosaicos)
+    os.system("gdal_merge.py -o tmp.tif -of gtiff "+mosaicos)
     path = "tmp.tif"
     get_limits(path)
     print(ulx, uly, lrx, lry)
@@ -172,7 +172,7 @@ if __name__ == '__main__':
     im_in = Image.open(path)
     height = 1200
     width = int(height * im_in.width / im_in.height)
-    im_in = im_in.resize((width, height))
+    im_in = im_in.resize((width, height)).convert('RGB')
 
     for pathjson in lista:
         lee_poligonos(pathjson, im_in)
