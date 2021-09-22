@@ -89,9 +89,9 @@ def lee_vertices(filename, image):
 
 import aggdraw
 
-def draw_text(x, y, text, align, bw=5):
-    global font
-    global draw
+def draw_text(x, y, text, align, bw=5, draw, font):
+    #global font
+    #global draw
     p = aggdraw.Pen("white", 0.5)
     b = aggdraw.Brush((0,0,0), 100)
     title_sz =  draw.textsize(text, font)
@@ -209,7 +209,7 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
     font = aggdraw.Font(white, "/usr/share/fonts/truetype/ttf-bitstream-vera/VeraMono.ttf", 30)
 
     title = "Sargazo "+fecha_str+" Z"
-    draw_text(im_in.width-15, im_in.height - 75, title, 2)
+    draw_text(im_in.width-15, im_in.height - 75, title, 2, draw, font)
     print("area ", area)
     #areakm2 = area*1e-6
     areatext = "Area = {:5.4f} km2".format(area)
