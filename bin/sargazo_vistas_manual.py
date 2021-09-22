@@ -3,7 +3,7 @@ import sargazo_vistas
 from glob import glob
 from processing_sentinel2 import obtieneFechaVertice
 
-if name == '__main__':
+if __name__ == "__main__":
 
     # DIRECTORIOS
     pathOutputVistas = '/data/output/sentinel2/vistas/sargazo/sargazo_TC/'
@@ -16,6 +16,7 @@ if name == '__main__':
     region = 's1'
     
     archivos = glob(pathVertices+'*')
+    print(archivos)
     fechas = []
     for archivo in archivos:
         fechas.append(obtieneFechaVertice(archivo))    
