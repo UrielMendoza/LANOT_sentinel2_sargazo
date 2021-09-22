@@ -25,19 +25,6 @@ from PIL import Image, ImageDraw
 from pathlib import Path
 from osgeo import gdal,osr
 
-Image.MAX_IMAGE_PIXELS = 614960590 
-white = (255, 255, 255)
-
-ulx = 399960.0
-uly = 2400000.0
-lrx = 709800.0
-lry = 1990200.0
-
-height = 1200
-width = 1200
-
-area = 0
-
 def mapeo(x, y):
     height = 1200
     width = 1200
@@ -50,8 +37,7 @@ def lee_poligonos(filename, image):
     data = json.load(f)
     draw = ImageDraw.Draw(image)
     d = 2
-    global area
-
+    area = 0
     for i in data['features']:
         p = i['geometry']['coordinates']
         #print(p)
@@ -89,9 +75,8 @@ def lee_vertices(filename, image):
 
 import aggdraw
 
-def draw_text(x, y, text, align, bw=5, draw, font):
-    #global font
-    #global draw
+def draw_text(x, y, text, align, bw, draw, font):
+    
     p = aggdraw.Pen("white", 0.5)
     b = aggdraw.Brush((0,0,0), 100)
     title_sz =  draw.textsize(text, font)
@@ -209,12 +194,12 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
     font = aggdraw.Font(white, "/usr/share/fonts/truetype/ttf-bitstream-vera/VeraMono.ttf", 30)
 
     title = "Sargazo "+fecha_str+" Z"
-    draw_text(im_in.width-15, im_in.height - 75, title, 2, draw, font)
+    draw_text(im_in.width-15, im_in.height - 75, title, 2, 5, draw, font)
     print("area ", area)
     #areakm2 = area*1e-6
     areatext = "Area = {:5.4f} km2".format(area)
     print(areatext)
-    draw_text(im_in.width-15, im_in.height - 40, areatext, 2)
+    draw_text(im_in.width-15, im_in.height - 40, areatext, 2, 5, draw, font)
 
     # S2_MSI_sargazoTC_s1_20190211T161411
     outfile = pathOutputVistas+"S2_MSI_sargazoTC_"+region+"_"+label+".png"
