@@ -129,6 +129,11 @@ def obtieneFechaImaProc(pathDir):
     #fecha = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     return fecha
 
+def obtieneFechaVertice(pathDir):
+    fecha = pathDir.split('/')[-1].split('.')[0].split('_')[4]
+    fecha = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
+    return fecha.strftime('%Y%m%dT%H%M%S')
+
 def descomprime(pathInput,pathOutput):
     compresion = tipoCompresion(pathInput) 
     if compresion == 'gz':
@@ -399,7 +404,7 @@ def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathTmp):
         print("No buffer de nubes")
         banderaNub = False
         return banderaNub
-    elif porcNube >= 40.0:
+    elif porcNube >= 60.0:
         banderaNub = True
         df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
     else:
@@ -869,5 +874,5 @@ def createMosaic(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
 
     # MANDA A PETA
     os.system('scp '+pathInput+'/'+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')
-    # MANDA A CUMULUS
+    # MANDA A WEB
     os.system('scp '+pathInput+'/'+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')

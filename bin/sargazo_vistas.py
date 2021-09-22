@@ -25,25 +25,9 @@ from PIL import Image, ImageDraw
 from pathlib import Path
 from osgeo import gdal,osr
 
-lanotdir = '/usr/local/share/lanot'
-outdir = '/data/output/sentinel2/vistas/sargazo/sargazo_TC'
-verticesdir = '/data/output/sentinel2/l2/geojson/sargazo_vertices'
-geotiffdir = '/data/output/sentinel2/l2/geotiff/TC'
-
-Image.MAX_IMAGE_PIXELS = 614960590 
-white = (255, 255, 255)
-
-ulx = 399960.0
-uly = 2400000.0
-lrx = 709800.0
-lry = 1990200.0
-
-height = 1200
-width = 1200
-
-area = 0
-
 def mapeo(x, y):
+    height = 1200
+    width = 1200
     u = int(width*(x - ulx)/(lrx - ulx))
     v = int(height*(uly - y)/(uly - lry))
     return u, v
@@ -131,12 +115,33 @@ def get_limits(path):
     lrx = ext[2][0]
     lry = ext[2][1]
     
-if __name__ == '__main__':
-    if len(sys.argv) < 2:
-        print("Usanza: ", sys.argv[0], " <fecha YYYMMDDTHHMM>")
-        exit(1)
+#if __name__ == '__main__':
+    #if len(sys.argv) < 2:
+    #    print("Usanza: ", sys.argv[0], " <fecha YYYMMDDTHHMM>")
+    #    exit(1)
 
-    label = sys.argv[1]
+def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb):
+    
+    #lanotdir = '/usr/local/share/lanot'
+    #outdir = '/data/output/sentinel2/vistas/sargazo/sargazo_TC'
+    #verticesdir = '/data/output/sentinel2/l2/geojson/sargazo_vertices'
+    #geotiffdir = '/data/output/sentinel2/l2/geotiff/TC'
+
+    Image.MAX_IMAGE_PIXELS = 614960590 
+    white = (255, 255, 255)
+
+    ulx = 399960.0
+    uly = 2400000.0
+    lrx = 709800.0
+    lry = 1990200.0
+
+    height = 1200
+    width = 1200
+
+    area = 0
+
+    #label = sys.argv[1]
+    label = fecha
     pattern = re.compile(label)
     #lista = []
     #for filename in os.listdir(verticesdir):
@@ -149,7 +154,7 @@ if __name__ == '__main__':
     fecha_str = fecha.strftime("%Y/%m/%d %H:%M")
     print(fecha, fecha_str, label)
 
-    lista = glob.glob(verticesdir+"/*"+label+"*.json")
+    lista = glob.glob(pathVertices+"/*"+label+"*.json")
 
     print("Lista", lista, len(lista))
     
@@ -159,13 +164,13 @@ if __name__ == '__main__':
 
     # Crear la imagen base con todos los mosaicos
     mosaicos = ''
-    for path in Path('/data/output/sentinel2/l2/geotiff/TC').rglob('*'+label+'*.tif'):
+    for path in Path(pathOutputGeoTiff+'TC').rglob('*'+label+'*.tif'):
         print(path, type(path))
         mosaicos += str(path) + ' '
 
-    print("gdal_merge.py -o tmp.tif -of gtiff "+mosaicos)
-    os.system("gdal_merge.py -o tmp.tif -of gtiff "+mosaicos)
-    path = "tmp.tif"
+    print("gdal_merge.py -o "+pathTmp+"tmp_vista.tif -of gtiff "+mosaicos)
+    os.system("gdal_merge.py -o "+pathTmp+"tmp_vista.tif -of gtiff "+mosaicos)
+    path = pathTmp+"tmp_vista.tif"
     get_limits(path)
     print(ulx, uly, lrx, lry)
     
@@ -178,7 +183,7 @@ if __name__ == '__main__':
         lee_poligonos(pathjson, im_in)
         #lee_vertices(pathjson, im_in)
 
-    logo = Image.open(lanotdir + '/logos/lanot_negro_sn.jpg')
+    logo = Image.open(pathLanot + 'logos/lanot_negro_sn.jpg')
     w = 300
     h = int(w * logo.height / logo.width)
     logo = logo.resize((w, h))
@@ -198,6 +203,13 @@ if __name__ == '__main__':
     print(areatext)
     draw_text(im_in.width-15, im_in.height - 40, areatext, 2)
 
-    outfile = label+"_verts.png"
+    # S2_MSI_sargazoTC_s1_20190211T161411
+    outfile = pathOutputVistas+"S2_MSI_sargazoTC_"+region+"_"+label+".png"
     print("Guardando", outfile)
+    # MANDA A DATA
     im_in.save(outfile)
+    # MANDA A PETA
+    os.system('scp '+outfile+' lanotadm@stratus:'+pathOutputPeta)
+    # MANDA A WEB
+    os.system('scp '+outfile+' sargazo@cumulus:'+pathOutputWeb)
+
