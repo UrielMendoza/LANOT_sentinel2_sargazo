@@ -25,6 +25,19 @@ from PIL import Image, ImageDraw
 from pathlib import Path
 from osgeo import gdal,osr
 
+Image.MAX_IMAGE_PIXELS = 614960590 
+white = (255, 255, 255)
+
+ulx = 399960.0
+uly = 2400000.0
+lrx = 709800.0
+lry = 1990200.0
+
+height = 1200
+width = 1200
+
+area = 0
+
 def mapeo(x, y):
     height = 1200
     width = 1200

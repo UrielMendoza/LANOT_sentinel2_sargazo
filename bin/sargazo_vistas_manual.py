@@ -16,7 +16,6 @@ if __name__ == "__main__":
     region = 's1'
     
     archivos = glob(pathVertices+'*')
-    print(archivos)
     fechas = []
     for archivo in archivos:
         fechas.append(obtieneFechaVertice(archivo))    
