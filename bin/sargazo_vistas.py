@@ -25,19 +25,16 @@ from PIL import Image, ImageDraw
 from pathlib import Path
 from osgeo import gdal,osr
 
-def mapeo(x, y):
-    height = 1200
-    width = 1200
+def mapeo(x, y, width, height):
     u = int(width*(x - ulx)/(lrx - ulx))
     v = int(height*(uly - y)/(uly - lry))
     return u, v
 
-def lee_poligonos(filename, image):
+def lee_poligonos(filename, image, area, width, height):
     f = open(filename)
     data = json.load(f)
     draw = ImageDraw.Draw(image)
     d = 2
-    area = 0
     for i in data['features']:
         p = i['geometry']['coordinates']
         #print(p)
@@ -49,7 +46,7 @@ def lee_poligonos(filename, image):
         for j in p:
             #print(j)
             x, y = j
-            u, v = mapeo(x, y)
+            u, v = mapeo(x, y, width, height)
             #puntos.append((u,v))
             #print(x, y, u, v)
             draw.rectangle([u-d,v-d,u+d,v+d], fill=(255,0,0,255))
@@ -57,7 +54,7 @@ def lee_poligonos(filename, image):
   
     f.close()
 
-def lee_vertices(filename, image):
+def lee_vertices(filename, image, width, height):
     import json
 
     f = open(filename)
@@ -67,7 +64,7 @@ def lee_vertices(filename, image):
     d = 2
     for i in data['features']:
         x, y = i['geometry']['coordinates']
-        u, v = mapeo(x, y)
+        u, v = mapeo(x, y, width, height)
         print(x, y, u, v)
         draw.rectangle([u-d,v-d,u+d,v+d], fill=(255,0,0,255))
   
@@ -178,7 +175,7 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
     im_in = im_in.resize((width, height)).convert('RGB')
 
     for pathjson in lista:
-        lee_poligonos(pathjson, im_in)
+        lee_poligonos(pathjson, im_in, area, width, height)
         #lee_vertices(pathjson, im_in)
 
     logo = Image.open(pathLanot + 'logos/lanot_negro_sn.jpg')

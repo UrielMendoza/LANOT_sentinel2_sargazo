@@ -18,8 +18,10 @@ if __name__ == "__main__":
     archivos = glob(pathVertices+'*')
     fechas = []
     for archivo in archivos:
-        fechas.append(obtieneFechaVertice(archivo))    
+        fechas.append(obtieneFechaVertice(archivo)) 
+
     fechas = set(fechas)
+    print(fechas)
     
     for fecha in fechas:
         sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
