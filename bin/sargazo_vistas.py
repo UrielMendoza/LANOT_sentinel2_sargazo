@@ -52,7 +52,7 @@ def lee_poligonos(filename, image):
 
     for i in data['features']:
         p = i['geometry']['coordinates']
-        a = i['properties']['area']
+        a = i['properties']['area_km2']
         #print(type(p), p[0][0], a)
         area += a
         puntos = []
