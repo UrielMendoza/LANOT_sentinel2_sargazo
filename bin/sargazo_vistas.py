@@ -187,11 +187,13 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
     h = int(w * logo.height / logo.width)
     logo = logo.resize((w, h))
     im_in.paste(logo, (10, 140))
-
+    
+    global draw
     draw = aggdraw.Draw(im_in)
     p = aggdraw.Pen("white", 0.5)
     b = aggdraw.Brush((0,0,0), 100)
     white = (255, 255, 255)
+    global font
     font = aggdraw.Font(white, "/usr/share/fonts/truetype/ttf-bitstream-vera/VeraMono.ttf", 30)
 
     title = "Sargazo "+fecha_str+" Z"
