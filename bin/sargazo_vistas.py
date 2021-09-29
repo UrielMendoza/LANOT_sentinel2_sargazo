@@ -36,7 +36,7 @@ lry = 1990200.0
 height = 1200
 width = 1200
 
-area = 0
+#area = 0
 
 def mapeo(x, y):
     u = int(width*(x - ulx)/(lrx - ulx))
@@ -48,7 +48,8 @@ def lee_poligonos(filename, image):
     data = json.load(f)
     draw = ImageDraw.Draw(image)
     d = 2
-    global area
+    #global area
+    area = 0
 
     for i in data['features']:
         p = i['geometry']['coordinates']
@@ -67,6 +68,7 @@ def lee_poligonos(filename, image):
         #draw.polygon(puntos, fill=(255,0,0,255))
   
     f.close()
+    return area
 
 def lee_vertices(filename, image):
     import json
@@ -179,7 +181,7 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
     im_in = im_in.resize((width, height)).convert('RGB')
 
     for pathjson in lista:
-        lee_poligonos(pathjson, im_in)
+        area = lee_poligonos(pathjson, im_in)
         #lee_vertices(pathjson, im_in)
 
     logo = Image.open(pathLanot + 'logos/lanot_negro_sn.jpg')
