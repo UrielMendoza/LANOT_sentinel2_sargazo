@@ -28,5 +28,5 @@ if __name__ == "__main__":
     for fecha in fechas:
         try:
             sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
-        except PIL.UnidentifiedImageError:
+        except:
             continue
