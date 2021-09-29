@@ -25,28 +25,42 @@ from PIL import Image, ImageDraw
 from pathlib import Path
 from osgeo import gdal,osr
 
-def mapeo(x, y, width, height):
+Image.MAX_IMAGE_PIXELS = 614960590 
+white = (255, 255, 255)
+
+ulx = 399960.0
+uly = 2400000.0
+lrx = 709800.0
+lry = 1990200.0
+
+height = 1200
+width = 1200
+
+area = 0
+
+def mapeo(x, y):
     u = int(width*(x - ulx)/(lrx - ulx))
     v = int(height*(uly - y)/(uly - lry))
     return u, v
 
-def lee_poligonos(filename, image, area, width, height):
+def lee_poligonos(filename, image):
     f = open(filename)
     data = json.load(f)
     draw = ImageDraw.Draw(image)
     d = 2
+    global area
+
     for i in data['features']:
         p = i['geometry']['coordinates']
-        #print(p)
-        a = i['properties']['area_km2']
+        a = i['properties']['area']
         #print(type(p), p[0][0], a)
         area += a
         puntos = []
         d = 1
-        for j in p:
+        for j in p[0][0]:
             #print(j)
             x, y = j
-            u, v = mapeo(x, y, width, height)
+            u, v = mapeo(x, y)
             #puntos.append((u,v))
             #print(x, y, u, v)
             draw.rectangle([u-d,v-d,u+d,v+d], fill=(255,0,0,255))
@@ -54,7 +68,7 @@ def lee_poligonos(filename, image, area, width, height):
   
     f.close()
 
-def lee_vertices(filename, image, width, height):
+def lee_vertices(filename, image):
     import json
 
     f = open(filename)
@@ -64,7 +78,7 @@ def lee_vertices(filename, image, width, height):
     d = 2
     for i in data['features']:
         x, y = i['geometry']['coordinates']
-        u, v = mapeo(x, y, width, height)
+        u, v = mapeo(x, y)
         print(x, y, u, v)
         draw.rectangle([u-d,v-d,u+d,v+d], fill=(255,0,0,255))
   
@@ -72,8 +86,9 @@ def lee_vertices(filename, image, width, height):
 
 import aggdraw
 
-def draw_text(x, y, text, align, bw, draw, font):
-    
+def draw_text(x, y, text, align, bw=5):
+    global font
+    global draw
     p = aggdraw.Pen("white", 0.5)
     b = aggdraw.Brush((0,0,0), 100)
     title_sz =  draw.textsize(text, font)
@@ -122,18 +137,7 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
     #verticesdir = '/data/output/sentinel2/l2/geojson/sargazo_vertices'
     #geotiffdir = '/data/output/sentinel2/l2/geotiff/TC'
 
-    Image.MAX_IMAGE_PIXELS = 614960590 
-    white = (255, 255, 255)
 
-    ulx = 399960.0
-    uly = 2400000.0
-    lrx = 709800.0
-    lry = 1990200.0
-
-    height = 1200
-    width = 1200
-
-    area = 0
 
     #label = sys.argv[1]
     label = fecha
@@ -163,8 +167,8 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
         print(path, type(path))
         mosaicos += str(path) + ' '
 
-    print("gdal_merge.py -o "+pathTmp+"tmp_vista.tif -of gtiff "+mosaicos)
-    os.system("gdal_merge.py -o "+pathTmp+"tmp_vista.tif -of gtiff "+mosaicos)
+    print("gdal_merge.py -o "+pathTmp+"tmp_vista.tif "+mosaicos)
+    os.system("gdal_merge.py -o "+pathTmp+"tmp_vista.tif "+mosaicos)
     path = pathTmp+"tmp_vista.tif"
     get_limits(path)
     print(ulx, uly, lrx, lry)
@@ -175,7 +179,7 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
     im_in = im_in.resize((width, height)).convert('RGB')
 
     for pathjson in lista:
-        lee_poligonos(pathjson, im_in, area, width, height)
+        lee_poligonos(pathjson, im_in)
         #lee_vertices(pathjson, im_in)
 
     logo = Image.open(pathLanot + 'logos/lanot_negro_sn.jpg')
@@ -191,12 +195,12 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
     font = aggdraw.Font(white, "/usr/share/fonts/truetype/ttf-bitstream-vera/VeraMono.ttf", 30)
 
     title = "Sargazo "+fecha_str+" Z"
-    draw_text(im_in.width-15, im_in.height - 75, title, 2, 5, draw, font)
+    draw_text(im_in.width-15, im_in.height - 75, title, 2)
     print("area ", area)
     #areakm2 = area*1e-6
     areatext = "Area = {:5.4f} km2".format(area)
     print(areatext)
-    draw_text(im_in.width-15, im_in.height - 40, areatext, 2, 5, draw, font)
+    draw_text(im_in.width-15, im_in.height - 40, areatext, 2)
 
     # S2_MSI_sargazoTC_s1_20190211T161411
     outfile = pathOutputVistas+"S2_MSI_sargazoTC_"+region+"_"+label+".png"
