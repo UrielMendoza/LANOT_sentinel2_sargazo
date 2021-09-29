@@ -49,7 +49,6 @@ def lee_poligonos(filename, image):
     draw = ImageDraw.Draw(image)
     d = 2
     #global area
-    area = 0
 
     for i in data['features']:
         p = i['geometry']['coordinates']
@@ -179,7 +178,7 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
     height = 1200
     width = int(height * im_in.width / im_in.height)
     im_in = im_in.resize((width, height)).convert('RGB')
-
+    area = 0
     for pathjson in lista:
         area = lee_poligonos(pathjson, im_in)
         #lee_vertices(pathjson, im_in)
