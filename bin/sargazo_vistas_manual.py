@@ -20,8 +20,9 @@ if __name__ == "__main__":
     for archivo in archivos:
         fechas.append(obtieneFechaVertice(archivo)) 
 
-    fechas = set(fechas)
+    fechas = list(set(fechas))
     print(fechas)
     fechas.sort()
+
     for fecha in fechas:
         sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
