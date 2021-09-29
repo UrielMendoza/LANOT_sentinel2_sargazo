@@ -57,7 +57,7 @@ def lee_poligonos(filename, image):
         area += a
         puntos = []
         d = 1
-        for j in p[0][0]:
+        for j in p:
             #print(j)
             x, y = j
             u, v = mapeo(x, y)
