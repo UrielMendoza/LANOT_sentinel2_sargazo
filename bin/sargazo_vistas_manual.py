@@ -22,6 +22,6 @@ if __name__ == "__main__":
 
     fechas = set(fechas)
     print(fechas)
-    
+    fechas.sort()
     for fecha in fechas:
         sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
