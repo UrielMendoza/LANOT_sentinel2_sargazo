@@ -186,7 +186,7 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
         #lee_vertices(pathjson, im_in)
 
     logo = Image.open(pathLanot + 'logos/lanot_negro_sn.jpg')
-    w = 300
+    w = 100
     h = int(w * logo.height / logo.width)
     logo = logo.resize((w, h))
     im_in.paste(logo, (10, 140))
