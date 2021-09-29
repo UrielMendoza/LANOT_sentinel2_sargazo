@@ -2,6 +2,7 @@ from os import name
 import sargazo_vistas
 from glob import glob
 from processing_sentinel2 import obtieneFechaVertice
+import PIL
 
 if __name__ == "__main__":
 
@@ -25,4 +26,7 @@ if __name__ == "__main__":
     fechas.sort()
 
     for fecha in fechas:
-        sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
+        try:
+            sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
+        except PIL.UnidentifiedImageError:
+            continue
