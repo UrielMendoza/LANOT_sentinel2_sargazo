@@ -168,6 +168,7 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
         print(path, type(path))
         mosaicos += str(path) + ' '
 
+    print('MOSAICOS:'+ mosaicos)
     print("gdal_merge.py -o "+pathTmp+"tmp_vista.tif "+mosaicos)
     os.system("gdal_merge.py -o "+pathTmp+"tmp_vista.tif "+mosaicos)
     path = pathTmp+"tmp_vista.tif"
