@@ -123,6 +123,9 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
     owd = os.getcwd()
 
     # MANUAL Y AUTOMATICO
+    # Borra el tmp
+    if dateTime == 'automatico' or dateTime == 'manual':
+        os.system('rm -r '+pathTmp+'*')
     if dateTime == 'automatico':
         start_date,end_date,region,landMask = automatico()
 
