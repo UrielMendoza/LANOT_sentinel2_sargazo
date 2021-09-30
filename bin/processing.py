@@ -427,8 +427,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     os.system('rm -r '+pathTmp+'*.csv')
                     os.system('rm -r '+pathTmp+'*.zip')
                     os.system('rm -r '+pathTmp+'*.SAFE')
-                    if dateTime == 'automatico' or dateTime == 'manual':
-                        os.system('rm -r '+pathTmp+'*')
+                    #if dateTime == 'automatico' or dateTime == 'manual':
+                    #    os.system('rm -r '+pathTmp+'*')
                 
             else:
                 print('======================================')
