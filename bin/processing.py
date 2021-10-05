@@ -9,12 +9,14 @@ Created on Fri Nov 20 23:52:19 2020
 import os
 import time
 import datetime
-import processing_sentinel2
-import download_datasets
-import base
 import sys
 from glob import glob
 import traceback
+
+import processing_sentinel2
+import download_datasets
+import base
+import sargazo_vistas
 
 def semiManual():
     start_date = None
@@ -117,7 +119,7 @@ def manual():
 
     return start_date,end_date,region,landMask
 
-def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,dateTime):
+def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime):
 
     iniTotal = time.time()
     owd = os.getcwd()
@@ -445,6 +447,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
             processing_sentinel2.createMosaic(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
             # MOSAICO SARGAZO
             processing_sentinel2.createMosaic(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+            # GENERA VISTA
+            sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
             
             print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
 

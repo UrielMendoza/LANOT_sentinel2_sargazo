@@ -9,8 +9,8 @@ if __name__ == "__main__":
     # DIRECTORIOS
     pathOutputVistas = '/data/output/sentinel2/vistas/sargazo/sargazo_TC/'
     pathOutputGeoTiff = '/data/output/sentinel2/l2/geotiff/'
-    pathOutputWeb = '/home/sargazo/data/vistas/sargazo_TC'
-    pathOutputPeta = '/depot/sentinel2/output/vistas/sargazo_TC/'
+    pathOutputWeb = '/home/sargazo/data/'
+    pathOutputPeta = '/depot/sentinel2/output/'
     pathVertices = '/data/output/sentinel2/l2/geojson/sargazo_vertices/'
     pathTmp = '/data/input/sentinel2/tmp/semi_manual/'
     pathLanot = '/usr/local/share/lanot/'

@@ -213,7 +213,7 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
     # MANDA A DATA
     im_in.save(outfile)
     # MANDA A PETA
-    os.system('scp '+outfile+' lanotadm@stratus:'+pathOutputPeta)
+    os.system('scp '+outfile+' lanotadm@stratus:'+pathOutputPeta+'vistas/sargazo_TC/')
     # MANDA A WEB
-    os.system('scp '+outfile+' sargazo@cumulus:'+pathOutputWeb)
+    os.system('scp '+outfile+' sargazo@cumulus:'+pathOutputWeb+'vistas/sargazo_TC/')
 
