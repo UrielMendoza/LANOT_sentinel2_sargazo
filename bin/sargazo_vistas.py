@@ -138,8 +138,6 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
     #verticesdir = '/data/output/sentinel2/l2/geojson/sargazo_vertices'
     #geotiffdir = '/data/output/sentinel2/l2/geotiff/TC'
 
-
-
     #label = sys.argv[1]
     label = fecha
     pattern = re.compile(label)
@@ -208,6 +206,7 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
     draw_text(im_in.width-15, im_in.height - 40, areatext, 2)
 
     # S2_MSI_sargazoTC_s1_20190211T161411
+    print(outfile)
     outfile = pathOutputVistas+"S2_MSI_sargazoTC_"+region+"_"+label+".png"
     print("Guardando", outfile)
     # MANDA A DATA
