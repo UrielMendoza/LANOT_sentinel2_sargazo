@@ -16,7 +16,7 @@ if __name__ == "__main__":
     pathLanot = '/usr/local/share/lanot/'
     region = 's1'
     
-    archivos = glob(pathVertices+'*20211018*')
+    archivos = glob(pathVertices+'*')
     fechas = []
     for archivo in archivos:
         fechas.append(obtieneFechaVertice(archivo)) 

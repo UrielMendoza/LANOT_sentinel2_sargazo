@@ -206,8 +206,8 @@ def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathO
     draw_text(im_in.width-15, im_in.height - 40, areatext, 2)
 
     # S2_MSI_sargazoTC_s1_20190211T161411
-    print(outfile)
     outfile = pathOutputVistas+"S2_MSI_sargazoTC_"+region+"_"+label+".png"
+    print(outfile)
     print("Guardando", outfile)
     # MANDA A DATA
     im_in.save(outfile)
