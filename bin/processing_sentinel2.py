@@ -237,7 +237,7 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         df['fechaDia'] = fechaDia
         df["area_km2"] = round(df['geometry'].area*0.000001,4)
         #gdf = gpd.read_file(pathLM+'land_UTM16N_20m_distance.geojson')
-        gdf = gpd.read_file(pathLM+'land_UTM16N_20m_1.geojson')
+        gdf = gpd.read_file(pathLM+'land_UTM16N_20m_2021.geojson')
         distances = []
         df['distCosta_km'] = None
         for i in range(len(df)):
@@ -292,7 +292,7 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
     #df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json')
     # SIN DETFOO
     df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar.json')
-    df_mask = gpd.read_file(pathLM+'land_UTM16N_20m_1.geojson')
+    df_mask = gpd.read_file(pathLM+'land_UTM16N_20m_2021.geojson')
     res_difference = gpd.overlay(df, df_mask, how='difference')
     print('=============================================')
     print('Detección de sargazo con mascara de tierra: ',len(res_difference),' elementos')
