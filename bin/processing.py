@@ -119,7 +119,7 @@ def manual():
 
     return start_date,end_date,region,landMask
 
-def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime):
+def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime):
 
     iniTotal = time.time()
     owd = os.getcwd()
@@ -259,9 +259,9 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                     else:
                         # SEN2COR
                         print('No ha sido corregido atmosfericamente, porcesando con Se2Cor...')
-                        pathSen2cor = '../Sen2Cor-02.09.00-Linux64/bin/'
-                        pathCFG = '../../sen2cor/2.9/cfg/L2A_GIPP.xml'
-                        processing_sentinel2.sen2cor(pathSen2cor,pathCFG,pathTmp+dirI,pathTmp,'10')
+                        pathSen2corBin = pathSen2cor + 'LANOT_sentinel2_sargazo/Sen2Cor-02.09.00-Linux64/bin/'
+                        pathCFG = pathSen2cor + 'sen2cor/2.9/cfg/L2A_GIPP.xml'
+                        processing_sentinel2.sen2cor(pathSen2corBin,pathCFG,pathTmp+dirI,pathTmp,'10')
                         # COMPRIME Y MUEVE EL L2 CORREGIDO
                         print('3.1 Moviendo L2A a data y peta...')
                         #print(pathTmp)
@@ -279,7 +279,13 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
                         os.system('scp '+pathTmp+dirI.split('.')[0]+'.zip lanotadm@stratus:'+pathOutputPeta+'L2A/'+tile+'/')
                         #print(fecha)
                         #print(dirI)
-
+                except Exception as e:
+                    print('***Error en el procesamiento***')
+                    #pass
+                    processing_sentinel2.agregaErrorSargazoDB(archivol1c,'',fecha,tile,traceback.format_exc().replace("'",""))
+                    processing_sentinel2.enviaMail(fecha,tile,traceback.format_exc().replace("'",""))
+                    continue
+                try:
                     os.chdir(owd)
                     # PORCENTAJE DE NUBES
                     print('3.2 Porcentaje de nubes')

@@ -23,8 +23,9 @@ if __name__ == "__main__":
     pathVertices = '/data/output/sentinel2/l2/geojson/sargazo_vertices/'
     pathTmp = '/data/input/sentinel2/tmp/automatico/'
     pathLM = '../data/masks/'
+    pathSen2cor = '/home/lanotadm/'
     pathLanot = '/usr/local/share/lanot/'
     pathOutputVistas = '/data/output/sentinel2/vistas/sargazo/sargazo_TC/'
     pathLog = '../../logs_sentinel2_sargazo/'
 
-    sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime='automatico')
+    sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime='automatico')
