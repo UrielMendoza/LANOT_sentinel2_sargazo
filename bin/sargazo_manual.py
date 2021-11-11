@@ -22,11 +22,11 @@ if __name__ == "__main__":
     pathInputPeta = '/depot/sentinel2/input/L1C/'
     pathVertices = '/data/output/sentinel2/l2/geojson/sargazo_vertices/'
     pathTmp = '/data/input/sentinel2/tmp/manual/'
-    pathLM = '../data/masks/'
+    pathLM = '/home/lanotadm/LANOT_sentinel2_sargazo/data/masks/'
     pathSen2cor = '/home/lanotadm/'
     pathLanot = '/usr/local/share/lanot/'
     pathOutputVistas = '/data/output/sentinel2/vistas/sargazo/sargazo_TC/'
-    pathLog = '../../logs_sentinel2_sargazo/'
+    pathLog = '/home/lanotadm/logs_sentinel2_sargazo/'
 
     respuesta = None
     while respuesta != 4:
