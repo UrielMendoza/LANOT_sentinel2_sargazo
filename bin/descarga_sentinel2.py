@@ -153,12 +153,12 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,
             # DESCARGA
             print('1. Descargando...')
             print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
-            download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathInputL1C, unzip=False)
+            #download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathInputL1C, unzip=False)
 
             # Reste dias para prueba
             #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
-            #daysDelta = 3
-            #download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=daysDelta), end_date - datetime.timedelta(days=daysDelta), pathInputL1C, unzip=False)
+            daysDelta = 1
+            download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=daysDelta), end_date - datetime.timedelta(days=daysDelta), pathInputL1C, unzip=False)
         except Exception as e:
             print('***Error en la descarga***')
             processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',traceback.format_exc().replace("'",""))
