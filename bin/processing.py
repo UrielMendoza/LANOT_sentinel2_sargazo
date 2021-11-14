@@ -162,7 +162,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
 
             # Reste dias para prueba
             #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
-            #daysDelta = 1
+            #daysDelta = 3
             #download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=daysDelta), end_date - datetime.timedelta(days=daysDelta), pathInputL1C, unzip=False)
         except Exception as e:
             print('***Error en la descarga***')
@@ -326,12 +326,12 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                         break
                     elif porcNube >= 30.0:
                         #nubesBajas = 900
-                        nubesBajas = 800
-                        bufferNubes = 500
+                        nubesBajas = 400
+                        bufferNubes = 100
                     else:
                         #nubesBajas = 2500
-                        nubesBajas = 1000
-                        bufferNubes = 1000
+                        nubesBajas = 600
+                        bufferNubes = 400
                     print('Valor de temperatura para filtro nubes bajas: ',nubesBajas)
                     print('Valor de buffer para nubes: ',bufferNubes)                  
           
