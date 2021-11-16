@@ -757,12 +757,12 @@ def insertSargazoDB(conect,cur,crs,pathInput):
 
 def deleteSargazoDB(conect,cur,tile,fecha):
     print('Borrando sargazo de DB: ')
-    cur.execute("DELETE FROM sargazo WHERE tile="+tile+" AND fechadia="+fecha)
+    cur.execute("DELETE FROM sargazo WHERE tile='"+tile+"' AND fechadia='"+fecha+"'")
     conect.commit()
 
 def deleteSargazoLogDB(conect,cur,tile,fecha):
     print('Borrando sargazo_log de DB: ')
-    cur.execute("DELETE FROM sargazo_log WHERE tile="+tile+" AND fechadia="+fecha)
+    cur.execute("DELETE FROM sargazo_log WHERE tile='"+tile+"' AND fechadia='"+fecha+"'")
     conect.commit()
 
 def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc):
