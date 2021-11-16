@@ -755,6 +755,16 @@ def insertSargazoDB(conect,cur,crs,pathInput):
     row = cur.fetchall()
     conect.commit()
 
+def deleteSargazoDB(conect,cur,tile,fecha):
+    print('Borrando sargazo de DB: ')
+    cur.execute("DELETE FROM sargazo WHERE tile="+tile+" AND fechadia="+fecha)
+    conect.commit()
+
+def deleteSargazoLogDB(conect,cur,tile,fecha):
+    print('Borrando sargazo_log de DB: ')
+    cur.execute("DELETE FROM sargazo_log WHERE tile="+tile+" AND fechadia="+fecha)
+    conect.commit()
+
 def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc):
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     fechaDia = time.strftime('%Y-%m-%d')
@@ -782,6 +792,20 @@ def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube
         insertSargazoDB(conect,cur,crs,pathInput)
         insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc)
         print ("Se agrego a la DB archivo: "+pathInput)
+    except Exception as e:
+        print(f'Ocurrio un error en la transacción DB: {e}')
+        # Mandar correo
+        enviaMail(fecha, tile, traceback.format_exc().replace("'",""))
+        cur.close()
+        conect.close()
+    conect.close()
+
+def borraSargazoDB(fecha,tile):
+    conect,cur = conexionDB()
+    try:
+        deleteSargazoLogDB(conect, cur, tile, fecha)
+        deleteSargazoDB(conect, cur, tile, fecha)
+        print ("Se elimino sargazo de la DB: "+tile+" "+tile)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo

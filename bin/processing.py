@@ -211,6 +211,11 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                 dirI = processing_sentinel2.nomDir(archivo,'L2A')
                 print("Fecha: "+fecha)
                 print("Tile: "+tile)
+                # Borra sargazo si ya estaba
+                if dateTime == 'semiManual':
+                    fechaBorrar = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
+                    fechaDiaBorrar = fechaBorrar.strftime('%Y-%m-%d')
+                    processing_sentinel2.borraSargazoDB(fechaDiaBorrar,tile)
             except Exception as e:
                 print('***Error en obtener datos***')
                 processing_sentinel2.agregaErrorSargazoDB(archivo,'',fecha,tile,traceback.format_exc().replace("'",""))
