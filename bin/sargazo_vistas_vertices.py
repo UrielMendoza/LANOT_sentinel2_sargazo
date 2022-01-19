@@ -32,6 +32,7 @@ pathOutputGeoTiff = '/data/output/sentinel2/l2/geotiff/TC/'
 pathOutputWeb = '/home/sargazo/data/'
 pathOutputPeta = '/depot/sentinel2/output/'
 pathVertices = '/data/output/sentinel2/l2/geojson/sargazo_vertices/'
+pathSargazo = '/data/output/sentinel2/l2/geojson/sargazo/'
 pathTmp = '/data/input/sentinel2/tmp/semi_manual/'
 pathLanot = '/usr/local/share/lanot/'
 region = 's1'
@@ -184,9 +185,9 @@ if __name__ == '__main__':
             lee_poligonos(pathjson, im_in)
             #lee_vertices(pathjson, im_in)
 
-        gdf = gpd.GeoDataFrame(columns=["level_0", "level_1", "IDpoligono", "tile", "fecha", "fechaDia", "area_km2", "distCosta_km", "geometry"], crs="EPSG:32616")
+        gdf = gpd.GeoDataFrame(columns=["IDpoligono", "tile", "fecha", "fechaDia", "area_km2", "distCosta_km", "geometry"], crs="EPSG:32616")
         # Crear un geodataframe con todos los geojson
-        for pathV in Path(pathVertices).rglob('*'+label+'*.json'):
+        for pathV in Path(pathSargazo+'*/').rglob('*'+label+'*.json'):
             print(pathV, type(pathV))
             gdf_v = gpd.read_file(pathV)
             gdf = pd.concat([gdf, gdf_v], ignore_index=True)
