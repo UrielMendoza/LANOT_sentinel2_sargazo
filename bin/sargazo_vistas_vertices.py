@@ -137,91 +137,93 @@ def get_limits(path):
     lry = ext[2][1]
     
 if __name__ == '__main__':
+    try:
+        if len(sys.argv) < 2:
+            print("Usanza: ", sys.argv[0], " <fecha YYYMMDDTHHMM>")
+            exit(1)
 
-    if len(sys.argv) < 2:
-        print("Usanza: ", sys.argv[0], " <fecha YYYMMDDTHHMM>")
-        exit(1)
-
-    label = sys.argv[1]
-    pattern = re.compile(label)
-    #lista = []
-    #for filename in os.listdir(verticesdir):
-     #   if pattern.match(filename, 18):
-      #      print(filename)
-       #     files.append(filename)
+        label = sys.argv[1]
+        pattern = re.compile(label)
+        #lista = []
+        #for filename in os.listdir(verticesdir):
+        #   if pattern.match(filename, 18):
+        #      print(filename)
+        #     files.append(filename)
 
 
-    fecha = datetime.datetime.strptime(label, '%Y%m%dT%H%M%S')
-    fecha_str = fecha.strftime("%Y/%m/%d %H:%M")
-    print(fecha, fecha_str, label)
+        fecha = datetime.datetime.strptime(label, '%Y%m%dT%H%M%S')
+        fecha_str = fecha.strftime("%Y/%m/%d %H:%M")
+        print(fecha, fecha_str, label)
 
-    lista = glob.glob(pathVertices+"/*"+label+"*.json")
+        lista = glob.glob(pathVertices+"/*"+label+"*.json")
 
-    print("Lista", lista, len(lista))
-    
-    if len(lista) == 0:
-        print("Error: No existe fecha", label)
-        exit(1)
+        print("Lista", lista, len(lista))
+        
+        if len(lista) == 0:
+            print("Error: No existe fecha", label)
+            exit(1)
 
-    # Crear la imagen base con todos los mosaicos
-    mosaicos = ''
-    for path in Path(pathOutputGeoTiff).rglob('*'+label+'*.tif'):
-        print(path, type(path))
-        mosaicos += str(path) + ' '
+        # Crear la imagen base con todos los mosaicos
+        mosaicos = ''
+        for path in Path(pathOutputGeoTiff).rglob('*'+label+'*.tif'):
+            print(path, type(path))
+            mosaicos += str(path) + ' '
 
-    print("gdal_merge.py -o "+pathTmp+"tmp.tif "+mosaicos)
-    os.system("gdal_merge.py -o "+pathTmp+"tmp.tif "+mosaicos)
-    path = pathTmp+"tmp.tif"
-    get_limits(path)
-    print(ulx, uly, lrx, lry)
-    
-    im_in = Image.open(path)
-    height = 1200
-    width = int(height * im_in.width / im_in.height)
-    im_in = im_in.resize((width, height)).convert('RGB')
+        print("gdal_merge.py -o "+pathTmp+"tmp.tif "+mosaicos)
+        os.system("gdal_merge.py -o "+pathTmp+"tmp.tif "+mosaicos)
+        path = pathTmp+"tmp.tif"
+        get_limits(path)
+        print(ulx, uly, lrx, lry)
+        
+        im_in = Image.open(path)
+        height = 1200
+        width = int(height * im_in.width / im_in.height)
+        im_in = im_in.resize((width, height)).convert('RGB')
 
-    for pathjson in lista:
-        lee_poligonos(pathjson, im_in)
-        #lee_vertices(pathjson, im_in)
+        for pathjson in lista:
+            lee_poligonos(pathjson, im_in)
+            #lee_vertices(pathjson, im_in)
 
-    gdf = gpd.GeoDataFrame(columns=["level_0", "level_1", "IDpoligono", "tile", "fecha", "fechaDia", "area_km2", "distCosta_km", "geometry"], crs="EPSG:32616")
-    # Crear un geodataframe con todos los geojson
-    for pathV in Path(pathVertices).rglob('*'+label+'*.json'):
-        print(pathV, type(pathV))
-        gdf_v = gpd.read_file(pathV)
-        gdf = pd.concat([gdf, gdf_v], ignore_index=True)
-    areaGDF = gdf['area_km2'].sum()
-    print('Area Geopandas',areaGDF)
+        gdf = gpd.GeoDataFrame(columns=["level_0", "level_1", "IDpoligono", "tile", "fecha", "fechaDia", "area_km2", "distCosta_km", "geometry"], crs="EPSG:32616")
+        # Crear un geodataframe con todos los geojson
+        for pathV in Path(pathVertices).rglob('*'+label+'*.json'):
+            print(pathV, type(pathV))
+            gdf_v = gpd.read_file(pathV)
+            gdf = pd.concat([gdf, gdf_v], ignore_index=True)
+        areaGDF = gdf['area_km2'].sum()
+        print('Area Geopandas',areaGDF)
 
-    logo = Image.open(pathLanot + '/logos/lanot_negro_sn.jpg')
-    w = 200
-    h = int(w * logo.height / logo.width)
-    logo = logo.resize((w, h))
-    im_in.paste(logo, (10, 140))
+        logo = Image.open(pathLanot + '/logos/lanot_negro_sn.jpg')
+        w = 200
+        h = int(w * logo.height / logo.width)
+        logo = logo.resize((w, h))
+        im_in.paste(logo, (10, 140))
 
-    draw = aggdraw.Draw(im_in)
-    p = aggdraw.Pen("white", 0.5)
-    b = aggdraw.Brush((0,0,0), 100)
-    white = (255, 255, 255)
-    font = aggdraw.Font(white, "/usr/share/fonts/truetype/ttf-bitstream-vera/VeraMono.ttf", 30)
+        draw = aggdraw.Draw(im_in)
+        p = aggdraw.Pen("white", 0.5)
+        b = aggdraw.Brush((0,0,0), 100)
+        white = (255, 255, 255)
+        font = aggdraw.Font(white, "/usr/share/fonts/truetype/ttf-bitstream-vera/VeraMono.ttf", 30)
 
-    title = "Sargazo "+fecha_str+" Z"
-    draw_text(im_in.width-15, im_in.height - 75, title, 2)
-    print("area ", area)
-    #areakm2 = area*1e-6
-    areatext = "Area = {:5.4f} km2".format(areaGDF)
-    print(areatext)
-    draw_text(im_in.width-15, im_in.height - 40, areatext, 2)
+        title = "Sargazo "+fecha_str+" Z"
+        draw_text(im_in.width-15, im_in.height - 75, title, 2)
+        print("area ", area)
+        #areakm2 = area*1e-6
+        areatext = "Area = {:5.4f} km2".format(areaGDF)
+        print(areatext)
+        draw_text(im_in.width-15, im_in.height - 40, areatext, 2)
 
-    # S2_MSI_sargazoTC_s1_20190211T161411
-    outfile = pathOutputVistas+"S2_MSI_sargazoTC_"+region+"_"+label+".png"
-    print(outfile)
-    print("Guardando", outfile)
-    im_in.save(outfile)
+        # S2_MSI_sargazoTC_s1_20190211T161411
+        outfile = pathOutputVistas+"S2_MSI_sargazoTC_"+region+"_"+label+".png"
+        print(outfile)
+        print("Guardando", outfile)
+        im_in.save(outfile)
 
-    os.system('rm '+path)
+        
 
-    # MANDA A PETA
-    os.system('scp '+outfile+' lanotadm@stratus:'+pathOutputPeta+'vistas/sargazo_TC/')
-    # MANDA A WEB
-    os.system('scp '+outfile+' sargazo@cumulus:'+pathOutputWeb+'vistas/sargazo_TC/')
+        # MANDA A PETA
+        os.system('scp '+outfile+' lanotadm@stratus:'+pathOutputPeta+'vistas/sargazo_TC/')
+        # MANDA A WEB
+        os.system('scp '+outfile+' sargazo@cumulus:'+pathOutputWeb+'vistas/sargazo_TC/')
+    finally:
+        os.system('rm '+path)
