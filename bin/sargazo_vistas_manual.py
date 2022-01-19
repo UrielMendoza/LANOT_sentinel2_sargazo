@@ -1,4 +1,5 @@
 from os import name
+import os
 import sargazo_vistas
 import sargazo_vistas_vertices
 from glob import glob
@@ -28,4 +29,4 @@ if __name__ == "__main__":
 
     for fecha in fechas:
         #sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
-        sargazo_vistas_vertices.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
+        os.system('python3 sargazo_vistas_vertices.py '+fecha)

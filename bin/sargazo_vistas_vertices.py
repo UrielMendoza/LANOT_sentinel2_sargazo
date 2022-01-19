@@ -25,10 +25,14 @@ from PIL import Image, ImageDraw
 from pathlib import Path
 from osgeo import gdal,osr
 
-#lanotdir = '/usr/local/share/lanot'
-#outdir = './'
-#verticesdir = '/data/output/sentinel2/l2/geojson/sargazo_vertices'
-#geotiffdir = '/data/output/sentinel2/l2/geotiff/TC'
+pathOutputVistas = '/data/output/sentinel2/vistas/sargazo/sargazo_TC/'
+pathOutputGeoTiff = '/data/output/sentinel2/l2/geotiff/'
+pathOutputWeb = '/home/sargazo/data/'
+pathOutputPeta = '/depot/sentinel2/output/'
+pathVertices = '/data/output/sentinel2/l2/geojson/sargazo_vertices/'
+pathTmp = '/data/input/sentinel2/tmp/semi_manual/'
+pathLanot = '/usr/local/share/lanot/'
+region = 's1'
 
 Image.MAX_IMAGE_PIXELS = 614960590 
 white = (255, 255, 255)
@@ -130,13 +134,13 @@ def get_limits(path):
     lrx = ext[2][0]
     lry = ext[2][1]
     
-def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb):
+if __name__ == '__main__':
 
-    #if len(sys.argv) < 2:
-    #    print("Usanza: ", sys.argv[0], " <fecha YYYMMDDTHHMM>")
-    #    exit(1)
+    if len(sys.argv) < 2:
+        print("Usanza: ", sys.argv[0], " <fecha YYYMMDDTHHMM>")
+        exit(1)
 
-    label = fecha
+    label = sys.argv[1]
     pattern = re.compile(label)
     #lista = []
     #for filename in os.listdir(verticesdir):
