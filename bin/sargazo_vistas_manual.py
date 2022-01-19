@@ -23,8 +23,8 @@ if __name__ == "__main__":
         fechas.append(obtieneFechaVertice(archivo)) 
 
     fechas = list(set(fechas))
-    print(fechas)
     fechas.sort()
+    print(fechas)
 
     for fecha in fechas:
         try:

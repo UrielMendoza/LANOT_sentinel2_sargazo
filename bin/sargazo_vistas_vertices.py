@@ -132,9 +132,9 @@ def get_limits(path):
     
 def vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb):
 
-    if len(sys.argv) < 2:
-        print("Usanza: ", sys.argv[0], " <fecha YYYMMDDTHHMM>")
-        exit(1)
+    #if len(sys.argv) < 2:
+    #    print("Usanza: ", sys.argv[0], " <fecha YYYMMDDTHHMM>")
+    #    exit(1)
 
     label = fecha
     pattern = re.compile(label)
