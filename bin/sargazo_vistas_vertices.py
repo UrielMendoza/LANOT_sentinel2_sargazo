@@ -174,6 +174,7 @@ if __name__ == '__main__':
     print(ulx, uly, lrx, lry)
     
     im_in = Image.open(path)
+    os.system('rm '+path)
     height = 1200
     width = int(height * im_in.width / im_in.height)
     im_in = im_in.resize((width, height)).convert('RGB')
