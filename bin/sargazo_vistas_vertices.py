@@ -26,7 +26,7 @@ from pathlib import Path
 from osgeo import gdal,osr
 
 pathOutputVistas = '/data/output/sentinel2/vistas/sargazo/sargazo_TC/'
-pathOutputGeoTiff = '/data/output/sentinel2/l2/geotiff/'
+pathOutputGeoTiff = '/data/output/sentinel2/l2/geotiff/TC/'
 pathOutputWeb = '/home/sargazo/data/'
 pathOutputPeta = '/depot/sentinel2/output/'
 pathVertices = '/data/output/sentinel2/l2/geojson/sargazo_vertices/'
