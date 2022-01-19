@@ -1,5 +1,6 @@
 from os import name
 import sargazo_vistas
+import sargazo_vistas_vertices
 from glob import glob
 from processing_sentinel2 import obtieneFechaVertice
 import PIL
@@ -27,6 +28,7 @@ if __name__ == "__main__":
 
     for fecha in fechas:
         try:
-            sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
+            #sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
+            sargazo_vistas_vertices.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
         except:
             continue

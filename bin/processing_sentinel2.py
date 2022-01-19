@@ -805,7 +805,7 @@ def borraSargazoDB(fecha,tile):
     try:
         deleteSargazoLogDB(conect, cur, tile, fecha)
         deleteSargazoDB(conect, cur, tile, fecha)
-        print ("Se elimino sargazo de la DB: "+tile+" "+tile)
+        print ("Se elimino sargazo de la DB: "+tile+" "+fecha)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo
