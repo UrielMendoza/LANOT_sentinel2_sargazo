@@ -24,6 +24,8 @@ import datetime
 from PIL import Image, ImageDraw
 from pathlib import Path
 from osgeo import gdal,osr
+import geopandas as gpd
+import pandas as pd
 
 pathOutputVistas = '/data/output/sentinel2/vistas/sargazo/sargazo_TC/'
 pathOutputGeoTiff = '/data/output/sentinel2/l2/geotiff/TC/'
@@ -174,7 +176,6 @@ if __name__ == '__main__':
     print(ulx, uly, lrx, lry)
     
     im_in = Image.open(path)
-    os.system('rm '+path)
     height = 1200
     width = int(height * im_in.width / im_in.height)
     im_in = im_in.resize((width, height)).convert('RGB')
@@ -182,6 +183,15 @@ if __name__ == '__main__':
     for pathjson in lista:
         lee_poligonos(pathjson, im_in)
         #lee_vertices(pathjson, im_in)
+
+    gdf = gpd.GeoDataFrame(columns=["level_0", "level_1", "IDpoligono", "tile", "fecha", "fechaDia", "area_km2", "distCosta_km", "geometry"], crs="EPSG:32616")
+    # Crear un geodataframe con todos los geojson
+    for pathV in Path(pathVertices).rglob('*'+fecha+'*.json'):
+        print(pathV, type(pathV))
+        gdf_v = gpd.read_file(pathV)
+        gdf = pd.concat([gdf, gdf_v], ignore_index=True)
+    areaGDF = gdf['area_km2'].sum()
+    print('Area Geopandas',areaGDF)
 
     logo = Image.open(pathLanot + '/logos/lanot_negro_sn.jpg')
     w = 200
@@ -199,7 +209,7 @@ if __name__ == '__main__':
     draw_text(im_in.width-15, im_in.height - 75, title, 2)
     print("area ", area)
     #areakm2 = area*1e-6
-    areatext = "Area = {:5.4f} km2".format(area)
+    areatext = "Area = {:5.4f} km2".format(areaGDF)
     print(areatext)
     draw_text(im_in.width-15, im_in.height - 40, areatext, 2)
 
@@ -208,6 +218,8 @@ if __name__ == '__main__':
     print(outfile)
     print("Guardando", outfile)
     im_in.save(outfile)
+
+    os.system('rm '+path)
 
     # MANDA A PETA
     os.system('scp '+outfile+' lanotadm@stratus:'+pathOutputPeta+'vistas/sargazo_TC/')
