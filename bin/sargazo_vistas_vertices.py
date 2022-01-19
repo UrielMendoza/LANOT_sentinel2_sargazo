@@ -186,7 +186,7 @@ if __name__ == '__main__':
 
     gdf = gpd.GeoDataFrame(columns=["level_0", "level_1", "IDpoligono", "tile", "fecha", "fechaDia", "area_km2", "distCosta_km", "geometry"], crs="EPSG:32616")
     # Crear un geodataframe con todos los geojson
-    for pathV in Path(pathVertices).rglob('*'+fecha+'*.json'):
+    for pathV in Path(pathVertices).rglob('*'+label+'*.json'):
         print(pathV, type(pathV))
         gdf_v = gpd.read_file(pathV)
         gdf = pd.concat([gdf, gdf_v], ignore_index=True)
