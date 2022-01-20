@@ -459,7 +459,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             # MOSAICO SARGAZO
             processing_sentinel2.createMosaic(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
             # GENERA VISTA
-            sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
+            #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
+            os.system('python3 sargazo_vistas_vertices.py '+fecha)
             
             print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
 
