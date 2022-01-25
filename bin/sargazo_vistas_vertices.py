@@ -204,15 +204,17 @@ if __name__ == '__main__':
         p = aggdraw.Pen("white", 0.5)
         b = aggdraw.Brush((0,0,0), 100)
         white = (255, 255, 255)
-        font = aggdraw.Font(white, "/usr/share/fonts/truetype/ttf-bitstream-vera/VeraMono.ttf", 30)
+        font = aggdraw.Font(white, "/usr/share/fonts/truetype/ttf-bitstream-vera/VeraMono.ttf", 25)
 
         title = "Sargazo "+fecha_str+" Z"
-        draw_text(im_in.width-15, im_in.height - 75, title, 2)
+        draw_text(im_in.width-15, im_in.height - 110, title, 2)
         print("area ", area)
         #areakm2 = area*1e-6
-        areatext = "Area = {:5.4f} km2".format(areaGDF)
+        areatext = "Área = {:5.4f} km2".format(areaGDF)
+        areatext_h = "Hectáreas = {:5.4f} ha".format(areaGDF*100)
         print(areatext)
-        draw_text(im_in.width-15, im_in.height - 40, areatext, 2)
+        draw_text(im_in.width-15, im_in.height - 75, areatext, 2)
+        draw_text(im_in.width-15, im_in.height - 40, areatext_h, 2)
 
         # S2_MSI_sargazoTC_s1_20190211T161411
         outfile = pathOutputVistas+"S2_MSI_sargazoTC_"+region+"_"+label+".png"
