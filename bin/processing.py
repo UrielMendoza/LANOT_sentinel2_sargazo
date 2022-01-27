@@ -453,7 +453,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                 print('======================================')
 
     try:
-        if dateTime == 'automatico' and numImagenes != 0:
+        if (dateTime == 'automatico' or dateTime == 'manual') and numImagenes != 0:
             print('9. Procesando mosaico ...')
             # MOSAICO TC
             processing_sentinel2.createMosaic(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
