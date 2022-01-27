@@ -367,7 +367,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     #banderaNub = processing_sentinel2.nubesMascara(cuadrante,bufferNubes,pathTmp+bandas20m[-1]+'.tif',pathTmp)
                     banderaNub = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathTmp)
                     print('5.4 Procesando mascara detfoo...')
-                    processing_sentinel2.detfooMascara(200,pathTmp+dirI,pathTmp)
+                    # Se usa la manual
+                    #processing_sentinel2.detfooMascara(200,pathTmp+dirI,pathTmp)
                     print('5.5 Procesando sargazo sin filtro...')
                     #processing_sentinel2.sargazoBin(banderaNub,'L2A',pathTmp,pathTmp)
                     processing_sentinel2.sargazoBinNumpy(pathTmp)
@@ -376,7 +377,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     entropia = processing_sentinel2.entropiaNumpy(pathTmp)
                     #entropia = None
                     print('5.7 Procesando sargazo con filtro...')
-                    nuMask = processing_sentinel2.filtroPixel(ref,dsSar,nubesBajas,entropia,scl,pathTmp)
+                    nuMask = processing_sentinel2.filtroPixel(ref,dsSar,nubesBajas,entropia,scl,pathTmp,pathLM)
                     processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')
                     del nuMask 
 

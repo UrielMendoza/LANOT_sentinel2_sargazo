@@ -288,7 +288,7 @@ def detfooMascaraVectorial(pathTmp):
     res_difference.to_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json', driver="GeoJSON")
 
 def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta):
-    # CON DETFOO
+    # CON DETFOO BARRIENDO
     #df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json')
     # SIN DETFOO
     df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar.json')
@@ -604,14 +604,14 @@ def entropiaNumpy(pathInput):
 
 	return nuMask """
 
-def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp):
+def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
 
     # Nube baja con B12
     nuMask = dsRef.ReadAsArray()
     b12 = dsRef.ReadAsArray()
     sar = dsSar.ReadAsArray()
     scl = dsSCL.ReadAsArray()
-    df_detfoo = gpd.read_file(pathTmp+'MSK_DETFOO_B8A.json')
+    df_detfoo = gpd.read_file(pathLM+'MSK_DETFOO_B8A.geojson')
     nx,ny,xmin,ymax,xres,yres,xmax,ymin = obtieneParametrosGeoTrasform(dsRef)
 
     print('=============================================')
