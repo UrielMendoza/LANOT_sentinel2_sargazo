@@ -161,7 +161,54 @@ if __name__ == '__main__':
         print("Lista", lista, len(lista))
         
         if len(lista) == 0:
-            print("Error: No existe fecha", label)
+            print("Error: No existe fecha con sargazo", label)
+            # Crear la imagen base con todos los mosaicos sin sargazo
+            mosaicos = ''
+            for path in Path(pathOutputGeoTiff).rglob('*'+label+'*.tif'):
+                print(path, type(path))
+                mosaicos += str(path) + ' '
+
+            print("gdal_merge.py -o "+pathTmp+"tmp.tif "+mosaicos)
+            os.system("gdal_merge.py -o "+pathTmp+"tmp.tif "+mosaicos)
+            path = pathTmp+"tmp.tif"
+            get_limits(path)
+            im_in = Image.open(path)
+            height = 1200
+            width = int(height * im_in.width / im_in.height)
+            im_in = im_in.resize((width, height)).convert('RGB')
+            logo = Image.open(pathLanot + '/logos/lanot_negro_sn.jpg')
+            w = 200
+            h = int(w * logo.height / logo.width)
+            logo = logo.resize((w, h))
+            im_in.paste(logo, (10, 140))
+
+            draw = aggdraw.Draw(im_in)
+            p = aggdraw.Pen("white", 0.5)
+            b = aggdraw.Brush((0,0,0), 100)
+            white = (255, 255, 255)
+            font = aggdraw.Font(white, "/usr/share/fonts/truetype/ttf-bitstream-vera/VeraMono.ttf", 25)
+
+            title = "Sargazo "+fecha_str+" Z"
+            draw_text(im_in.width-15, im_in.height - 110, title, 2)
+            print("area ", area)
+            #areakm2 = area*1e-6
+            areaGDF = 0.0
+            areatext = "Área = {:5.4f} km2".format(areaGDF)
+            areatext_h = "Hectáreas = {:5.4f} ha".format(areaGDF*100)
+            print(areatext)
+            draw_text(im_in.width-15, im_in.height - 75, areatext, 2)
+            draw_text(im_in.width-15, im_in.height - 40, areatext_h, 2)
+
+            # S2_MSI_sargazoTC_s1_20190211T161411
+            outfile = pathOutputVistas+"S2_MSI_sargazoTC_"+region+"_"+label+".png"
+            print(outfile)
+            print("Guardando", outfile)
+            im_in.save(outfile)            
+
+            # MANDA A PETA
+            os.system('scp '+outfile+' lanotadm@stratus:'+pathOutputPeta+'vistas/sargazo_TC/')
+            # MANDA A WEB
+            os.system('scp '+outfile+' sargazo@cumulus:'+pathOutputWeb+'vistas/sargazo_TC/')
             exit(1)
 
         # Crear la imagen base con todos los mosaicos
