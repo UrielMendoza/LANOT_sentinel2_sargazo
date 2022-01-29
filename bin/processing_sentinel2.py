@@ -891,19 +891,19 @@ def createMosaic(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     for tile in tiles:
         #print('AQUI '+pathInput+'/'+compuesto+'/'+tile+'/*'+fecha+'*')
         try:
-            archivoTiff = glob(pathInput+'/'+compuesto+'/'+tile+'/*'+fecha+'*')[0]
+            archivoTiff = glob(pathInput+compuesto+'/'+tile+'/*'+fecha+'*')[0]
             archivosTiff.append(archivoTiff)
         except IndexError:
             continue        
     archivosTiffString = " ".join(archivosTiff)
     # S2_MSI_sargazoTC_s1_20151023T162332.png	
-    os.system('gdal_merge.py -o '+pathInput+'/'+compuesto+'/mosaicos/latest_'+compuesto+'.tif -of gtiff '+archivosTiffString)
+    os.system('gdal_merge.py -o '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif -of gtiff '+archivosTiffString)
     # Mosaico con fecha
-    os.system('cp '+pathInput+'/'+compuesto+'/mosaicos/latest_'+compuesto+' S2_MSI_'+compuesto+'_s1_'+fecha+'.tif')
+    os.system('cp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+' S2_MSI_'+compuesto+'_s1_'+fecha+'.tif')
 
     # MANDA A PETA
-    os.system('scp '+pathInput+'/'+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')
-    os.system('scp '+pathInput+'/'+compuesto+'/mosaicos/S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')
+    os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')
+    os.system('scp '+pathInput+compuesto+'/mosaicos/S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')
     # MANDA A WEB
-    os.system('scp '+pathInput+'/'+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')
-    os.system('scp '+pathInput+'/'+compuesto+'/mosaicos/S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')
+    os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')
+    os.system('scp '+pathInput+compuesto+'/mosaicos/S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')
