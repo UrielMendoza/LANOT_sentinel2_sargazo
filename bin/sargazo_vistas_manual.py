@@ -32,4 +32,4 @@ if __name__ == "__main__":
         createMosaic(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
         # Vistas
         #sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
-        os.system('python3 sargazo_vistas_vertices.py '+fecha)
+        #os.system('python3 sargazo_vistas_vertices.py '+fecha)
