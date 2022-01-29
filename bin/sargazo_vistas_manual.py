@@ -3,7 +3,7 @@ import os
 import sargazo_vistas
 import sargazo_vistas_vertices
 from glob import glob
-from processing_sentinel2 import obtieneFechaVertice
+from processing_sentinel2 import obtieneFechaVertice, createMosaic
 import PIL
 
 if __name__ == "__main__":
@@ -28,5 +28,8 @@ if __name__ == "__main__":
     print(fechas)
 
     for fecha in fechas:
+        # Mosaicos
+        createMosaic(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+        # Vistas
         #sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
         os.system('python3 sargazo_vistas_vertices.py '+fecha)
