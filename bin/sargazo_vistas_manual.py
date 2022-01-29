@@ -26,7 +26,7 @@ if __name__ == "__main__":
     fechas = list(set(fechas))
     fechas.sort()
     print(fechas)
-
+    fechas = ['20220126T161541']
     for fecha in fechas:
         # Mosaicos
         createMosaic(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
