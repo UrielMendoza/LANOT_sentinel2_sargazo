@@ -212,7 +212,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                 print("Fecha: "+fecha)
                 print("Tile: "+tile)
                 # Borra sargazo si ya estaba
-                if dateTime == 'semiManual':
+                if dateTime == 'semiManual' or dateTime == 'manual':
                     fechaBorrar = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
                     fechaDiaBorrar = fechaBorrar.strftime('%Y-%m-%d')
                     processing_sentinel2.borraSargazoDB(fechaDiaBorrar,tile)
@@ -439,7 +439,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
 
                 finally:
                 # BORRA BASURA
-                    os.system('rm -r '+pathTmp+'*.tif')
+                    #os.system('rm -r '+pathTmp+'*.tif')
                     os.system('rm -r '+pathTmp+'*json')
                     os.system('rm -r '+pathTmp+'*.csv')
                     os.system('rm -r '+pathTmp+'*.zip')
@@ -453,17 +453,27 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                 print('======================================')
 
     try:
-        if (dateTime == 'automatico' or dateTime == 'manual') and numImagenes != 0:
+        if (dateTime == 'automatico') and numImagenes != 0:
             print('9. Procesando mosaico ...')
             # MOSAICO TC
-            processing_sentinel2.createMosaic(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+            processing_sentinel2.createMosaicLatest(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
             # MOSAICO SARGAZO
-            processing_sentinel2.createMosaic(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+            processing_sentinel2.createMosaicLatest(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
             # GENERA VISTA
             #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
             os.system('python3 sargazo_vistas_vertices.py '+fecha)
+
+        elif (dateTime == 'manual') and numImagenes != 0:
+            print('9. Procesando mosaico ...')
+            # MOSAICO TC
+            processing_sentinel2.createMosaicFecha(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+            # MOSAICO SARGAZO
+            processing_sentinel2.createMosaicFecha(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+            # GENERA VISTA
+            #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
+            os.system('python3 sargazo_vistas_vertices.py '+fecha)            
             
-            print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
+        print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
 
     except Exception as e:
         print('***Error en el mosaico***')

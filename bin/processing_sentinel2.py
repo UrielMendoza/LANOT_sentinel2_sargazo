@@ -885,7 +885,7 @@ def enviaMail(fecha,tile,error):
     session.quit()
     print('Mail de error enviado...')
 
-def createMosaic(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
+def createMosaicLatest(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     tiles = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
     archivosTiff = []
     for tile in tiles:
@@ -898,12 +898,26 @@ def createMosaic(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     archivosTiffString = " ".join(archivosTiff)
     # S2_MSI_sargazoTC_s1_20151023T162332.png	
     os.system('gdal_merge.py -o '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif -of gtiff '+archivosTiffString)
-    # Mosaico con fecha
-    os.system('cp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif '+pathInput+compuesto+'/mosaicos/S2_MSI_'+compuesto+'_s1_'+fecha+'.tif')
-
     # MANDA A PETA
-    os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')
-    os.system('scp '+pathInput+compuesto+'/mosaicos/S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')
+    os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')   
     # MANDA A WEB
-    os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')
+    os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')    
+
+def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
+    tiles = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
+    archivosTiff = []
+    for tile in tiles:
+        #print('AQUI '+pathInput+'/'+compuesto+'/'+tile+'/*'+fecha+'*')
+        try:
+            archivoTiff = glob(pathInput+compuesto+'/'+tile+'/*'+fecha+'*')[0]
+            archivosTiff.append(archivoTiff)
+        except IndexError:
+            continue        
+    archivosTiffString = " ".join(archivosTiff)
+    # S2_MSI_sargazoTC_s1_20151023T162332.png	
+    # Mosaico con fecha
+    os.system('gdal_merge.py -o '+pathInput+compuesto+'/mosaicos/S2_MSI_'+compuesto+'_s1_'+fecha+'.tif -of gtiff '+archivosTiffString)
+    # MANDA A PETA    
+    os.system('scp '+pathInput+compuesto+'/mosaicos/S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')
+    # MANDA A WEB    
     os.system('scp '+pathInput+compuesto+'/mosaicos/S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')
