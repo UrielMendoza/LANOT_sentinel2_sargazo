@@ -650,7 +650,7 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
 #                    listaBanderas.append('Entropia')
 #                    contEnt += 1   
                 # SCL
-                elif (scl[i,j] == 3) or (scl[i,j] == 8) or (scl[i,j] == 9) or (scl[i,j] == 10) or (scl[i,j] == 11):
+                elif (scl[i,j] == 7) or (scl[i,j] == 8) or (scl[i,j] == 9) or (scl[i,j] == 10) or (scl[i,j] == 11):
                     nuMask[i,j] = 0
                     listaBanderas.append('SCL')
                     contSCL += 1  
