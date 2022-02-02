@@ -885,6 +885,19 @@ def enviaMail(fecha,tile,error):
     session.quit()
     print('Mail de error enviado...')
 
+def fechaLog(pathInput, fecha):
+    # Log de registro de fechas
+    fecha_log = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
+    fecha_log = fecha_log.strftime('%Y-%m-%d %H:M')
+    log_ver = open(pathInput+'log.txt','r')
+    fechas = log_ver.readlines()
+    log_ver.close()
+
+    if (fecha_log+'\n' in fechas) == False:
+        log = open(pathInput+'log.txt','a')
+        log.write(fecha_log+'\n')
+        log.close()
+
 def createMosaicLatest(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     tiles = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
     archivosTiff = []
@@ -898,10 +911,14 @@ def createMosaicLatest(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     archivosTiffString = " ".join(archivosTiff)
     # S2_MSI_sargazoTC_s1_20151023T162332.png	
     os.system('gdal_merge.py -o '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif -of gtiff '+archivosTiffString)
+    # Fecha log
+    fechaLog(pathInput+compuesto+'/mosaicos/', fecha)
     # MANDA A PETA
     os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')   
     # MANDA A WEB
-    os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')    
+    os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')
+    os.system('scp '+pathInput+compuesto+'/mosaicos/log.txt'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')  
+
 
 def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     tiles = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
