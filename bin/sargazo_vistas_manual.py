@@ -18,7 +18,7 @@ if __name__ == "__main__":
     pathLanot = '/usr/local/share/lanot/'
     region = 's1'
     
-    archivos = glob(pathVertices+'*20220126*')
+    archivos = glob(pathVertices+'*')
     fechas = []
     for archivo in archivos:
         fechas.append(obtieneFechaVertice(archivo)) 
@@ -26,10 +26,11 @@ if __name__ == "__main__":
     fechas = list(set(fechas))
     fechas.sort()
     print(fechas)
-    fechas = ['20220131T161509']
+    #fechas = ['20220131T161509']
     for fecha in fechas:
         # Mosaicos
-        createMosaicLatest(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+        #createMosaicLatest(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+        createMosaicFecha(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
         # Vistas
         #sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
         os.system('python3 sargazo_vistas_vertices.py '+fecha)
