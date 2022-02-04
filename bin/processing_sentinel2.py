@@ -888,7 +888,7 @@ def enviaMail(fecha,tile,error):
 def fechaLog(pathInput, fecha):
     # Log de registro de fechas
     fecha_log = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
-    fecha_log = fecha_log.strftime('%Y-%m-%d %H:M')
+    fecha_log = fecha_log.strftime('%Y-%m-%d %H:%M')
     log_ver = open(pathInput+'log.txt','r')
     fechas = log_ver.readlines()
     log_ver.close()
