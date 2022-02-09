@@ -24,9 +24,9 @@ if __name__ == "__main__":
         fechas.append(obtieneFechaVertice(archivo)) 
 
     fechas = list(set(fechas))
-    fechas.sort()
-    print(fechas)
+    fechas.sort()    
     fechas = ['20220208T162431']
+    print(fechas)
     for fecha in fechas:
         # Mosaicos
         createMosaicLatest(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
