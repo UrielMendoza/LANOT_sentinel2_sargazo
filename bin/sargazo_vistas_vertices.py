@@ -162,6 +162,7 @@ if __name__ == '__main__':
         
         if len(lista) == 0:
             print("Error: No existe fecha con sargazo", label)
+            print('Procesando vista sin sargazo')
             # Crear la imagen base con todos los mosaicos sin sargazo
             mosaicos = ''
             for path in Path(pathOutputGeoTiff).rglob('*'+label+'*.tif'):
