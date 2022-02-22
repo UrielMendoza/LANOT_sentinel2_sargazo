@@ -801,7 +801,7 @@ def insertCatalogoDB(compuesto,conect,cur,crs,pathInput):
         reader = csv.reader(f)
         next(reader)
         for row in reader:
-            print('Añadiendo a DB: ', row)
+            print('Añadiendo a DB: ', row[2])
             cur.execute('INSERT INTO public."catalogo_'+compuesto.upper()+'" VALUES (DEFAULT, ST_GeomFromText('+row[2]+','+crs+'), '+row[0]+', '+row[1]+')')
         cur.execute('SELECT * from public."catalogo_'+compuesto.upper()+'"')
     row = cur.fetchall()
