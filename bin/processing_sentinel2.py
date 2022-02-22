@@ -748,8 +748,6 @@ def cuadranteMosaico(fecha,nombre,compuesto,UTMcrs,pathInput,pathOutput):
     dfPoli = pd.DataFrame(listaPoligono)
     dfPoli = dfPoli.drop([0], axis=1)
     dfPoli = gpd.GeoDataFrame(dfPoli, geometry=listaPoligono, crs=gdf_crs)
-    dfPoli["geometry"] = [MultiPolygon([feature]) if type(feature) == Polygon \
-    else feature for feature in dfPoli["geometry"]]
     dfPoli['location'] = nombre
     dfPoli['ingestion'] = fecha
     archivoCuadrante = pathOutput+'catalogoPoli_'+compuesto+'.json' 
