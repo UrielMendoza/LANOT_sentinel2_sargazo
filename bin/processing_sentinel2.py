@@ -747,9 +747,9 @@ def cuadranteMosaico(fecha,nombre,compuesto,UTMcrs,pathInput,pathOutput):
     gdf_crs = obtieneCRS(UTMcrs)
     dfPoli = pd.DataFrame(listaPoligono)
     dfPoli = dfPoli.drop([0], axis=1)
+    dfPoli = gpd.GeoDataFrame(dfPoli, geometry=listaPoligono, crs=gdf_crs)
     dfPoli['location'] = nombre
     dfPoli['ingestion'] = fecha
-    dfPoli = gpd.GeoDataFrame(dfPoli, geometry=listaPoligono, crs=gdf_crs)
     archivoCuadrante = pathOutput+'catalogoPoli_'+compuesto+'.json' 
     dfPoli.to_file(archivoCuadrante,driver='GeoJSON')
 
