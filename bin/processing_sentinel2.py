@@ -971,7 +971,7 @@ def createMosaicLatest(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     os.system('scp '+pathInput+compuesto+'/mosaicos/log.txt'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')  
 
 def catalogoDB(fecha,nombre,compuesto,pathInput,pathOutput):
-    archivoCuadrante = cuadranteMosaico(compuesto, 32616, pathInput, pathOutput)
+    archivoCuadrante = cuadranteMosaico(fecha,nombre,compuesto,32616,pathInput,pathOutput)
     archivoCSV,crs = creaCSV_catalogo(archivoCuadrante, pathOutput)
     conect,cur = conexionDB()
     insertCatalogoDB(compuesto,conect,cur,crs,archivoCSV)
