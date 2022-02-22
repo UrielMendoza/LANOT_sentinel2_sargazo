@@ -13,6 +13,7 @@ import geopandas as gpd
 from shapely.geometry import Polygon,Point,LineString,MultiPoint
 from shapely.geometry.polygon import Polygon
 from shapely.geometry.multipolygon import MultiPolygon
+import pyproj
 import datetime
 import numpy as np
 import matplotlib.pyplot as plt
@@ -133,6 +134,10 @@ def obtieneFechaVertice(pathDir):
     fecha = pathDir.split('/')[-1].split('.')[0].split('_')[4]
     fecha = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     return fecha.strftime('%Y%m%dT%H%M%S')
+
+def obtieneFechaCatalogo(fecha):
+    fechaCatalogo = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
+    return fecha.strftime('%Y-%m-%d %H:%M:%S')
 
 def descomprime(pathInput,pathOutput):
     compresion = tipoCompresion(pathInput) 
@@ -466,6 +471,10 @@ def detfooMascara(detfoo_dist,pathInput,pathOutput):
     gdf_detfoot_buffers = gpd.GeoDataFrame(df_detfoot_buffers, geometry=detfoot_buffers, crs=gdf_crs)
     gdf_detfoot_buffers.to_file(pathOutput+detfoo.split('.')[0]+'.json',driver='GeoJSON')
 
+def obtieneCRS(UTM):
+    gdf_crs = pyproj.CRS.from_user_input(UTM)    
+    return gdf_crs
+
 def sargazoBin(banderaNub,nivel,pathInput,pathOutput):
     #Prueba BR
     #os.system('gdal_calc.py -A '+pathInput+'B02.tif -B '+pathInput+'B03.tif --type=Float64 --outfile='+pathOutput+'BR.tif --calc="B.astype(numpy.float64)/A.astype(numpy.float64)"')
@@ -723,9 +732,39 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
 
 	return nuMask """
 
+def cuadranteMosaico(fecha,nombre,compuesto,UTMcrs,pathInput,pathOutput):
+    ds = aperturaDS(pathInput)
+    nx,ny,xmin,ymax,xres,yres,xmax,ymin = obtieneParametrosGeoTrasform(ds)
+    p1 = Point(xmin,ymin)
+    p2 = Point(xmax,ymin)
+    p3 = Point(xmax,ymax)
+    p4 = Point(xmin,ymax)
+    pointLista = [p1, p2, p3, p4, p1]
+    poligono = Polygon([[p.x, p.y] for p in pointLista])
+    listaPoligono = []
+    listaPoligono.append(poligono)
+    gdf_crs = obtieneCRS(UTMcrs)
+    dfPoli = pd.DataFrame(listaPoligono)
+    dfPoli = dfPoli.drop([0], axis=1)
+    dfPoli = gpd.GeoDataFrame(dfPoli, geometry=listaPoligono, crs=gdf_crs)   
+    dfPoli['location'] = nombre
+    dfPoli['ingestion'] = fecha
+    archivoCuadrante = pathOutput+'catalogoPoli_'+compuesto+'.json' 
+    dfPoli.to_file(archivoCuadrante,driver='GeoJSON')
+
+    return archivoCuadrante
+
 def creaCSV(pathInput,pathOutput):
     gdf = gpd.read_file(pathInput)
     gdf.area_km2 = round(gdf.area_km2,4)
+    crs = gdf.crs.srs.split(':')[-1]
+    archivoCSV = pathOutput+pathInput.split('/')[-1].split('.')[0]+'.csv'
+    gdf.to_csv(archivoCSV,index=False)
+
+    return archivoCSV,crs
+
+def creaCSV_catalogo(pathInput,pathOutput):
+    gdf = gpd.read_file(pathInput)
     crs = gdf.crs.srs.split(':')[-1]
     archivoCSV = pathOutput+pathInput.split('/')[-1].split('.')[0]+'.csv'
     gdf.to_csv(archivoCSV,index=False)
@@ -752,6 +791,18 @@ def insertSargazoDB(conect,cur,crs,pathInput):
 			#print('Añadiendo a DB: ', row)
             cur.execute("INSERT INTO sargazo VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)
         cur.execute("SELECT * from sargazo")
+    row = cur.fetchall()
+    conect.commit()
+
+def insertCatalogoDB(compuesto,conect,cur,crs,pathInput):
+    print('Añadiendo a DB')
+    with open(pathInput, 'r') as f:
+        reader = csv.reader(f)
+        next(reader)
+        for row in reader:
+			#print('Añadiendo a DB: ', row)
+            cur.execute("INSERT INTO catalogo_"+compuesto+" VALUES (DEFAULT, ST_GeomFromText(%s,"+crs+"), %s, %s)", row)
+        cur.execute("SELECT * from catalogo_"+compuesto)
     row = cur.fetchall()
     conect.commit()
 
@@ -919,8 +970,13 @@ def createMosaicLatest(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')
     os.system('scp '+pathInput+compuesto+'/mosaicos/log.txt'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')  
 
+def catalogoDB(fecha,nombre,compuesto,pathInput,pathOutput):
+    archivoCuadrante = cuadranteMosaico(compuesto, 32616, pathInput, pathOutput)
+    archivoCSV,crs = creaCSV_catalogo(archivoCuadrante, pathOutput)
+    conect,cur = conexionDB()
+    insertCatalogoDB(compuesto,conect,cur,crs,archivoCSV)
 
-def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
+def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb,pathTmp):
     tiles = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
     archivosTiff = []
     for tile in tiles:
@@ -931,10 +987,15 @@ def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
         except IndexError:
             continue        
     archivosTiffString = " ".join(archivosTiff)
-    # S2_MSI_sargazoTC_s1_20151023T162332.png	
+    # S2_MSI_sargazoTC_s1_20151023T162332.png
+    nombre = 'S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'	
+    nomMosaicTif = pathInput+compuesto+'/mosaicos/catalogo_'+compuesto+'/'+nombre
     # Mosaico con fecha
-    os.system('gdal_merge.py -o '+pathInput+compuesto+'/mosaicos/catalogo_'+compuesto+'/S2_MSI_'+compuesto+'_s1_'+fecha+'.tif -of gtiff '+archivosTiffString)
+    os.system('gdal_merge.py -o '+nomMosaicTif+' -of gtiff '+archivosTiffString)
     # MANDA A PETA    
-    os.system('scp '+pathInput+compuesto+'/mosaicos/catalogo_'+compuesto+'/S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
+    os.system('scp '+nomMosaicTif+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
     # MANDA A WEB    
-    os.system('scp '+pathInput+compuesto+'/mosaicos/catalogo_'+compuesto+'/S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
+    os.system('scp '+nomMosaicTif+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
+    # Agrega al catalogo
+    fechaCatalogo = obtieneFechaCatalogo(fecha)
+    catalogoDB(fechaCatalogo,nombre,compuesto,nomMosaicTif,pathTmp)
