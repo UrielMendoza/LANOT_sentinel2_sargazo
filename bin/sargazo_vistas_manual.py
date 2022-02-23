@@ -18,14 +18,14 @@ if __name__ == "__main__":
     pathLanot = '/usr/local/share/lanot/'
     region = 's1'
     
-    archivos = glob(pathVertices+'*')
+    archivos = glob(pathOutputGeoTiff+'TC/T16QDJ/*')
     fechas = []
     for archivo in archivos:
         fechas.append(obtieneFechaVertice(archivo)) 
 
     fechas = list(set(fechas))
     fechas.sort()    
-    fechas = ['20220220T161209']
+    #fechas = ['20220220T161209']
     print(fechas)
     for fecha in fechas:
         # Mosaicos
