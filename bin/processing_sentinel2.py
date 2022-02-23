@@ -803,7 +803,7 @@ def insertCatalogoDB(compuesto,conect,cur,crs,pathInput):
         next(reader)
         for row in reader:
             print('Añadiendo a DB: ', row[2])
-            cur.execute('INSERT INTO public."catalogo_'+compuesto.upper()+'" VALUES (DEFAULT, ST_GeomFromText(%s,'+crs+'), %s, %s)', row)
+            cur.execute('INSERT INTO public."catalogo_'+compuesto.upper()+'" (fid, location, ingestion, the_geom) VALUES (DEFAULT, %s, %s, ST_GeomFromText(%s,'+crs+'))', row)
         cur.execute('SELECT * from public."catalogo_'+compuesto.upper()+'"')
     row = cur.fetchall()
     conect.commit()
