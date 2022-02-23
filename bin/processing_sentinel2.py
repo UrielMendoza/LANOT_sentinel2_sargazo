@@ -821,7 +821,7 @@ def deleteSargazoLogDB(conect,cur,tile,fecha):
 
 def deleteCatalogoDB(conect,cur,fecha,compuesto):
     print('Borrando catalogo de DB: ')
-    cur.execute('DELETE FROM public."catalogo_'+compuesto.upper()+" WHERE ingestion = '"+fecha+"'")
+    cur.execute('DELETE FROM public."catalogo_'+compuesto.upper()+'"'+" WHERE ingestion = '"+fecha+"'")
     conect.commit()
 
 def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc):
