@@ -804,8 +804,14 @@ def insertCatalogoDB(compuesto,conect,cur,crs,pathInput):
         next(reader)
         for row in reader:
             #print('Añadiendo a DB: ', row[2])
-            cur.execute('INSERT INTO public."catalogo_'+compuesto.upper()+'" (fid, location, ingestion, the_geom) VALUES (DEFAULT, %s, %s, ST_GeomFromText(%s,'+crs+'))', row)
-        cur.execute('SELECT * from public."catalogo_'+compuesto.upper()+'"')
+            if compuesto == 'TC':
+                cur.execute('INSERT INTO public."catalogo_'+compuesto.upper()+'" (fid, location, ingestion, the_geom) VALUES (DEFAULT, %s, %s, ST_GeomFromText(%s,'+crs+'))', row)
+            else:
+                cur.execute('INSERT INTO public."catalogo_'+compuesto+'" (fid, location, ingestion, the_geom) VALUES (DEFAULT, %s, %s, ST_GeomFromText(%s,'+crs+'))', row)
+        if compuesto == 'TC':
+            cur.execute('SELECT * from public."catalogo_'+compuesto.upper()+'"')
+        else: 
+            cur.execute('SELECT * from public."catalogo_'+compuesto+'"')
     row = cur.fetchall()
     conect.commit()
 
@@ -821,7 +827,10 @@ def deleteSargazoLogDB(conect,cur,tile,fecha):
 
 def deleteCatalogoDB(conect,cur,fecha,compuesto):
     print('Borrando catalogo de DB: ')
-    cur.execute('DELETE FROM public."catalogo_'+compuesto.upper()+'"'+" WHERE ingestion = '"+fecha+"'")
+    if compuesto == 'TC':
+        cur.execute('DELETE FROM public."catalogo_'+compuesto.upper()+'"'+" WHERE ingestion = '"+fecha+"'")
+    else: 
+        cur.execute('DELETE FROM public."catalogo_'+compuesto+'"'+" WHERE ingestion = '"+fecha+"'")
     conect.commit()
 
 def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc):
