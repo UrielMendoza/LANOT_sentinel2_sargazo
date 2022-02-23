@@ -819,9 +819,9 @@ def deleteSargazoLogDB(conect,cur,tile,fecha):
     cur.execute("DELETE FROM sargazo_log WHERE tile='"+tile+"' AND fechadia='"+fecha+"'")
     conect.commit()
 
-def deleteCatalogoDB(conect,cur,nombre,compuesto):
+def deleteCatalogoDB(conect,cur,fecha,compuesto):
     print('Borrando catalogo de DB: ')
-    cur.execute('DELETE FROM public."catalogo_'+compuesto.upper()+'" WHERE location = '+nombre+'')
+    cur.execute('DELETE FROM public."catalogo_'+compuesto.upper()+'" WHERE ingestion = '+fecha+'')
     conect.commit()
 
 def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc):
@@ -983,7 +983,7 @@ def catalogoDB(fecha,nombre,compuesto,pathInput,pathOutput):
     try:
         archivoCuadrante = cuadranteMosaico(fecha,nombre,compuesto,32616,pathInput,pathOutput)
         archivoCSV,crs = creaCSV_catalogo(archivoCuadrante, pathOutput)
-        deleteCatalogoDB(conect,cur,nombre,compuesto)
+        deleteCatalogoDB(conect,cur,fecha,compuesto)
         insertCatalogoDB(compuesto,conect,cur,crs,archivoCSV)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB catalogo: {e}')
