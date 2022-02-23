@@ -137,6 +137,7 @@ def obtieneFechaVertice(pathDir):
 
 def obtieneFechaCatalogo(fecha):
     fechaCatalogo = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
+    fechaCatalogo = fechaCatalogo - datetime.timedelta(days=1)
     fechaCatalogo = fechaCatalogo.strftime('%Y-%m-%d %H:%M:%S')
     return fechaCatalogo
 
@@ -802,7 +803,7 @@ def insertCatalogoDB(compuesto,conect,cur,crs,pathInput):
         reader = csv.reader(f)
         next(reader)
         for row in reader:
-            print('Añadiendo a DB: ', row[2])
+            #print('Añadiendo a DB: ', row[2])
             cur.execute('INSERT INTO public."catalogo_'+compuesto.upper()+'" (fid, location, ingestion, the_geom) VALUES (DEFAULT, %s, %s, ST_GeomFromText(%s,'+crs+'))', row)
         cur.execute('SELECT * from public."catalogo_'+compuesto.upper()+'"')
     row = cur.fetchall()
