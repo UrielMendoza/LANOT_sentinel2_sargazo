@@ -819,6 +819,11 @@ def deleteSargazoLogDB(conect,cur,tile,fecha):
     cur.execute("DELETE FROM sargazo_log WHERE tile='"+tile+"' AND fechadia='"+fecha+"'")
     conect.commit()
 
+def deleteCatalogoDB(conect,cur,nombre,compuesto):
+    print('Borrando sargazo de DB: ')
+    cur.execute('DELETE FROM public."catalogo_'+compuesto.upper()+'" WHERE location="'+nombre+'"')
+    conect.commit()
+
 def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc):
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     fechaDia = time.strftime('%Y-%m-%d')
@@ -974,10 +979,20 @@ def createMosaicLatest(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     os.system('scp '+pathInput+compuesto+'/mosaicos/log.txt'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')  
 
 def catalogoDB(fecha,nombre,compuesto,pathInput,pathOutput):
-    archivoCuadrante = cuadranteMosaico(fecha,nombre,compuesto,32616,pathInput,pathOutput)
-    archivoCSV,crs = creaCSV_catalogo(archivoCuadrante, pathOutput)
     conect,cur = conexionDB()
-    insertCatalogoDB(compuesto,conect,cur,crs,archivoCSV)
+    try:
+        archivoCuadrante = cuadranteMosaico(fecha,nombre,compuesto,32616,pathInput,pathOutput)
+        archivoCSV,crs = creaCSV_catalogo(archivoCuadrante, pathOutput)
+        deleteCatalogoDB(conect,cur,nombre,compuesto)
+        insertCatalogoDB(compuesto,conect,cur,crs,archivoCSV)
+    except Exception as e:
+        print(f'Ocurrio un error en la transacción DB catalogo: {e}')
+        # Mandar correo
+        enviaMail(fecha, '', traceback.format_exc().replace("'",""))
+        cur.close()
+        conect.close()
+    conect.close()
+
 
 def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb,pathTmp):
     tiles = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
