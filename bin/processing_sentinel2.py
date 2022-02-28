@@ -248,6 +248,7 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         distances = []
         df['distCosta_km'] = None
         for i in range(len(df)):
+            # CALCULO DE DISTANCIA A LA COSTA
             distance = round(gdf['geometry'].iloc[0].distance(df['geometry'].iloc[i])*0.001,4)
             #print(distance)
             #df['distCosta'].iloc[i] = distance
@@ -294,6 +295,24 @@ def detfooMascaraVectorial(pathTmp):
     print('=============================================')
     res_difference.to_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json', driver="GeoJSON")
 
+def verificaPlaya(df_sargazo,pathLM):
+    df_playas = gpd.read_file(pathLM+'playas_UTM16N_20m_2021.geojson')    
+    df_sargazo['lugar'] = None
+    df_sargazo['nom_playa'] = None
+    playero = ['oceano' for i in range(len(df_sargazo))]
+    nombre_playa = [None for i in range(len(df_sargazo))]
+
+    for k in range(len(df_sargazo)):
+        for j in range(len(df_playas)):
+            if df_sargazo.iloc[k].geometry.intersects(df_playas.iloc[j].geometry) == True:
+                playero[k] = 'playa'
+                nombre_playa[k] = df_playas.iloc[j]['name']
+                continue
+    df_sargazo['lugar'] = playero
+    df_sargazo['nom_playa'] = nombre_playa
+
+    return df_sargazo
+
 def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta):
     # CON DETFOO BARRIENDO
     #df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json')
@@ -325,12 +344,13 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
     else feature for feature in res_difference["geometry"]]
     if len(res_difference)>= 1:
         banderaSar = True
+        # VERIFICA SI ES PLAYERO
+        df_sargazo = verificaPlaya(res_difference,pathLM)
         # Km2
-        totalSar = str(round(res_difference['area_km2'].sum(),4))
+        totalSar = str(round(df_sargazo['area_km2'].sum(),4))
         # ARCHIVO FINAL
-
         # MANDA A DATA
-        res_difference.to_file(nombre, driver="GeoJSON")
+        df_sargazo.to_file(nombre, driver="GeoJSON")
         # MANDA A PETA
         os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo/'+tile+'/')
     else:
@@ -640,11 +660,11 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
 
     for i in range(nuMask.shape[0]):
         for j in range(nuMask.shape[1]):
-            if sar[i,j] == 1:
-                #ENTROPIA CON DETFOO                
+            if sar[i,j] == 1:               
                 y = (i*yres + ymax) + yres/2
                 x = (j*xres + xmin) + xres/2
                 sargazoPunto = Point(x,y)
+                # ENTROPIA CON DETFOO 
                 for k in range(len(df_detfoo)):
                     if df_detfoo.iloc[k].geometry.contains(sargazoPunto) == True and entropia[i,j] >= entropiaMin:
                         nuMask[i,j] = 0
@@ -792,7 +812,7 @@ def insertSargazoDB(conect,cur,crs,pathInput):
         next(reader)
         for row in reader:
 			#print('Añadiendo a DB: ', row)
-            cur.execute("INSERT INTO sargazo VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)
+            cur.execute("INSERT INTO sargazo VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326)), %s, %s", row)
         cur.execute("SELECT * from sargazo")
     row = cur.fetchall()
     conect.commit()
