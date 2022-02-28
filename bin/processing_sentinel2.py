@@ -242,7 +242,7 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         df['tile'] = tile
         df['fecha'] = fecha
         df['fechaDia'] = fechaDia
-        df["area_km2"] = round(df['geometry'].area*0.000001,4)
+        #df["area_km2"] = round(df['geometry'].area*0.000001,4)
         #gdf = gpd.read_file(pathLM+'land_UTM16N_20m_distance.geojson')
         gdf = gpd.read_file(pathLM+'land_UTM16N_20m_2021.geojson')
         distances = []
@@ -258,8 +258,8 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         df.to_file(pathInput+'alg_mask_filter_tmp_sar.json', driver="GeoJSON")
         banderaSar = True
         nombre = None
-        totalSar = str(round(df['area_km2'].sum(),4))
-        return nombre, banderaSar, totalSar
+        #totalSar = str(round(df['area_km2'].sum(),4))
+        return nombre, banderaSar
     else:
         print('=========================')
         print('NO DETECCIÓN DE SARGAZO')
@@ -346,7 +346,8 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
         banderaSar = True
         # VERIFICA SI ES PLAYERO
         df_sargazo = verificaPlaya(res_difference,pathLM)
-        # Km2
+        # OBTENCION DE AREA Km2
+        df["area_km2"] = round(df['geometry'].area*0.000001,4)
         totalSar = str(round(df_sargazo['area_km2'].sum(),4))
         # ARCHIVO FINAL
         # MANDA A DATA
