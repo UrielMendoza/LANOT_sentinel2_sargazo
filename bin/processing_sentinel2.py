@@ -342,13 +342,14 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
     nombre = pathOutput+tile+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+'_'+fechaProc+".json"
     res_difference["geometry"] = [MultiPolygon([feature]) if type(feature) == Polygon \
     else feature for feature in res_difference["geometry"]]
+    df_sargazo = res_difference
     if len(res_difference)>= 1:
         banderaSar = True
-        # VERIFICA SI ES PLAYERO
-        df_sargazo = verificaPlaya(res_difference,pathLM)
         # OBTENCION DE AREA Km2
         df_sargazo["area_km2"] = round(df_sargazo['geometry'].area*0.000001,4)
         totalSar = str(round(df_sargazo['area_km2'].sum(),4))
+        # VERIFICA SI ES PLAYERO
+        df_sargazo = verificaPlaya(res_difference,pathLM)
         # ARCHIVO FINAL
         # MANDA A DATA
         df_sargazo.to_file(nombre, driver="GeoJSON")
