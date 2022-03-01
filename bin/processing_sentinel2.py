@@ -323,8 +323,8 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
     print('=============================================')
     print('Detección de sargazo con mascara de tierra: ',len(res_difference),' elementos')
     print('=============================================')
-    df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
-    res_difference = gpd.overlay(res_difference, df_maskCloudShadow, how='difference')
+    #df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
+    #res_difference = gpd.overlay(res_difference, df_maskCloudShadow, how='difference')
     print('=============================================')
     print('Detección de sargazo con mascara de nubes/sombra: ',len(res_difference),' elementos')
     print('=============================================')
@@ -347,7 +347,7 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
         # VERIFICA SI ES PLAYERO
         df_sargazo = verificaPlaya(res_difference,pathLM)
         # OBTENCION DE AREA Km2
-        df["area_km2"] = round(df['geometry'].area*0.000001,4)
+        df_sargazo["area_km2"] = round(df_sargazo['geometry'].area*0.000001,4)
         totalSar = str(round(df_sargazo['area_km2'].sum(),4))
         # ARCHIVO FINAL
         # MANDA A DATA
