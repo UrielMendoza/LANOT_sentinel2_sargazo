@@ -298,7 +298,7 @@ def detfooMascaraVectorial(pathTmp):
 def verificaPlaya(df_sargazo,pathLM):
     df_playas = gpd.read_file(pathLM+'playas_UTM16N_20m_2021.geojson')    
     df_sargazo['lugar'] = None
-    df_sargazo['nom_playa'] = None
+    df_sargazo['nom_playa'] = 'null'
     playero = ['oceano' for i in range(len(df_sargazo))]
     nombre_playa = [None for i in range(len(df_sargazo))]
 
