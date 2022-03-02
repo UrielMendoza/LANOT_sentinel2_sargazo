@@ -244,11 +244,11 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         df['fechaDia'] = fechaDia
         #df["area_km2"] = round(df['geometry'].area*0.000001,4)
         #gdf = gpd.read_file(pathLM+'land_UTM16N_20m_distance.geojson')
+        # CALCULO DE DISTANCIA A LA COSTA
         gdf = gpd.read_file(pathLM+'land_UTM16N_20m_2021.geojson')
         distances = []
         df['distCosta_km'] = None
         for i in range(len(df)):
-            # CALCULO DE DISTANCIA A LA COSTA
             distance = round(gdf['geometry'].iloc[0].distance(df['geometry'].iloc[i])*0.001,4)
             #print(distance)
             #df['distCosta'].iloc[i] = distance
@@ -323,8 +323,8 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
     print('=============================================')
     print('Detección de sargazo con mascara de tierra: ',len(res_difference),' elementos')
     print('=============================================')
-    df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
-    res_difference = gpd.overlay(res_difference, df_maskCloudShadow, how='difference')
+    #df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
+    #res_difference = gpd.overlay(res_difference, df_maskCloudShadow, how='difference')
     print('=============================================')
     print('Detección de sargazo con mascara de nubes/sombra: ',len(res_difference),' elementos')
     print('=============================================')
@@ -349,7 +349,7 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
         df_sargazo["area_km2"] = round(df_sargazo['geometry'].area*0.000001,4)
         totalSar = str(round(df_sargazo['area_km2'].sum(),4))
         # VERIFICA SI ES PLAYERO
-        df_sargazo = verificaPlaya(res_difference,pathLM)
+        df_sargazo = verificaPlaya(df_sargazo, pathLM)
         # ARCHIVO FINAL
         # MANDA A DATA
         df_sargazo.to_file(nombre, driver="GeoJSON")
@@ -816,7 +816,7 @@ def insertSargazoDB(conect,cur,crs,pathInput):
         for row in reader:
             #print('Añadiendo a DB: ', row)
             #cur.execute("INSERT INTO sargazo VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)
-            cur.execute("INSERT INTO sargazo (idpoligono, tile, fecha, fechadia, area_km2, distcosta_km, lugar, nom_playa, geom) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)
+            cur.execute("INSERT INTO sargazo (idpoligono, tile, fecha, fechadia, distcosta_km, area_km2, lugar, nom_playa, geom) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)
         cur.execute("SELECT * from sargazo")
     row = cur.fetchall()
     conect.commit()
