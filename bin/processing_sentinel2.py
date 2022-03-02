@@ -323,8 +323,8 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
     print('=============================================')
     print('Detección de sargazo con mascara de tierra: ',len(res_difference),' elementos')
     print('=============================================')
-    #df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
-    #res_difference = gpd.overlay(res_difference, df_maskCloudShadow, how='difference')
+    df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
+    res_difference = gpd.overlay(res_difference, df_maskCloudShadow, how='difference')
     print('=============================================')
     print('Detección de sargazo con mascara de nubes/sombra: ',len(res_difference),' elementos')
     print('=============================================')
@@ -436,6 +436,7 @@ def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathTmp):
     elif porcNube >= 60.0:
         banderaNub = True
         df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
+        return banderaNub
     else:
         print("Buffer de nubes")
         banderaNub = True
