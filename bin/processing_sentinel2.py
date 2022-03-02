@@ -815,7 +815,7 @@ def insertSargazoDB(conect,cur,crs,pathInput):
         for row in reader:
             #print('Añadiendo a DB: ', row)
             #cur.execute("INSERT INTO sargazo VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)
-            cur.execute("INSERT INTO sargazo VALUES (DEFAULT, "+row[1]+", "+row[2]+", "+row[3]+", "+row[4]+", "+row[5]+", "+row[6]+", "+row[7]+", ST_Transform(ST_GeomFromText("+row[8]+","+crs+"),4326))")
+            cur.execute("INSERT INTO sargazo VALUES (DEFAULT, '"+row[1]+"', '"+row[2]+"', '"+row[3]+"', '"+row[4]+"', '"+row[5]+"', '"+row[6]+"', '"+row[7]+"', ST_Transform(ST_GeomFromText("+row[8]+","+crs+"),4326))")
         cur.execute("SELECT * from sargazo")
     row = cur.fetchall()
     conect.commit()
