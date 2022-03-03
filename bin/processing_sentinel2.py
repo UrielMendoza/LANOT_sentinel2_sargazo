@@ -527,7 +527,8 @@ def sargazoBinNumpy(pathInput):
 
     ref = aperturaDS(pathInput+'B04.tif')
 
-    sargazoBin = np.where((b8A > 700) & (b04 < 1000) & (b11 < 500) & (b04 < b8A) & (b04 < b08), 1, 0)
+    #sargazoBin = np.where((b8A > 700) & (b04 < 1000) & (b11 < 500) & (b04 < b8A) & (b04 < b08), 1, 0)
+    sargazoBin = np.where((b8A > 0.07) & (b04 < 0.1) & (b11 < 0.05) & (b04 < b8A) & (b04 < b08), 1, 0)
 
     creaTif(ref,sargazoBin,pathInput+'alg_tmp_numpy.tif')
     #os.system('gdal_calc.py -A '+pathInput+'alg_tmp_numpy.tif -B '+pathInput+'aguaMask.tif --outfile='+pathInput+'alg_mask_tmp_numpy.tif --calc="A*B"')
