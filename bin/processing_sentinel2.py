@@ -272,8 +272,8 @@ def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutp
         #f.close()
         #print('Tile:'+tile+'\nFecha:'+fecha)
         banderaSar = False
-        totalSar = '0'
-        return nombre, banderaSar, totalSar
+        #totalSar = '0'
+        return nombre, banderaSar
 
 def obtieneVertices(pathInput,pathOutput,pathOutputPeta):
     polys = gpd.read_file(pathInput)
