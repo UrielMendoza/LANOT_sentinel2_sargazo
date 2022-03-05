@@ -418,11 +418,13 @@ def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathTmp):
     cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
 
     b12 = aperturaDS(pathTmp+'B12.tif').ReadAsArray()
+    b12 = (b12 - 1000) * 0.0001
     #b11 = aperturaDS(pathTmp+'B11.tif').ReadAsArray()
     ref = aperturaDS(pathTmp+'B12.tif')
 
     #nubesMask = np.where((b12 > 1220) & (b11 > 395), 0, 1)
-    nubesMask = np.where(b12 > 1220, 0, 1)
+    valSN = 0.1220
+    nubesMask = np.where(b12 > valSN, 0, 1)
 
     creaTif(ref,nubesMask,pathTmp+'cloudMaskShadow_bin_tmp.tif')
 
@@ -649,6 +651,7 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
     # Nube baja con B12
     nuMask = dsRef.ReadAsArray()
     b12 = dsRef.ReadAsArray()
+    b12 = (b12 - 1000) * 0.0001
     sar = dsSar.ReadAsArray()
     scl = dsSCL.ReadAsArray()
     df_detfoo = gpd.read_file(pathLM+'MSK_DETFOO_B8A.geojson')
