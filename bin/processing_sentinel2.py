@@ -421,7 +421,8 @@ def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathTmp):
     b12 = (b12 - 1000) * 0.0001
     #b11 = aperturaDS(pathTmp+'B11.tif').ReadAsArray()
     ref = aperturaDS(pathTmp+'B12.tif')
-
+    
+    # NUBES
     #nubesMask = np.where((b12 > 1220) & (b11 > 395), 0, 1)
     valSN = 0.1220
     nubesMask = np.where(b12 > valSN, 0, 1)
@@ -662,10 +663,13 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
     print('=============================================')
 
     contB12 = 0
+    contSN = 0
     contEnt = 0
     contSCL = 0
     listaBanderas = []
 
+    #Sombra de nube
+    sombraNube = 0.004
     #Entropia
     entropiaMin = 5.0
     #entropiaMin = 1000
@@ -688,6 +692,11 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
                     nuMask[i,j] = 0
                     listaBanderas.append('Nube baja')
                     contB12 += 1 
+                # SOMBRA DE NUBE
+                if b12[i,j] <= sombraNube:
+                    nuMask[i,j] = 0
+                    listaBanderas.append('Sombra nube')
+                    contSN += 1 
 #                elif entropia[i,j] >= entropiaMin:
 #                    nuMask[i,j] = 0
 #                    listaBanderas.append('Entropia')
@@ -704,6 +713,7 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
 
     print(set(listaBanderas))
     print('Filtrados Nube Baja: ',contB12)
+    print('Filtrados Sombra nube: ',contSN)
     print('Filtrados Entropia y Detfoo: ',contEnt)
     print('Filtrados SCL: ',contSCL)
     #print('=============================================')
