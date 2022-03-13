@@ -1061,8 +1061,8 @@ def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb,pat
     nombre = 'S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'	
     nomMosaicTif = pathInput+compuesto+'/mosaicos/catalogo_'+compuesto+'/'+nombre
     # Mosaico con fecha
-    print('gdal_merge.py -o '+nomMosaicTif+' -of gtiff '+archivosTiffString)
-    os.system('gdal_merge.py -o '+nomMosaicTif+' -of gtiff '+archivosTiffString)
+    print('gdal_merge.py -o '+nomMosaicTif+' '+archivosTiffString)
+    os.system('gdal_merge.py -o '+nomMosaicTif+' '+archivosTiffString)
     # MANDA A PETA    
     os.system('scp '+nomMosaicTif+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
     # MANDA A WEB    
