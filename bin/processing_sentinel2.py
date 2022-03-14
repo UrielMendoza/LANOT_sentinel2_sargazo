@@ -29,6 +29,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import ssl
 import traceback
+from pathlib import Path
 
 def obtienePorcentajeNube(pathInput):
     mydoc = minidom.parse(pathInput+'/MTD_MSIL2A.xml')
@@ -1048,21 +1049,28 @@ def catalogoDB(fecha,nombre,compuesto,pathInput,pathOutput):
 
 def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb,pathTmp):
     tiles = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
-    archivosTiff = []
-    for tile in tiles:
+    
+    #archivosTiff = []
+    #for tile in tiles:
         #print('AQUI '+pathInput+'/'+compuesto+'/'+tile+'/*'+fecha+'*')
-        try:
-            archivoTiff = glob(pathInput+compuesto+'/'+tile+'/*'+fecha+'*')[0]
-            archivosTiff.append(archivoTiff)
-        except IndexError:
-            continue        
-    archivosTiffString = " ".join(archivosTiff)
+    #    try:
+    #        archivoTiff = glob(pathInput+compuesto+'/'+tile+'/*'+fecha+'*')[0]
+    #        archivosTiff.append(archivoTiff)
+    #    except IndexError:
+    #        continue    
+    #archivosTiffString = " ".join(archivosTiff)
+
+    mosaicos = ''
+    for path in Path(pathInput+compuesto).rglob('*'+fecha+'*.tif'):
+        print(path, type(path))
+        mosaicos += str(path) + ' '    
+
     # S2_MSI_sargazoTC_s1_20151023T162332.png
     nombre = 'S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'	
     nomMosaicTif = pathInput+compuesto+'/mosaicos/catalogo_'+compuesto+'/'+nombre
     # Mosaico con fecha
-    print('gdal_merge.py -o '+nomMosaicTif+' '+archivosTiffString)
-    os.system('gdal_merge.py -o '+nomMosaicTif+' '+archivosTiffString)
+    print('gdal_merge.py -o '+nomMosaicTif+' '+mosaicos)
+    os.system('gdal_merge.py -o '+nomMosaicTif+' '+mosaicos)
     # MANDA A PETA    
     os.system('scp '+nomMosaicTif+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
     # MANDA A WEB    
