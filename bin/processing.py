@@ -486,8 +486,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
         processing_sentinel2.enviaMail(fecha,'mosaico',traceback.format_exc().replace("'",""))
     # BORRA DIR DESCARGA
     # NO DESCOMENTAR EN SEMIMANUAL PORQUE BORRA IMAGENES
-    if dateTime == 'automatico' or dateTime == 'manual':
-        os.system('rm -r '+pathTmp+'*')
+    #if dateTime == 'automatico' or dateTime == 'manual':
+    #    os.system('rm -r '+pathTmp+'*')
 
 
 
