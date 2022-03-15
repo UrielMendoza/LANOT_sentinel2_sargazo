@@ -683,7 +683,8 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
                 sargazoPunto = Point(x,y)
                 # ENTROPIA CON DETFOO 
                 #for k in range(len(df_detfoo)):
-                if df_detfoo.geometry.contains(sargazoPunto) == True and entropia[i,j] >= entropiaMin:
+                seriePunto = df_detfoo.geometry.contains(sargazoPunto)
+                if len(seriePunto[seriePunto == True]) >= 1 and entropia[i,j] >= entropiaMin:
                     print(x,y)
                     print(entropia[i,j])
                     nuMask[i,j] = 0
@@ -691,7 +692,7 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
                     contEnt += 1 
                 #continue
                 # NUBE BAJA B12
-                if b12[i,j] >= nubeBaja:
+                elif b12[i,j] >= nubeBaja:
                     nuMask[i,j] = 0
                     listaBanderas.append('Nube baja')
                     contB12 += 1 
