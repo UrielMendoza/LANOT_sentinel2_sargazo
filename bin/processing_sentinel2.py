@@ -681,6 +681,8 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
                 y = (i*yres + ymax) + yres/2
                 x = (j*xres + xmin) + xres/2
                 sargazoPunto = Point(x,y)
+                print(x,y)
+                print(entropia[i,j])
                 # ENTROPIA CON DETFOO 
                 for k in range(len(df_detfoo)):
                     if df_detfoo.iloc[k].geometry.contains(sargazoPunto) == True and entropia[i,j] >= entropiaMin:
