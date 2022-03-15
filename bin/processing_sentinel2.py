@@ -656,7 +656,7 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
     b12 = (b12 - 1000) * 0.0001
     sar = dsSar.ReadAsArray()
     scl = dsSCL.ReadAsArray()
-    df_detfoo = gpd.read_file(pathLM+'MSK_DETFOO_B8A.geojson')
+    df_detfoo = gpd.read_file(pathLM+'MSK_DETFOO_B8A_b1500.geojson')
     nx,ny,xmin,ymax,xres,yres,xmax,ymin = obtieneParametrosGeoTrasform(dsRef)
 
     print('=============================================')
