@@ -480,15 +480,21 @@ def nubesSombraMascaraSinBuffer(cuadrante,pathTmp):
 
     creaTif(ref,nubesMask,pathTmp+'cloudMaskShadow_bin_tmp.tif')
 
-    os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_bin_tmp.tif -f "GeoJSON" '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
-    df = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
+    os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_bin_tmp.tif -f "GeoJSON" '+pathTmp+'cloudMaskShadow_bin_tmp.json')
+    df = gpd.read_file(pathTmp+'cloudMaskShadow_bin_tmp.json')
     df = df[df['DN'] == 0]
     if len(df) == 0:
         print("No buffer de nubes")
+        df_g = df.unary_union
+        df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
+        df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
         banderaNub = False
         return banderaNub
     else:
         print("Buffer de nubes")
+        df_g = df.unary_union
+        df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
+        df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
         banderaNub = True
         return banderaNub
 
