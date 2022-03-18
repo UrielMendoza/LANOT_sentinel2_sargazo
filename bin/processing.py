@@ -441,7 +441,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                 finally:
                 # BORRA BASURA
                     #os.system('rm -r '+pathTmp+'*.tif')
-                    os.system('rm -r '+pathTmp+'*json')
+                    #os.system('rm -r '+pathTmp+'*json')
                     os.system('rm -r '+pathTmp+'*.csv')
                     os.system('rm -r '+pathTmp+'*.zip')
                     os.system('rm -r '+pathTmp+'*.SAFE')
