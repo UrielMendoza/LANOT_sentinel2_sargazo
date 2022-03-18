@@ -464,6 +464,34 @@ def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathTmp):
 
         return banderaNub
 
+def nubesSombraMascaraSinBuffer(cuadrante,pathTmp):
+
+    cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
+
+    b12 = aperturaDS(pathTmp+'B12.tif').ReadAsArray()
+    b12 = (b12 - 1000) * 0.0001
+    #b11 = aperturaDS(pathTmp+'B11.tif').ReadAsArray()
+    ref = aperturaDS(pathTmp+'B12.tif')
+    
+    # NUBES
+    #nubesMask = np.where((b12 > 1220) & (b11 > 395), 0, 1)
+    valSN = 0.1220
+    nubesMask = np.where(b12 > valSN, 0, 1)
+
+    creaTif(ref,nubesMask,pathTmp+'cloudMaskShadow_bin_tmp.tif')
+
+    os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_bin_tmp.tif -f "GeoJSON" '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
+    df = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
+    df = df[df['DN'] == 0]
+    if len(df) == 0:
+        print("No buffer de nubes")
+        banderaNub = False
+        return banderaNub
+    else:
+        print("Buffer de nubes")
+        banderaNub = True
+        return banderaNub
+
 def detfooMascara(detfoo_dist,pathInput,pathOutput):
     #ogr2ogr -f "GeoJSON" MSK_DETFOO_B04.geojson MSK_DETFOO_B04.gml
     detfoo = 'MSK_DETFOO_B8A.gml'
@@ -670,7 +698,7 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
     listaBanderas = []
 
     #Sombra de nube
-    sombraNube = 0.02
+    sombraNube = 0.01
     #Entropia
     entropiaMin = 5.0
     #entropiaMin = 1000
