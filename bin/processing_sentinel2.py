@@ -228,7 +228,7 @@ def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTif
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/TC/'+tile+'/')
 
-def poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathInput,pathOutput,pathOutputEmpty):
+def poligonizacion(tile,anio,fecha,pathLM,pathInput,pathOutput,pathOutputEmpty):
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     fechaDia = time.strftime('%Y-%m-%d')
     os.system('gdal_polygonize.py '+pathInput+'nubesBajas_mask.tif -f "GeoJSON" '+pathInput+'alg_mask_filter_tmp.json')
@@ -314,7 +314,7 @@ def verificaPlaya(df_sargazo,pathLM):
 
     return df_sargazo
 
-def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta):
+def mascarasVectoriales(tile,anio,fecha,fechaProc,SNbuffer,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta):
     # CON DETFOO BARRIENDO
     #df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json')
 
@@ -327,11 +327,12 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,bufferLM,pathLM,pathTmp,pathOu
     print('=============================================')
 
     # Sin buffer de nubes
-    #df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
-    #res_difference = gpd.overlay(res_difference, df_maskCloudShadow, how='difference')
-    #print('=============================================')
-    #print('Detección de sargazo con mascara de nubes/sombra: ',len(res_difference),' elementos')
-    #print('=============================================')
+    if SNbuffer == True:
+        df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
+        res_difference = gpd.overlay(res_difference, df_maskCloudShadow, how='difference')
+        print('=============================================')
+        print('Detección de sargazo con mascara de nubes/sombra: ',len(res_difference),' elementos')
+        print('=============================================')
 
     #df_detfooMask = gpd.read_file(pathTmp+'MSK_DETFOO_B8A.json')
     #res_difference = gpd.overlay(res_difference, df_detfooMask, how='difference')
@@ -684,7 +685,7 @@ def entropiaNumpy(pathInput):
 
 	return nuMask """
 
-def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
+def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
 
     # Nube baja con B12
     nuMask = dsRef.ReadAsArray()
@@ -696,7 +697,8 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
     nx,ny,xmin,ymax,xres,yres,xmax,ymin = obtieneParametrosGeoTrasform(dsRef)
 
     # Sin buffer de nubes
-    nubes = gdal.Open(pathTmp+'cloudMaskShadow_bin_tmp.tif').ReadAsArray()
+    if SNbuffer == True:
+        nubes = gdal.Open(pathTmp+'cloudMaskShadow_bin_tmp.tif').ReadAsArray()
 
     print('=============================================')
     print('Detección de sargazo algoritmo: ',len(sar[sar == 1]),' elementos')
@@ -752,10 +754,11 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,pathTmp,pathLM):
                     listaBanderas.append('SCL')
                     contSCL += 1  
                 # Sin buffer de nubes
-                elif nubes[i,j] == 0:
-                    nuMask[i,j] = 0
-                    listaBanderas.append('Nubes')
-                    contNubes += 1  
+                if SNbuffer == True:
+                    if nubes[i,j] == 0:
+                        nuMask[i,j] = 0
+                        listaBanderas.append('Nubes')
+                        contNubes += 1  
                 else:
                     nuMask[i,j] = 1
             else:

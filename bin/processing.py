@@ -22,17 +22,19 @@ def semiManual():
     start_date = None
     end_date = None
     region = "sargazo_1"
-    landMask = "land_sargazo_UTM16N_20m_1.tif"
+    SNbuffer = False
+    #landMask = "land_sargazo_UTM16N_20m_1.tif"
     #nubesBajas = 900
-    return start_date,end_date,region,landMask
+    return start_date,end_date,region,SNbuffer
 
 def automatico():
     start_date = datetime.datetime.now()
     end_date = datetime.datetime.now()
     region = "sargazo_1"
-    landMask = "land_sargazo_UTM16N_20m_1.tif"
+    SNbuffer = False
+    #landMask = "land_sargazo_UTM16N_20m_1.tif"
     #nubesBajas = 900
-    return start_date,end_date,region,landMask
+    return start_date,end_date,region,SNbuffer
 
 def manual():
     print("=================")
@@ -71,7 +73,7 @@ def manual():
     # Catalogo de dias 
     print("=================\n")
     print("REGION")
-    print("Regiones disponibles establecidas por PATH/ROW: \n1. sargazo_1\n2. Cancun\n3. Cancun-Tulum\n4. Caribe Mexicano\n5. Antillas francesas\n6. Guyane\n7. Mascara Tierra\n8.prueba\n")
+    print("Regiones disponibles establecidas por PATH/ROW: \n1. sargazo_1\n2. Cancun\n3. Cancun-Tulum\n4. Caribe Mexicano\n5. Antillas francesas\n6. Guyane\n7. Mascara Tierra\n8. Prueba\n")
     while True:
         resR = int(input())
         if resR == 1 or resR == 2 or resR == 3 or resR == 4 or resR == 5 or resR == 6 or resR == 7 or resR == 8:
@@ -93,19 +95,19 @@ def manual():
     elif resR == 8:
         region = "prueba"
     # Opcion PathRow
-    print("=================\n")
-    print("PARAMETROS")
-    print("Distancia de Buffer mascara de tierra: \n1. 0km\n2. 2km\n3. 5km\n")
-    while True:
-        resLM = int(input())
-        if resLM == 1 or resLM == 2 or resLM == 3:
-            break
-    if resLM == 1:
-        landMask = "land_sargazo_UTM16N_20m_1.tif"
-    elif resLM == 2:
-        landMask = "land_sargazo_UTM16N_20m_b2km.tif"
-    elif resLM == 3:
-        landMask = "land_sargazo_UTM16N_20m_b5km.tif"
+    #print("=================\n")
+    #print("PARAMETROS")
+    #print("Distancia de Buffer mascara de tierra: \n1. 0km\n2. 2km\n3. 5km\n")
+    #while True:
+    #    resLM = int(input())
+    #    if resLM == 1 or resLM == 2 or resLM == 3:
+    #        break
+    #if resLM == 1:
+    #    landMask = "land_sargazo_UTM16N_20m_1.tif"
+    #elif resLM == 2:
+    #    landMask = "land_sargazo_UTM16N_20m_b2km.tif"
+    #elif resLM == 3:
+    #    landMask = "land_sargazo_UTM16N_20m_b5km.tif"
 
     #print("Valor de filtro de nubes bajas banda 4")
     #while True:
@@ -117,7 +119,19 @@ def manual():
     #except:
     #    print("Ingrese fecha valida")
 
-    return start_date,end_date,region,landMask
+    print("=================\n")
+    print("Buffer de nubes")
+    print("Con buffer de nubes: \n1. Si\n2. No\n")
+    while True:
+        resBN = int(input())
+        if resBN == 1 or resBN == 2:
+            break
+    if resBN == 1:
+        SNbuffer = True
+    elif resBN == 2:
+        SNbuffer = False
+
+    return start_date,end_date,region,SNbuffer
 
 def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime):
 
@@ -129,22 +143,22 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     if dateTime == 'automatico' or dateTime == 'manual':
         os.system('rm -r '+pathTmp+'*')
     if dateTime == 'automatico':
-        start_date,end_date,region,landMask = automatico()
+        start_date,end_date,region,SNbuffer = automatico()
 
     elif dateTime == 'manual':
-        start_date,end_date,region,landMask = manual()
+        start_date,end_date,region,SNbuffer = manual()
 
     elif dateTime == 'semiManual':
-        start_date,end_date,region,landMask = semiManual()
+        start_date,end_date,region,SNbuffer = semiManual()
 
     # OBTIENE NOMBRE DEL LOG
-    bufferLM = processing_sentinel2.obtieneBufferLM(landMask)
-    if bufferLM == '':
-        nomLog = 'L2A_sargazo.csv'
-    elif bufferLM == 'b2km_':
-        nomLog = 'L2A_sargazo_b2km.csv'
-    elif bufferLM == 'b5km_':
-        nomLog = 'L2A_sargazo_b5km.csv'
+    #bufferLM = processing_sentinel2.obtieneBufferLM(landMask)
+    #if bufferLM == '':
+    #    nomLog = 'L2A_sargazo.csv'
+    #elif bufferLM == 'b2km_':
+    #    nomLog = 'L2A_sargazo_b2km.csv'
+    #elif bufferLM == 'b5km_':
+    #    nomLog = 'L2A_sargazo_b5km.csv'
 
     # REFERENCIAS BANDAS Y TILES
     # agrego b02 y b03
@@ -364,9 +378,12 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     print('5.2 Procesando mascara agua...')
                     #processing_sentinel2.aguaMascara(cuadrante,pathTmp+bandas20m[-1]+'.tif',pathTmp)
                     print('5.3 Procesando mascara nubes altas...')
-                    #banderaNub = processing_sentinel2.nubesMascara(cuadrante,bufferNubes,pathTmp+bandas20m[-1]+'.tif',pathTmp)
-                    #banderaNub = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathTmp)
-                    banderaNub = processing_sentinel2.nubesSombraMascaraSinBuffer(cuadrante,pathTmp)
+                    if dateTime == 'manual' and SNbuffer == True:
+                        banderaNub = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathTmp)
+                    else:
+                        #banderaNub = processing_sentinel2.nubesMascara(cuadrante,bufferNubes,pathTmp+bandas20m[-1]+'.tif',pathTmp)
+                        #banderaNub = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathTmp)
+                        banderaNub = processing_sentinel2.nubesSombraMascaraSinBuffer(cuadrante,pathTmp)
                     print('5.4 Procesando mascara detfoo...')
                     # Se usa la manual
                     #processing_sentinel2.detfooMascara(200,pathTmp+dirI,pathTmp)
@@ -378,18 +395,18 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     entropia = processing_sentinel2.entropiaNumpy(pathTmp)
                     #entropia = None
                     print('5.7 Procesando sargazo con filtro...')
-                    nuMask = processing_sentinel2.filtroPixel(ref,dsSar,nubesBajas,entropia,scl,pathTmp,pathLM)
+                    nuMask = processing_sentinel2.filtroPixel(ref,dsSar,nubesBajas,entropia,scl,SNbuffer,pathTmp,pathLM)
                     processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')
                     del nuMask 
 
                     # POLIGONIZACION
                     print('6 Procesando poligonizacion...')
-                    archivoProc,banderaSar = processing_sentinel2.poligonizacion(tile,anio,fecha,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty)
+                    archivoProc,banderaSar = processing_sentinel2.poligonizacion(tile,anio,fecha,pathLM,pathTmp,pathOutput,pathOutputEmpty)
                     if banderaSar == True:
                         #print('6.1 Aplicando mascara detfoo vectorial...')
                         #processing_sentinel2.detfooMascaraVectorial(pathTmp)
                         print('6.2 Aplicando mascaras vectoriales...')
-                        banderaSar, totalSarMask, archivoProc = processing_sentinel2.mascarasVectoriales(tile,anio,fecha,fechaImaProc,bufferLM,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta)
+                        banderaSar, totalSarMask, archivoProc = processing_sentinel2.mascarasVectoriales(tile,anio,fecha,fechaImaProc,SNbuffer,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta)
                         banderaSar_log = 'si'
                     
                     # BANDERA DE SARGAZO Y AREA TOTAL
