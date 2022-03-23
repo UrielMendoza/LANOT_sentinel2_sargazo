@@ -235,10 +235,11 @@ def poligonizacion(tile,anio,fecha,pathLM,pathInput,pathOutput,pathOutputEmpty):
     df = gpd.read_file(pathInput+'alg_mask_filter_tmp.json')
     df = df[df.DN == 1]
 
+    print('=============================================')
+    print('Deteccion de sargazo con filtro de pixel: ',len(df),' elementos')
+    print('=============================================')
+
     if len(df)>= 1:
-        print('=============================================')
-        print('Deteccion de sargazo con filtro de pixel: ',len(df),' elementos')
-        print('=============================================')
         df['IDpoligono'] = range(1, len(df) + 1)
         df['tile'] = tile
         df['fecha'] = fecha
@@ -753,16 +754,25 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
                     nuMask[i,j] = 0
                     listaBanderas.append('SCL')
                     contSCL += 1  
-                # Sin buffer de nubes
-                if SNbuffer == False:
-                    if nubes[i,j] == 0:
-                        nuMask[i,j] = 0
-                        listaBanderas.append('Nubes')
-                        contNubes += 1  
+
                 else:
                     nuMask[i,j] = 1
             else:
                 nuMask[i,j] = 0
+
+    # Sin buffer de nubes
+    if SNbuffer == False:
+        for i in range(nuMask.shape[0]):
+            for j in range(nuMask.shape[1]):
+                if sar[i,j] == 1: 
+                    if nubes[i,j] == 0:
+                        nuMask[i,j] = 0
+                        listaBanderas.append('Nubes')
+                        contNubes += 1
+                    else:
+                        nuMask[i,j] = 1  
+                else:
+                    nuMask[i,j] = 0
 
     print(set(listaBanderas))
     print('Filtrados Nube Baja: ',contB12)
