@@ -408,6 +408,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                         print('6.2 Aplicando mascaras vectoriales...')
                         banderaSar, totalSarMask, archivoProc = processing_sentinel2.mascarasVectoriales(tile,anio,fecha,fechaImaProc,SNbuffer,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta)
                         banderaSar_log = 'si'
+                        totalSar = totalSarMask
                     
                     # BANDERA DE SARGAZO Y AREA TOTAL
                     if banderaSar == True:
