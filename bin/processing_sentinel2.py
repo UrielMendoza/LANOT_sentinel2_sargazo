@@ -714,7 +714,8 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
     listaBanderas = []
 
     #Sombra de nube
-    sombraNube = 0.005
+    #sombraNube = 0.005
+    sombraNube = 0.01
     #Entropia
     entropiaMin = 5.0
     #entropiaMin = 1000
