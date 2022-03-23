@@ -326,7 +326,7 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,SNbuffer,pathLM,pathTmp,pathOu
     print('Detección de sargazo con mascara de tierra: ',len(res_difference),' elementos')
     print('=============================================')
 
-    # Sin buffer de nubes
+    # Con buffer de nubes
     if SNbuffer == True:
         df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
         res_difference = gpd.overlay(res_difference, df_maskCloudShadow, how='difference')
@@ -697,7 +697,7 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
     nx,ny,xmin,ymax,xres,yres,xmax,ymin = obtieneParametrosGeoTrasform(dsRef)
 
     # Sin buffer de nubes
-    if SNbuffer == True:
+    if SNbuffer == False:
         nubes = gdal.Open(pathTmp+'cloudMaskShadow_bin_tmp.tif').ReadAsArray()
 
     print('=============================================')
@@ -754,7 +754,7 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
                     listaBanderas.append('SCL')
                     contSCL += 1  
                 # Sin buffer de nubes
-                if SNbuffer == True:
+                if SNbuffer == False:
                     if nubes[i,j] == 0:
                         nuMask[i,j] = 0
                         listaBanderas.append('Nubes')
