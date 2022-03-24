@@ -422,7 +422,7 @@ def nubesMascara(cuadrante,bufferNubes,pathSCL,pathTmp):
 
         return banderaNub
 
-def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathTmp):
+def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp):
 
     cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
 
@@ -456,8 +456,12 @@ def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathTmp):
         print("Disolviendo Buffer")
         df_g = df.unary_union
         df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
+        # Elimina el buffer cerca de las costas
+        df_mask = gpd.read_file(pathLM+'land_UTM16N_20m_2021_b500m.geojson')
+        res_difference = gpd.overlay(df, df_mask, how='difference')
         #df.to_file(pathTmp+"cloudMaskShadow_b250_tmp.json", driver='GeoJSON')
-        df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
+        res_difference.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
+
         # ESTO NO PORQUE YA ESTA POLIGONIZADO
         #print("Rasterizando Buffer")
         #os.system('gdal_rasterize -burn 1 -tr 20 20 -l cloudMaskShadow_b250_tmp '+pathTmp+'cloudMaskShadow_b250_tmp.json '+pathTmp+'cloudMaskShadow_b250_tmp.tif')
