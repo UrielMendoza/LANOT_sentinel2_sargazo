@@ -31,7 +31,7 @@ def automatico():
     start_date = datetime.datetime.now()
     end_date = datetime.datetime.now()
     region = "sargazo_1"
-    SNbuffer = False
+    SNbuffer = True
     #landMask = "land_sargazo_UTM16N_20m_1.tif"
     #nubesBajas = 900
     return start_date,end_date,region,SNbuffer
