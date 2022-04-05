@@ -45,8 +45,8 @@ uly = 2400000.0
 lrx = 709800.0
 lry = 1990200.0
 
-height = 1200
-width = 1200
+height = 4200
+width = 4200
 
 area = 0
 
