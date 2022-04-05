@@ -59,7 +59,7 @@ def lee_poligonos(filename, image):
     f = open(filename)
     data = json.load(f)
     draw = ImageDraw.Draw(image)
-    d = 4
+    d = 2
     global area
 
     for i in data['features']:
@@ -68,7 +68,7 @@ def lee_poligonos(filename, image):
         #print(type(p), p[0][0], a)
         area += a
         puntos = []
-        d = 1
+        d = 4
         for j in p:
             #print(j)
             x, y = j
