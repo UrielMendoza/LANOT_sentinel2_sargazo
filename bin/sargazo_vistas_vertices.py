@@ -45,8 +45,8 @@ uly = 2400000.0
 lrx = 709800.0
 lry = 1990200.0
 
-height = 3200
-width = 3200
+height = 1200
+width = 1200
 
 area = 0
 
@@ -68,7 +68,7 @@ def lee_poligonos(filename, image):
         #print(type(p), p[0][0], a)
         area += a
         puntos = []
-        d = 3
+        d = 1
         for j in p:
             #print(j)
             x, y = j
@@ -176,8 +176,7 @@ if __name__ == '__main__':
             im_in = Image.open(path)
             height = 1200
             width = int(height * im_in.width / im_in.height)
-            #im_in = im_in.resize((width, height)).convert('RGB')
-            im_in = im_in.convert('RGB')
+            im_in = im_in.resize((width, height)).convert('RGB')
             logo = Image.open(pathLanot + '/logos/lanot_negro_sn.jpg')
             w = 200
             h = int(w * logo.height / logo.width)
@@ -226,10 +225,9 @@ if __name__ == '__main__':
         print(ulx, uly, lrx, lry)
         
         im_in = Image.open(path)
-        height = 3200
+        height = 1200
         width = int(height * im_in.width / im_in.height)
         im_in = im_in.resize((width, height)).convert('RGB')
-        #im_in = im_in.convert('RGB')
 
         for pathjson in lista:
             lee_poligonos(pathjson, im_in)
