@@ -228,7 +228,8 @@ if __name__ == '__main__':
         im_in = Image.open(path)
         height = 1200
         width = int(height * im_in.width / im_in.height)
-        im_in = im_in.resize((width, height)).convert('RGB')
+        #im_in = im_in.resize((width, height)).convert('RGB')
+        im_in = im_in.convert('RGB')
 
         for pathjson in lista:
             lee_poligonos(pathjson, im_in)
