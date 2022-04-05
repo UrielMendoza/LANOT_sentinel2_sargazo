@@ -68,7 +68,7 @@ def lee_poligonos(filename, image):
         #print(type(p), p[0][0], a)
         area += a
         puntos = []
-        d = 4
+        d = 3
         for j in p:
             #print(j)
             x, y = j
