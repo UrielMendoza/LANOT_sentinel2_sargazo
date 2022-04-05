@@ -174,7 +174,7 @@ if __name__ == '__main__':
             path = pathTmp+"tmp.tif"
             get_limits(path)
             im_in = Image.open(path)
-            height = 1200
+            height = 2200
             width = int(height * im_in.width / im_in.height)
             im_in = im_in.resize((width, height)).convert('RGB')
             logo = Image.open(pathLanot + '/logos/lanot_negro_sn.jpg')
@@ -225,7 +225,7 @@ if __name__ == '__main__':
         print(ulx, uly, lrx, lry)
         
         im_in = Image.open(path)
-        height = 1200
+        height = 2200
         width = int(height * im_in.width / im_in.height)
         im_in = im_in.resize((width, height)).convert('RGB')
 
