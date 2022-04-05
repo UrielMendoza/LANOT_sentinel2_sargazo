@@ -45,8 +45,8 @@ uly = 2400000.0
 lrx = 709800.0
 lry = 1990200.0
 
-height = 4200
-width = 4200
+height = 3200
+width = 3200
 
 area = 0
 
@@ -59,7 +59,7 @@ def lee_poligonos(filename, image):
     f = open(filename)
     data = json.load(f)
     draw = ImageDraw.Draw(image)
-    d = 2
+    d = 4
     global area
 
     for i in data['features']:
@@ -226,7 +226,7 @@ if __name__ == '__main__':
         print(ulx, uly, lrx, lry)
         
         im_in = Image.open(path)
-        height = 4200
+        height = 3200
         width = int(height * im_in.width / im_in.height)
         im_in = im_in.resize((width, height)).convert('RGB')
         #im_in = im_in.convert('RGB')
