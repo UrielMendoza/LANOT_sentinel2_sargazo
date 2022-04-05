@@ -25,6 +25,7 @@ if __name__ == "__main__":
 
     fechas = list(set(fechas))
     fechas.sort()    
+    # Manual
     fechas = ['20220401T160819']
     print(fechas)
     for fecha in fechas:
