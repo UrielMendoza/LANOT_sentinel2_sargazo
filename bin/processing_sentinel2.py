@@ -139,7 +139,7 @@ def obtieneFechaVertice(pathDir):
 def obtieneFechaCatalogo(fecha):
     fechaCatalogo = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     fechaCatalogo = fechaCatalogo - datetime.timedelta(days=1)
-    fechaCatalogo = fechaCatalogo.strftime('%Y-%m-%d 18:00:00')
+    fechaCatalogo = fechaCatalogo.strftime('%Y-%m-%d 19:00:00')
     return fechaCatalogo
 
 def descomprime(pathInput,pathOutput):
