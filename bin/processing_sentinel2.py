@@ -730,7 +730,7 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
     #sombraNube = 0.005
     sombraNube = 0.01
     #Entropia
-    entropiaMin = 5.0
+    entropiaMin = 4.0
     #entropiaMin = 1000
 
     for i in range(nuMask.shape[0]):
