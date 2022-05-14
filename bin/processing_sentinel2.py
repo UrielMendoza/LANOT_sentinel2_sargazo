@@ -297,8 +297,9 @@ def detfooMascaraVectorial(pathTmp):
     print('=============================================')
     res_difference.to_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json', driver="GeoJSON")
 
-def verificaPlaya(df_sargazo,pathLM):
-    df_playas = gpd.read_file(pathLM+'playas_UTM16N_20m_2021.geojson')    
+def verificaLugar(df_sargazo,pathLM):
+    df_playas = gpd.read_file(pathLM+'playas_UTM16N_20m_2021.geojson')
+    df_cuerposA = gpd.read_file(pathLM+'cuerpos_agua_UTM16N_20m_2021.geojson')
     df_sargazo['lugar'] = None
     df_sargazo['nom_playa'] = None
     playero = ['oceano' for i in range(len(df_sargazo))]
@@ -310,6 +311,12 @@ def verificaPlaya(df_sargazo,pathLM):
                 playero[k] = 'playa'
                 nombre_playa[k] = df_playas.iloc[j]['name']
                 continue
+        for j in range(len(df_cuerposA)):
+            if df_sargazo.iloc[k].geometry.intersects(df_cuerposA.iloc[j].geometry) == True:
+                playero[k] = 'otra_alga'
+                #nombre_playa[k] = None
+                continue
+
     df_sargazo['lugar'] = playero
     df_sargazo['nom_playa'] = nombre_playa
 
@@ -358,7 +365,9 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,SNbuffer,pathLM,pathTmp,pathOu
         df_sargazo["area_km2"] = round(df_sargazo['geometry'].area*0.000001,4)
         totalSar = str(round(df_sargazo['area_km2'].sum(),4))
         # VERIFICA SI ES PLAYERO
-        df_sargazo = verificaPlaya(df_sargazo, pathLM)
+        df_sargazo = verificaLugar(df_sargazo, pathLM)
+        # VERIFICA SI ES OTRA ALGA
+
         # ARCHIVO FINAL
         # MANDA A DATA
         df_sargazo.to_file(nombre, driver="GeoJSON")

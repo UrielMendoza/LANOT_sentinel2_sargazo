@@ -27,6 +27,7 @@ mkdir -p ./test/tmp/semi_manual/;
 wget -P ./data/masks/ http://132.247.103.145/tmp/sargazo/data/masks/land_UTM16N_20m_2021.geojson;
 wget -P ./data/masks/ http://132.247.103.145/tmp/sargazo/data/masks/land_UTM16N_20m_SPlaya_2021.geojson;
 wget -P ./data/masks/ http://132.247.103.145/tmp/sargazo/data/masks/playas_UTM16N_20m_2021.geojson;
+wget -P ./data/masks/ http://132.247.103.145/tmp/sargazo/data/masks/cuerpos_agua_UTM16N_20m_2021.geojson;
 wget -P ./data/masks/ http://132.247.103.145/tmp/sargazo/data/masks/land_UTM16N_20m_distance.geojson;
 wget -P ./data/masks/ http://132.247.103.145/tmp/sargazo/data/masks/land_UTM16N_20m_2021_b500m.geojson;
 #wget -P ./data/masks/ http://132.247.103.145/tmp/sargazo/data/masks/land_sargazo_UTM16N_20m.tif;
