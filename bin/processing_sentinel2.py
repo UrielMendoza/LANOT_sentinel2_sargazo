@@ -360,10 +360,10 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,SNbuffer,pathLM,pathTmp,pathOu
     df_sargazo = res_difference
     if len(res_difference)>= 1:
         banderaSar = True
-        # VERIFICA SI ES PLAYERO Y OTRA ALGA
-        df_sargazo = verificaLugar(df_sargazo, pathLM)
         # OBTENCION DE AREA Km2
         df_sargazo["area_km2"] = round(df_sargazo['geometry'].area*0.000001,4)
+        # VERIFICA SI ES PLAYERO Y OTRA ALGA
+        df_sargazo = verificaLugar(df_sargazo, pathLM)
         # SOLO AREA DE SARGAZO
         df_sargazo_s = df_sargazo.loc[(df_sargazo['lugar'] == 'oceano') | (df_sargazo['lugar'] == 'playa')]
         totalSar = str(round(df_sargazo_s['area_km2'].sum(),4))
