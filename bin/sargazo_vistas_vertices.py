@@ -64,9 +64,10 @@ def lee_poligonos(filename, image):
 
     for i in data['features']:
         p = i['geometry']['coordinates']
-        a = i['properties']['area_km2']
+        if i['properties']['lugar'] != 'otra_alga':
+            a = i['properties']['area_km2']
+            area += a
         #print(type(p), p[0][0], a)
-        area += a
         puntos = []
         d = 1
         for j in p:
@@ -233,13 +234,15 @@ if __name__ == '__main__':
             lee_poligonos(pathjson, im_in)
             #lee_vertices(pathjson, im_in)
 
-        gdf = gpd.GeoDataFrame(columns=["IDpoligono", "tile", "fecha", "fechaDia", "area_km2", "distCosta_km", "geometry"], crs="EPSG:32616")
+        gdf = gpd.GeoDataFrame(columns=["IDpoligono", "tile", "fecha", "fechaDia", "area_km2", "distCosta_km", "geometry", "lugar", "nom_playa"], crs="EPSG:32616")
         # Crear un geodataframe con todos los geojson
         for pathV in Path(pathSargazo).rglob('*'+label+'*.json'):
             print(pathV, type(pathV))
             gdf_v = gpd.read_file(pathV)
             gdf = pd.concat([gdf, gdf_v], ignore_index=True)
-        areaGDF = gdf['area_km2'].sum()
+        
+        df_sargazo_s = gdf.loc[(gdf['lugar'] == 'oceano') | (gdf['lugar'] == 'playa')]
+        areaGDF = df_sargazo_s['area_km2'].sum()
         print('Area Geopandas',areaGDF)
 
         logo = Image.open(pathLanot + '/logos/lanot_negro_sn.jpg')
