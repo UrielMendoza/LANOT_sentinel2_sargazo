@@ -234,7 +234,7 @@ if __name__ == '__main__':
             lee_poligonos(pathjson, im_in)
             #lee_vertices(pathjson, im_in)
 
-        gdf = gpd.GeoDataFrame(columns=["IDpoligono", "tile", "fecha", "fechaDia", "area_km2", "distCosta_km", "geometry", "lugar", "nom_playa"], crs="EPSG:32616")
+        gdf = gpd.GeoDataFrame(columns=["IDpoligono", "tile", "fecha", "fechaDia", "area_km2", "distCosta_km", "lugar", "nom_playa", "geometry"], crs="EPSG:32616")
         # Crear un geodataframe con todos los geojson
         for pathV in Path(pathSargazo).rglob('*'+label+'*.json'):
             print(pathV, type(pathV))
