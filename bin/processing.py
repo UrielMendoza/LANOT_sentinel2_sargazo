@@ -462,7 +462,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     #os.system('rm -r '+pathTmp+'*json')
                     #os.system('rm -r '+pathTmp+'*.csv')
                     #os.system('rm -r '+pathTmp+'*.zip')
-                    #os.system('rm -r '+pathTmp+'*.SAFE')
+                    os.system('rm -r '+pathTmp+'*.SAFE')
                     #if dateTime == 'automatico' or dateTime == 'manual':
                     #    os.system('rm -r '+pathTmp+'*')
                 
@@ -506,7 +506,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     # BORRA DIR DESCARGA
     # NO DESCOMENTAR EN SEMIMANUAL PORQUE BORRA IMAGENES
     #if dateTime == 'automatico' or dateTime == 'manual':
-    #    os.system('rm -r '+pathTmp+'*')
+    #   os.system('rm -r '+pathTmp+'*')
 
 
 
