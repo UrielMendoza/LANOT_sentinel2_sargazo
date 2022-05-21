@@ -592,8 +592,6 @@ def sargazoBinNumpy(pathInput):
     creaTif(ref,b08,pathInput+'B08_20_mult.tif')
     creaTif(ref,b04,pathInput+'B04_mult.tif')
 
-    (((Banda 8A- 1000) * 0.0001) > 0.07) && (((Banda 4 - 1000) * 0.0001) < 0.1) && (((Banda 11 - 1000) * 0.0001) < 0.05) && (((Banda 4 - 1000) * 0.0001) < ((Banda 8 A - 1000) * 0.0001)) && (((Banda 4 - 1000) * 0.0001) < ((Banda 8 - 1000) * 0.0001))
-
 
     #sargazoBin = np.where((b8A > 700) & (b04 < 1000) & (b11 < 500) & (b04 < b8A) & (b04 < b08), 1, 0)
     sargazoBin = np.where((b8A > 0.07) & (b04 < 0.1) & (b11 < 0.05) & (b04 < b8A) & (b04 < b08), 1, 0)
