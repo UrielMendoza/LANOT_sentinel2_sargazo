@@ -22,7 +22,7 @@ def semiManual():
     start_date = None
     end_date = None
     region = "prueba"
-    SNbuffer = False
+    SNbuffer = True
     #landMask = "land_sargazo_UTM16N_20m_1.tif"
     #nubesBajas = 900
     return start_date,end_date,region,SNbuffer
