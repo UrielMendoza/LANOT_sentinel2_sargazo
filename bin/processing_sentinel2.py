@@ -416,9 +416,10 @@ def nubesMascara(cuadrante,bufferNubes,pathSCL,pathTmp):
         print("Buffer de nubes")
         banderaNub = True
         df = df.buffer(bufferNubes)
+        print("Disolviendo Buffer")
         df_g = df.unary_union
         df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
-        df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.geojson", driver='GeoJSON')
+        df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
         #df.to_file(pathTmp+"cloudMask_b250_tmp.geojson", driver='GeoJSON')
         #os.system('gdal_rasterize -burn 8 -tr 20 20 -l cloudMask_b250_tmp '+pathTmp+'cloudMask_b250_tmp.geojson '+pathTmp+'cloudMask_b250_tmp.tif')
         #os.system('gdal_calc.py -A '+pathTmp+'cloudMask_b250_tmp.tif --outfile='+pathTmp+'cloudMask_b250_bin_tmp.tif --calc="0*(A==8)+1*(A==0)"')
