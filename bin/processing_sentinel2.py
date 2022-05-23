@@ -434,7 +434,7 @@ def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp):
 
     cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
 
-    b12 = aperturaDS(pathTmp+'B12.tif').ReadAsArray()
+    b12 = aperturaDS(pathTmp+'B12.tif').ReadAsArray().astype(np.int16)
     b12 = (b12 - 1000) * 0.0001
     #b11 = aperturaDS(pathTmp+'B11.tif').ReadAsArray()
     ref = aperturaDS(pathTmp+'B12.tif')
@@ -488,7 +488,7 @@ def nubesSombraMascaraSinBuffer(cuadrante,pathTmp):
 
     cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
 
-    b12 = aperturaDS(pathTmp+'B12.tif').ReadAsArray()
+    b12 = aperturaDS(pathTmp+'B12.tif').ReadAsArray().astype(np.int16)
     b12 = (b12 - 1000) * 0.0001
     #b11 = aperturaDS(pathTmp+'B11.tif').ReadAsArray()
     ref = aperturaDS(pathTmp+'B12.tif')
@@ -709,7 +709,7 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
 
     # Nube baja con B12
     nuMask = dsRef.ReadAsArray()
-    b12 = dsRef.ReadAsArray()
+    b12 = dsRef.ReadAsArray().astype(np.int16)
     b12 = (b12 - 1000) * 0.0001
     sar = dsSar.ReadAsArray()
     scl = dsSCL.ReadAsArray()
