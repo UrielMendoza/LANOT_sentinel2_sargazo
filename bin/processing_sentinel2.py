@@ -327,7 +327,7 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,SNbuffer,pathLM,pathTmp,pathOu
 
     # SIN DETFOO
     df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar.json')
-    df_mask = gpd.read_file(pathLM+'land_UTM16N_20m_SPlaya_2021.geojson')
+    df_mask = gpd.read_file(pathLM+'land_2_UTM16N_20m_SPlaya_2021.geojson')
     res_difference = gpd.overlay(df, df_mask, how='difference')
     print('=============================================')
     print('Detección de sargazo con mascara de tierra: ',len(res_difference),' elementos')
