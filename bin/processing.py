@@ -143,7 +143,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     # MANUAL Y AUTOMATICO
     # Borra el tmp
     if dateTime == 'automatico' or dateTime == 'manual':
-        os.system('rm -r '+pathTmp+'*')
+        #os.system('rm -r '+pathTmp+'*')
+        print('No borra tmp')
     if dateTime == 'automatico':
         start_date,end_date,region,SNbuffer = automatico()
 
