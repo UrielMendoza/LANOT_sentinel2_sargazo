@@ -787,7 +787,7 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
         for i in range(nuMask.shape[0]):
             for j in range(nuMask.shape[1]):
                 if sar[i,j] == 1: 
-                    if nubes[i,j] == 0:
+                    if nubes[i,j] == 1:
                         nuMask[i,j] = 0
                         listaBanderas.append('Nubes')
                         contNubes += 1
