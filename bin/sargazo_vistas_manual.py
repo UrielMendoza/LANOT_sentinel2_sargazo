@@ -26,7 +26,7 @@ if __name__ == "__main__":
     fechas = list(set(fechas))
     fechas.sort()    
     # Manual
-    fechas = ['20220501T160819']
+    fechas = ['20220501T160831']
     print(fechas)
     for fecha in fechas:
         # Mosaicos
