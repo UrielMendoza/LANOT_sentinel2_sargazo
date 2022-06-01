@@ -28,8 +28,10 @@ def semiManual():
     return start_date,end_date,region,SNbuffer
 
 def automatico():
-    start_date = datetime.datetime.now()
-    end_date = datetime.datetime.now()
+    # Se le resta un dia, porque el servidor en UTC
+    daysDelta = 1
+    start_date = datetime.datetime.now() - datetime.timedelta(days=daysDelta)
+    end_date = datetime.datetime.now()  - datetime.timedelta(days=daysDelta)
     region = "sargazo_1"
     SNbuffer = True
     #landMask = "land_sargazo_UTM16N_20m_1.tif"
@@ -474,6 +476,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                 print('Archivo: '+archivo+' ya fue procesado')
                 print('======================================')
 
+    # MOSAICOS
     try:
         if (dateTime == 'automatico') and numImagenes != 0:
             print('9. Procesando mosaico ...')
