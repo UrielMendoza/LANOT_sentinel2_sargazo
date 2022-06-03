@@ -398,7 +398,7 @@ def aguaMascara(cuadrante,pathSCL,pathTmp):
     #os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'aguaMask.tif --calc="0*(A!=2)+0*(A!=3)+0*(A!=10)+1*(A==2)+1*(A==3)+1*(A==10)"')
     os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'aguaMask.tif --calc="0*(A!=2)+1*(A==2)"')
 
-def nubesMascara(cuadrante,bufferNubes,pathSCL,pathTmp):
+def nubesMascara(cuadrante,bufferNubes,pathSCL,pathLM,pathTmp):
     cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
 
     # Esta parte es para eficientizar la poligonizacion de las nubes
@@ -419,7 +419,10 @@ def nubesMascara(cuadrante,bufferNubes,pathSCL,pathTmp):
         print("Disolviendo Buffer")
         df_g = df.unary_union
         df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
-        df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
+        # Elimina el buffer cerca de las costas
+        df_mask = gpd.read_file(pathLM+'land_2_UTM16N_20m_SPlaya_b100m_2021.geojson')
+        res_difference = gpd.overlay(df, df_mask, how='difference')
+        res_difference.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
         #df.to_file(pathTmp+"cloudMask_b250_tmp.geojson", driver='GeoJSON')
         #os.system('gdal_rasterize -burn 8 -tr 20 20 -l cloudMask_b250_tmp '+pathTmp+'cloudMask_b250_tmp.geojson '+pathTmp+'cloudMask_b250_tmp.tif')
         #os.system('gdal_calc.py -A '+pathTmp+'cloudMask_b250_tmp.tif --outfile='+pathTmp+'cloudMask_b250_bin_tmp.tif --calc="0*(A==8)+1*(A==0)"')
@@ -467,7 +470,7 @@ def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp):
         df_g = df.unary_union
         df = gpd.GeoDataFrame(crs=df.crs, geometry=[df_g])
         # Elimina el buffer cerca de las costas
-        df_mask = gpd.read_file(pathLM+'land_UTM16N_20m_2021_b500m.geojson')
+        df_mask = gpd.read_file(pathLM+'land_2_UTM16N_20m_SPlaya_b100m_2021.geojson')
         res_difference = gpd.overlay(df, df_mask, how='difference')
         #df.to_file(pathTmp+"cloudMaskShadow_b250_tmp.json", driver='GeoJSON')
         res_difference.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')

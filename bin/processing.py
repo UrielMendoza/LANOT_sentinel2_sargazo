@@ -386,8 +386,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     if dateTime == 'manual' and SNbuffer == True:
                         banderaNub = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp)
                     else:
-                        banderaNub = processing_sentinel2.nubesMascara(cuadrante,bufferNubes,pathTmp+bandas20m[-1]+'.tif',pathTmp)
-                        #banderaNub = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathTmp)
+                        banderaNub = processing_sentinel2.nubesMascara(cuadrante,bufferNubes,pathTmp+bandas20m[-1]+'.tif',pathLM,pathTmp)
+                        #banderaNub = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp)
                         #banderaNub = processing_sentinel2.nubesSombraMascaraSinBuffer(cuadrante,pathTmp)
                     print('5.4 Procesando mascara detfoo...')
                     # Se usa la manual
