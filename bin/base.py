@@ -58,6 +58,11 @@ tiles['sargazo_2'] = [
 "16QCF","16QCE","16QDE","16QEE","16QCD","16QDD","16QED","16PCC","16PDC","16PEC"
 ]
 
+# Sargazo3: Region de monitoreo de sargazo
+tiles['sargazo_3'] = [
+"16QDJ","16QEJ","16QDH","16QEH","16QDG","16QEG","16QDF","16QEF","16QCF","16QCE","16QDE","16QEE","16QCD","16QDD","16QED","16PCC","16PDC","16PEC"
+]
+
 # Mascara Tierra: Region para generar las mascaras de tierra por año
 tiles['mascara_tierra'] = [
 "16QCJ","16QDJ","16QEJ","16QCH","16QDH","16QEH","16QCG","16QDG","16QEG","16QCF","16QDF","16QEF","16QCE","16QDE","16QEE"
