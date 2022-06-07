@@ -151,7 +151,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
         print('No borra tmp')
     if dateTime == 'automaticoParalelo':
             tiles = sys.argv[1] 
-            os.sytem('mkdir '+pathTmp+tiles)
+            os.system('mkdir '+pathTmp+tiles)
             pathTmp = pathTmp + tiles +'/'
     # Fechas y buffer
     if dateTime == 'automatico':
