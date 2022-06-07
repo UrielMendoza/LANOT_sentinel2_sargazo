@@ -191,7 +191,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     if dateTime != 'automaticoParalelo':
         tiles = base.tiles[region]
     else:
-        tiles = list(tiles)
+        tiles = tiles.split()
     print(tiles)
     
     if dateTime != 'semiManual':
