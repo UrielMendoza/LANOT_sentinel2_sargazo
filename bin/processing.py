@@ -27,6 +27,17 @@ def semiManual():
     #nubesBajas = 900
     return start_date,end_date,region,SNbuffer
 
+def automaticoParalelo():
+    # Se le resta un dia, porque el servidor en UTC
+    daysDelta = 1
+    start_date = datetime.datetime.now() - datetime.timedelta(days=daysDelta)
+    end_date = datetime.datetime.now()  - datetime.timedelta(days=daysDelta)
+    #region = "sargazo_1"
+    SNbuffer = True
+    #landMask = "land_sargazo_UTM16N_20m_1.tif"
+    #nubesBajas = 900
+    return start_date,end_date,SNbuffer
+
 def automatico():
     # Se le resta un dia, porque el servidor en UTC
     daysDelta = 1
@@ -149,11 +160,12 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     if dateTime == 'automatico' or dateTime == 'manual':
         #os.system('rm -r '+pathTmp+'*')
         print('No borra tmp')
+    # Fechas y buffer
     if dateTime == 'automaticoParalelo':
             tiles = sys.argv[1] 
             os.system('mkdir '+pathTmp+tiles)
             pathTmp = pathTmp + tiles +'/'
-    # Fechas y buffer
+            start_date,end_date,SNbuffer = automaticoParalelo()
     if dateTime == 'automatico':
         start_date,end_date,region,SNbuffer = automatico()
 
