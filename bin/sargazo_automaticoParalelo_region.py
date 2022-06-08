@@ -12,7 +12,7 @@ from multiprocessing import Pool
 pathScript = '/home/lanotadm/LANOT_sentinel2_sargazo/bin/'
 
 # Script para obtencion de sargazo por tile
-script_1 = pathScript+'sargazo_automaticoParalelo_region.py'
+script_1 = 'python3 '+pathScript+'sargazo_automaticoParalelo_region.py'
 
 # Regiones
 sargazo_3 = ("16QDJ","16QEJ","16QDH","16QEH","16QDG","16QEG","16QDF","16QEF","16QCF","16QCE","16QDE","16QEE","16QCD","16QDD","16QED","16PCC","16PDC","16PEC")
