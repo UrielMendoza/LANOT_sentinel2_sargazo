@@ -215,7 +215,7 @@ if __name__ == '__main__':
 
         # Crear la imagen base con todos los mosaicos
         mosaicos = ''
-        for path in Path(pathOutputGeoTiff).rglob('*'+label+'*.tif'):
+        for path in Path(pathOutputGeoTiff).rglob('*/'+label+'*.tif'):
             print(path, type(path))
             mosaicos += str(path) + ' '
 
