@@ -37,7 +37,7 @@ pathTmp = '/data/input/sentinel2/tmp/manual/'
 pathLanot = '/usr/local/share/lanot/'
 region = 's1'
 
-Image.MAX_IMAGE_PIXELS = 614960590 
+#Image.MAX_IMAGE_PIXELS = 614960590 
 white = (255, 255, 255)
 
 ulx = 399960.0
