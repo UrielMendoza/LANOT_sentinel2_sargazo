@@ -289,5 +289,5 @@ if __name__ == '__main__':
         # MANDA A WEB
         os.system('scp '+outfile+' sargazo@cumulus:'+pathOutputWeb+'vistas/sargazo_TC/')
     finally:
-        #os.system('rm '+path)
-        print('nada')
+        os.system('rm '+path)
+        #print('nada')

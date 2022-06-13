@@ -38,7 +38,7 @@ if __name__ == "__main__":
         os.system('python3 sargazo_vistas_vertices.py '+fecha)
 
         # Borra Tmp
-        #os.system('rm -r '+pathTmp+'*.tif')
+        os.system('rm -r '+pathTmp+'*.tif')
         os.system('rm -r '+pathTmp+'*json')
         os.system('rm -r '+pathTmp+'*.csv')
         os.system('rm -r '+pathTmp+'*.zip')
