@@ -36,6 +36,7 @@ pathSargazo = '/data/output/sentinel2/l2/geojson/sargazo/'
 pathTmp = '/data/input/sentinel2/tmp/manual/'
 pathLanot = '/usr/local/share/lanot/'
 region = 's1'
+tiles_1 = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
 
 #Image.MAX_IMAGE_PIXELS = 614960590 
 white = (255, 255, 255)
@@ -168,8 +169,10 @@ if __name__ == '__main__':
             mosaicos = ''
             for path in glob.glob(pathOutputGeoTiff+'*/*'+label+'*.tif'):
             #for path in Path(pathOutputGeoTiff).rglob('*/*'+label+'*.tif'):
-                print(path, type(path))
-                mosaicos += str(path) + ' '
+                tile = path.split('/')[6]
+                if tile in tiles_1:
+                    print(path, type(path))
+                    mosaicos += str(path) + ' '
 
             print("gdal_merge.py -o "+pathTmp+"tmp.tif "+mosaicos)
             os.system("gdal_merge.py -o "+pathTmp+"tmp.tif "+mosaicos)
@@ -216,10 +219,13 @@ if __name__ == '__main__':
 
         # Crear la imagen base con todos los mosaicos
         mosaicos = ''
+        # Enliste solo una region
         for path in glob.glob(pathOutputGeoTiff+'*/*'+label+'*.tif'):
         #for path in Path(pathOutputGeoTiff).rglob('*/*'+label+'*.tif'):
-            print(path, type(path))
-            mosaicos += str(path) + ' '
+            tile = path.split('/')[6]
+            if tile in tiles_1:
+                print(path, type(path))
+                mosaicos += str(path) + ' '
 
         print("gdal_merge.py -o "+pathTmp+"tmp.tif "+mosaicos)
         os.system("gdal_merge.py -o "+pathTmp+"tmp.tif "+mosaicos)
