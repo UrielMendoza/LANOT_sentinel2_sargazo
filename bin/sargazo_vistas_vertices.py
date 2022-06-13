@@ -38,7 +38,7 @@ pathLanot = '/usr/local/share/lanot/'
 region = 's1'
 tiles_1 = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
 
-#Image.MAX_IMAGE_PIXELS = 614960590 
+Image.MAX_IMAGE_PIXELS = 614960590 
 white = (255, 255, 255)
 
 ulx = 399960.0
