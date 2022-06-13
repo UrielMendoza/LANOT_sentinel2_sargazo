@@ -226,6 +226,7 @@ if __name__ == '__main__':
         path = pathTmp+"tmp.tif"
         get_limits(path)
         print(ulx, uly, lrx, lry)
+        print(path)
         
         im_in = Image.open(path)
         height = 1200
