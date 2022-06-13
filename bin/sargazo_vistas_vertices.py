@@ -223,6 +223,7 @@ if __name__ == '__main__':
         for path in glob.glob(pathOutputGeoTiff+'*/*'+label+'*.tif'):
         #for path in Path(pathOutputGeoTiff).rglob('*/*'+label+'*.tif'):
             tile = path.split('/')[6]
+            print(tile)
             if tile in tiles_1:
                 print(path, type(path))
                 mosaicos += str(path) + ' '
