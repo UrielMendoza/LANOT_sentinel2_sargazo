@@ -33,7 +33,7 @@ pathOutputWeb = '/home/sargazo/data/'
 pathOutputPeta = '/depot/sentinel2/output/'
 pathVertices = '/data/output/sentinel2/l2/geojson/sargazo_vertices/'
 pathSargazo = '/data/output/sentinel2/l2/geojson/sargazo/'
-pathTmp = '/data/input/sentinel2/tmp/semi_manual/'
+pathTmp = '/data/input/sentinel2/tmp/manual/'
 pathLanot = '/usr/local/share/lanot/'
 region = 's1'
 
