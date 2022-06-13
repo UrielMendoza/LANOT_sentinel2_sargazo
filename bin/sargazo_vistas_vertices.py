@@ -169,7 +169,7 @@ if __name__ == '__main__':
             mosaicos = ''
             for path in glob.glob(pathOutputGeoTiff+'*/*'+label+'*.tif'):
             #for path in Path(pathOutputGeoTiff).rglob('*/*'+label+'*.tif'):
-                tile = path.split('/')[6]
+                tile = path.split('/')[7]
                 if tile in tiles_1:
                     print(path, type(path))
                     mosaicos += str(path) + ' '
@@ -222,8 +222,7 @@ if __name__ == '__main__':
         # Enliste solo una region
         for path in glob.glob(pathOutputGeoTiff+'*/*'+label+'*.tif'):
         #for path in Path(pathOutputGeoTiff).rglob('*/*'+label+'*.tif'):
-            tile = path.split('/')[6]
-            print(tile)
+            tile = path.split('/')[7]
             if tile in tiles_1:
                 print(path, type(path))
                 mosaicos += str(path) + ' '
