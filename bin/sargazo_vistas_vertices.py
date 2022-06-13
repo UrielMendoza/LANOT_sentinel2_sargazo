@@ -166,7 +166,8 @@ if __name__ == '__main__':
             print('Procesando vista sin sargazo')
             # Crear la imagen base con todos los mosaicos sin sargazo
             mosaicos = ''
-            for path in Path(pathOutputGeoTiff).rglob('*/*'+label+'*.tif'):
+            for path in glob.glob(pathOutputGeoTiff+'*/*'+label+'*.tif'):
+            #for path in Path(pathOutputGeoTiff).rglob('*/*'+label+'*.tif'):
                 print(path, type(path))
                 mosaicos += str(path) + ' '
 
@@ -215,7 +216,8 @@ if __name__ == '__main__':
 
         # Crear la imagen base con todos los mosaicos
         mosaicos = ''
-        for path in Path(pathOutputGeoTiff).rglob('*/*'+label+'*.tif'):
+        for path in glob.glob(pathOutputGeoTiff+'*/*'+label+'*.tif'):
+        #for path in Path(pathOutputGeoTiff).rglob('*/*'+label+'*.tif'):
             print(path, type(path))
             mosaicos += str(path) + ' '
 
