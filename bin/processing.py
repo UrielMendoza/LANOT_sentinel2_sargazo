@@ -396,7 +396,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                         dirB10 = processing_sentinel2.listaBandas(pathTmp+dirI,'L2A','R10m',banda10)
                         dsB10 = processing_sentinel2.aperturaDS(dirB10)
                         processing_sentinel2.imgToGeoTIF(dsB10,banda10,pathTmp)
-                        print('2.1. Remuestreando banda '+banda10+' a 20m...')
+                        print('4.1. Remuestreando banda '+banda10+' a 20m...')
                         processing_sentinel2.remuestrea(pathTmp+banda10+'_20.tif',dsB10,20,20)
 
                     ref = processing_sentinel2.aperturaDS(pathTmp+bandas20m[-2]+'.tif')
