@@ -475,12 +475,12 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
                             tproc = round((time.time()-iniTProc)/60,2)
-                            processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,tile,banderaSar_log,totalSar,str(porcNube),str(tproc),archivoCSV)
+                            processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,tile,banderaSar_log,totalSar,str(porcNube),str(porcNubeOceano),str(tproc),archivoCSV)
                     else:
                             #banderaSar_log = 'no'
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             tproc = round((time.time()-iniTProc)/60,2)
-                            processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,tile,banderaSar_log,totalSar,str(porcNube),str(tproc))
+                            processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,tile,banderaSar_log,totalSar,str(porcNube),str(porcNubeOceano),str(tproc))
 
 #                except IndexError:
                 except Exception as e:

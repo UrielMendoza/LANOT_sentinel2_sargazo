@@ -982,12 +982,12 @@ def deleteCatalogoDB(conect,cur,fecha,compuesto):
         cur.execute('DELETE FROM public."catalogo_'+compuesto+'"'+" WHERE ingestion = '"+fecha+"'")
     conect.commit()
 
-def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc):
+def insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc,porcNubeOceano):
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     fechaDia = time.strftime('%Y-%m-%d')
     fechaproc = obtieneFechaProc()
     print('Añadiendo log a DB: ')
-    cur.execute("INSERT INTO sargazo_log VALUES (DEFAULT, '"+pathl2a+"', '"+pathsargazo+"', '"+fecha+"', '"+fechaproc+"', '"+fechaDia+"', '"+tile+"','"+sargazo+"','"+totalsar+"','"+porcNube+"','"+tproc+"')")
+    cur.execute("INSERT INTO sargazo_log VALUES (DEFAULT, '"+pathl2a+"', '"+pathsargazo+"', '"+fecha+"', '"+fechaproc+"', '"+fechaDia+"', '"+tile+"','"+sargazo+"','"+totalsar+"','"+porcNube+"','"+tproc+"','"+porcNubeOceano+"')")
     cur.execute("SELECT * from sargazo_log")
     row = cur.fetchall()
     conect.commit()
@@ -1003,11 +1003,11 @@ def insertSargazoLogErrorDB(conect,cur,pathl1c,pathl2a,fecha,tile,tiperror):
     conect.commit()
 
 
-def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc,pathInput):
+def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,porcNubeOceano,tproc,pathInput):
     conect,cur = conexionDB()
     try:
         insertSargazoDB(conect,cur,crs,pathInput)
-        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc)
+        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc,porcNubeOceano)
         print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
@@ -1031,10 +1031,10 @@ def borraSargazoDB(fecha,tile):
         conect.close()
     conect.close()
 
-def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc):
+def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,porcNubeOceano,tproc):
     conect,cur = conexionDB()
     try:        
-        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc)
+        insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc,porcNubeOceano)
         #print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')
