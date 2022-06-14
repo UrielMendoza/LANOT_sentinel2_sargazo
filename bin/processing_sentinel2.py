@@ -235,7 +235,7 @@ def porcNubosidadOceano(df,pathLM):
     areaTile = 12056.04
     df_maskLand = gpd.read_file(pathLM+'land_2_UTM16N_20m_SPlaya_2021.geojson')
     res_differenceNube = gpd.overlay(df, df_maskLand, how='difference')
-    nubeOceano = res_differenceNube['geometry'].area*0.000001
+    nubeOceano = res_differenceNube['geometry'].area.sum()*0.000001
     porcNubeOceano = (nubeOceano*100)/areaTile
     porcNubeOceano = round(porcNubeOceano,4)
     return porcNubeOceano
