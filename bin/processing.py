@@ -338,7 +338,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     # PORCENTAJE DE NUBES
                     print('3.2 Porcentaje de nubes')
                     porcNube = processing_sentinel2.obtienePorcentajeNube(pathTmp+dirI)
-                    print('Procentaje de nubes ',porcNube)
+                    print('Procentaje de nubes: ',porcNube)
                     if porcNube >= 80.0 :
                         #nubesBajas = 600
                         #bufferNubes = 200
