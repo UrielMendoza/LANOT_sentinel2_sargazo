@@ -75,7 +75,7 @@ def sargazoL2Ahistorico(pathInput,pathOutput,pathTmp,pathLM,pathOutputEmpty,path
                         bufferLM = processing_sentinel2.obtieneBufferLM(landMask)
                         processing_sentinel2.tierraMascara(cuadrante,pathLM+landMask,pathTmp)
                         print('3.2 Procesando mascara nubes altas...')
-                        banderaNub = processing_sentinel2.nubesMascara(cuadrante,pathTmp+bandas[-1]+'.tif',pathTmp)
+                        banderaNub,porcNubeOceano = processing_sentinel2.nubesMascara(cuadrante,pathTmp+bandas[-1]+'.tif',pathTmp)
                         print('3.3 Procesando sargazo sin filtro...')
                         processing_sentinel2.sargazoBin(banderaNub,'L2A',pathTmp,pathTmp)
                         dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_mask_tmp.tif')

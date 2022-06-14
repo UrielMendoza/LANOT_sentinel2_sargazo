@@ -228,6 +228,18 @@ def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTif
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/TC/'+tile+'/')
 
+def porcNubosidadOceano(df,pathLM):
+    # Porcentaje de nubosidad solo en el mar
+    print("Porcentaje de nubosidad en el mar")
+    # Km2
+    areaTile = 12056.04
+    df_maskLand = gpd.read_file(pathLM+'land_2_UTM16N_20m_SPlaya_2021.geojson')
+    res_differenceNube = gpd.overlay(df, df_maskLand, how='difference')
+    nubeOceano = res_differenceNube['geometry'].area*0.000001
+    porcNubeOceano = (nubeOceano*100)/areaTile
+    porcNubeOceano = round(porcNubeOceano,4)
+    return porcNubeOceano
+
 def poligonizacion(tile,anio,fecha,pathLM,pathInput,pathOutput,pathOutputEmpty):
     time = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
     fechaDia = time.strftime('%Y-%m-%d')
@@ -408,10 +420,12 @@ def nubesMascara(cuadrante,bufferNubes,pathSCL,pathLM,pathTmp):
     os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_bin_tmp.tif -f "GeoJSON" '+pathTmp+'SCL_tmp.json')
     df = gpd.read_file(pathTmp+'SCL_tmp.json')
     df = df[df['DN'] == 1]
+    # Porcentaje nubosidad oceano
+    porcNubeOceano = porcNubosidadOceano(df, pathLM)
     if len(df) == 0:
         print("No buffer de nubes")
         banderaNub = False
-        return banderaNub
+        return banderaNub,porcNubeOceano
     else:
         print("Buffer de nubes")
         banderaNub = True
@@ -433,7 +447,7 @@ def nubesMascara(cuadrante,bufferNubes,pathSCL,pathLM,pathTmp):
         #df = df[df['DN'] == 0]
         #df.to_file(pathTmp+"cloudMask_b250_bin_rec_mask_tmp.json", driver='GeoJSON')
 
-        return banderaNub
+        return banderaNub,porcNubeOceano
 
 def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp):
 
@@ -454,14 +468,16 @@ def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp):
     os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_bin_tmp.tif -f "GeoJSON" '+pathTmp+'cloudMaskShadow_bin_tmp.json')
     df = gpd.read_file(pathTmp+'cloudMaskShadow_bin_tmp.json')
     df = df[df['DN'] == 0]
+    # Porcentaje nubosidad oceano
+    porcNubeOceano = porcNubosidadOceano(df, pathLM)
     if len(df) == 0:
         print("No buffer de nubes")
         banderaNub = False
-        return banderaNub
+        return banderaNub,porcNubeOceano
     elif porcNube >= 60.0:
         banderaNub = True
         df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
-        return banderaNub
+        return banderaNub,porcNubeOceano
     else:
         print("Buffer de nubes")
         banderaNub = True
@@ -487,9 +503,9 @@ def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp):
         #df = df[df['DN'] == 0]
         #df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
 
-        return banderaNub
+        return banderaNub,porcNubeOceano
 
-def nubesSombraMascaraSinBuffer(cuadrante,pathTmp):
+def nubesSombraMascaraSinBuffer(cuadrante,pathTmp,pathLM):
 
     cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
 
@@ -508,16 +524,18 @@ def nubesSombraMascaraSinBuffer(cuadrante,pathTmp):
     os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_bin_tmp.tif -f "GeoJSON" '+pathTmp+'cloudMaskShadow_bin_tmp.json')
     df = gpd.read_file(pathTmp+'cloudMaskShadow_bin_tmp.json')
     df = df[df['DN'] == 0]
+    # Porcentaje nubosidad oceano
+    porcNubeOceano = porcNubosidadOceano(df, pathLM)
     if len(df) == 0:
         print("No buffer de nubes")
         df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
         banderaNub = False
-        return banderaNub
+        return banderaNub,porcNubeOceano
     else:
         print("Buffer de nubes")
         df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
         banderaNub = True
-        return banderaNub
+        return banderaNub,porcNubeOceano
 
 def detfooMascara(detfoo_dist,pathInput,pathOutput):
     #ogr2ogr -f "GeoJSON" MSK_DETFOO_B04.geojson MSK_DETFOO_B04.gml
