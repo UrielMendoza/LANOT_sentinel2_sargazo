@@ -180,7 +180,7 @@ def mosaicoL2A(pathTmp,pathInputL1C,pathOutputGeoTiff,pathOutputPeta,pathOutputW
         processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',traceback.format_exc().replace("'",""))
         processing_sentinel2.enviaMail(start_date.strftime('%Y%m%d')+'-'+end_date.strftime('%Y%m%d'),'lista',traceback.format_exc().replace("'",""))
     try:
-        if (dateTime == 'automatico') and numImagenes != 0:
+        if (dateTime == 'automatico' or dateTime == 'automaticoTile') and numImagenes != 0:
             print('9. Procesando mosaico ...')
             # MOSAICO TC
             processing_sentinel2.createMosaicLatest(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)

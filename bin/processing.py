@@ -27,7 +27,7 @@ def semiManual():
     #nubesBajas = 900
     return start_date,end_date,region,SNbuffer
 
-def automaticoParalelo():
+def automaticoTile():
     # Se le resta un dia, porque el servidor en UTC
     daysDelta = 1
     start_date = datetime.datetime.now() - datetime.timedelta(days=daysDelta)
@@ -161,11 +161,11 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
         #os.system('rm -r '+pathTmp+'*')
         print('No borra tmp')
     # Fechas y buffer
-    if dateTime == 'automaticoParalelo':
+    if dateTime == 'automaticoTile':
             tiles = sys.argv[1] 
             os.system('mkdir '+pathTmp+tiles)
             pathTmp = pathTmp + tiles +'/'
-            start_date,end_date,SNbuffer = automaticoParalelo()
+            start_date,end_date,SNbuffer = automaticoTile()
     if dateTime == 'automatico':
         start_date,end_date,region,SNbuffer = automatico()
 
@@ -188,7 +188,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     # agrego b02 y b03
     bandas20m = ('B02','B03','B04','B05','B8A','B11','B12','SCL')
     bandas10m = ['B08']
-    if dateTime != 'automaticoParalelo':
+    if dateTime != 'automaticoTile':
         tiles = base.tiles[region]
     else:
         tiles = tiles.split()
@@ -212,7 +212,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
         #    pass
     
     try:
-        if dateTime == 'automaticoParalelo':
+        if dateTime == 'automaticoTile':
             tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
         elif dateTime == 'automatico':
             tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
@@ -541,7 +541,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
         
     # BORRA DIR DESCARGA
     # NO DESCOMENTAR EN SEMIMANUAL PORQUE BORRA IMAGENES
-    if dateTime == 'automatico' or dateTime == 'manual' or dateTime == 'automaticoParalelo':
+    if dateTime == 'automatico' or dateTime == 'manual' or dateTime == 'automaticoTile':
        os.system('rm -r '+pathTmp+'*')
 
 
