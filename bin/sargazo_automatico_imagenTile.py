@@ -8,6 +8,7 @@ Created on Fri Nov 20 23:52:19 2020
 from os import path
 import time
 from processing import sargazoL2A
+from processing_imagen import imagenL2A
 import sys
 
 if __name__ == "__main__":
@@ -29,4 +30,4 @@ if __name__ == "__main__":
     pathOutputVistas = '/data/output/sentinel2/vistas/sargazo/sargazo_TC/'
     pathLog = '/home/lanotadm/logs_sentinel2_sargazo/'
 
-    sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime='automaticoTile')
+imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime='automaticoTile')

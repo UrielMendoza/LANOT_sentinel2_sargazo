@@ -27,7 +27,7 @@ def semiManual():
     #nubesBajas = 900
     return start_date,end_date,region,SNbuffer
 
-def automaticoParalelo():
+def automaticoTile():
     # Se le resta un dia, porque el servidor en UTC
     daysDelta = 1
     start_date = datetime.datetime.now() - datetime.timedelta(days=daysDelta)
@@ -150,7 +150,67 @@ def manual():
 
     return start_date,end_date,region,SNbuffer
 
-def mosaicoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime):
+def mosaicoL2A(pathTmp,pathInputL1C,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,dateTime):
+    # MOSAICOS
+    # Fechas y buffer
+    if dateTime == 'automaticoTile':
+        start_date,end_date,SNbuffer = automaticoTile()
+    if dateTime == 'automatico':
+        start_date,end_date,region,SNbuffer = automatico()
+    elif dateTime == 'manual':
+        start_date,end_date,region,SNbuffer = manual()
+    elif dateTime == 'semiManual':
+        start_date,end_date,region,SNbuffer = semiManual()
+    fecha = start_date.strftime('%Y%m%d') 
+    # Numero de imagenes
+    try:
+        if dateTime == 'automaticoTile':
+            tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
+        elif dateTime == 'automatico':
+            tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
+        elif dateTime == 'manual':
+            tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
+        elif dateTime == 'semiManual':
+            tilesDirs = processing_sentinel2.listaArchivos(pathInputL1C+'*')
+        numImagenes = len(tilesDirs)
+        print(tilesDirs)
+
+    except Exception as e:
+        print('***Error en listar archivos***')
+        processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',traceback.format_exc().replace("'",""))
+        processing_sentinel2.enviaMail(start_date.strftime('%Y%m%d')+'-'+end_date.strftime('%Y%m%d'),'lista',traceback.format_exc().replace("'",""))
+    try:
+        if (dateTime == 'automatico') and numImagenes != 0:
+            print('9. Procesando mosaico ...')
+            # MOSAICO TC
+            processing_sentinel2.createMosaicLatest(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+            # MOSAICO SARGAZO
+            processing_sentinel2.createMosaicLatest(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+            # MOSAICO TC
+            processing_sentinel2.createMosaicFecha(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
+            # MOSAICO SARGAZO
+            processing_sentinel2.createMosaicFecha(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
+            # GENERA VISTA
+            #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
+            os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha)
+
+        elif (dateTime == 'manual') and numImagenes != 0:
+            print('9. Procesando mosaico ...')
+            # MOSAICO TC
+            processing_sentinel2.createMosaicFecha(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
+            # MOSAICO SARGAZO
+            processing_sentinel2.createMosaicFecha(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
+            # GENERA VISTA
+            #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
+            #os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha)            
+
+    except Exception as e:
+        print('***Error en el mosaico***')
+        #pass
+        processing_sentinel2.agregaErrorSargazoDB('','',fecha,'',traceback.format_exc().replace("'",""))
+        processing_sentinel2.enviaMail(fecha,'mosaico',traceback.format_exc().replace("'",""))
+
+def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime):
 
     iniTotal = time.time()
     owd = os.getcwd()
@@ -161,11 +221,11 @@ def mosaicoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
         #os.system('rm -r '+pathTmp+'*')
         print('No borra tmp')
     # Fechas y buffer
-    if dateTime == 'automaticoParalelo':
+    if dateTime == 'automaticoTile':
             tiles = sys.argv[1] 
             os.system('mkdir '+pathTmp+tiles)
             pathTmp = pathTmp + tiles +'/'
-            start_date,end_date,SNbuffer = automaticoParalelo()
+            start_date,end_date,SNbuffer = automaticoTile()
     if dateTime == 'automatico':
         start_date,end_date,region,SNbuffer = automatico()
 
@@ -177,7 +237,7 @@ def mosaicoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
 
     bandas20m = ('B02','B03','B04','B05','B8A','B11','B12','SCL')
     bandas10m = ['B08']
-    if dateTime != 'automaticoParalelo':
+    if dateTime != 'automaticoTile':
         tiles = base.tiles[region]
     else:
         tiles = tiles.split()
@@ -201,7 +261,7 @@ def mosaicoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
         #    pass
     
     try:
-        if dateTime == 'automaticoParalelo':
+        if dateTime == 'automaticoTile':
             tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
         elif dateTime == 'automatico':
             tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
@@ -370,39 +430,7 @@ def mosaicoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                 print('Archivo: '+archivo+' ya fue procesado')
                 print('======================================')
 
-    # MOSAICOS
-    try:
-        if (dateTime == 'automatico') and numImagenes != 0:
-            print('9. Procesando mosaico ...')
-            # MOSAICO TC
-            processing_sentinel2.createMosaicLatest(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
-            # MOSAICO SARGAZO
-            processing_sentinel2.createMosaicLatest(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
-            # MOSAICO TC
-            processing_sentinel2.createMosaicFecha(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
-            # MOSAICO SARGAZO
-            processing_sentinel2.createMosaicFecha(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
-            # GENERA VISTA
-            #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
-            os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha)
-
-        elif (dateTime == 'manual') and numImagenes != 0:
-            print('9. Procesando mosaico ...')
-            # MOSAICO TC
-            processing_sentinel2.createMosaicFecha(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
-            # MOSAICO SARGAZO
-            processing_sentinel2.createMosaicFecha(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
-            # GENERA VISTA
-            #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
-            #os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha)            
-            
-        print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
-
-    except Exception as e:
-        print('***Error en el mosaico***')
-        #pass
-        processing_sentinel2.agregaErrorSargazoDB('','',fecha,'',traceback.format_exc().replace("'",""))
-        processing_sentinel2.enviaMail(fecha,'mosaico',traceback.format_exc().replace("'",""))
+    print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
     # BORRA DIR DESCARGA
     # NO DESCOMENTAR EN SEMIMANUAL PORQUE BORRA IMAGENES
     if dateTime == 'automatico' or dateTime == 'manual':
