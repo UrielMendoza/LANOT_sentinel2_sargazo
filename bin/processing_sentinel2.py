@@ -70,7 +70,7 @@ def logArchivo(pathLog,fecha,tile,archivo,archivoProc,fechaProc):
         file.write(fecha+','+tile+','+archivo+','+archivoProc+','+fechaProc+'\n')
         file.close
 
-def logFecha(fecha,pathTmp)
+def logFecha(fecha,pathTmp):
         file = open(pathTmp+'fecha.txt','w')
         file.write(fecha)
         file.close
