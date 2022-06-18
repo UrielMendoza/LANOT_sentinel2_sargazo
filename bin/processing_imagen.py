@@ -151,6 +151,7 @@ def manual():
     return start_date,end_date,region,SNbuffer
 
 def mosaicoL2A(pathTmp,pathInputL1C,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,dateTime):
+    fecha = processing_sentinel2.leeLogFecha(pathTmp)
     # MOSAICOS
     # Fechas y buffer
     if dateTime == 'automaticoTile':
@@ -161,7 +162,6 @@ def mosaicoL2A(pathTmp,pathInputL1C,pathOutputGeoTiff,pathOutputPeta,pathOutputW
         start_date,end_date,region,SNbuffer = manual()
     elif dateTime == 'semiManual':
         start_date,end_date,region,SNbuffer = semiManual()
-    fecha = start_date.strftime('%Y%m%d') 
     # Numero de imagenes
     try:
         if dateTime == 'automaticoTile':
@@ -429,7 +429,8 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
                 print('======================================')
                 print('Archivo: '+archivo+' ya fue procesado')
                 print('======================================')
-
+    # Guarda fecha en un log para el mosaico
+    processing_sentinel2.logFecha(fecha,'/'.join(pathTmp.split('/')[:-2])+'/')
     print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
     # BORRA DIR DESCARGA
     # NO DESCOMENTAR EN SEMIMANUAL PORQUE BORRA IMAGENES

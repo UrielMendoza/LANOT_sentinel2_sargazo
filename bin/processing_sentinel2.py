@@ -70,6 +70,16 @@ def logArchivo(pathLog,fecha,tile,archivo,archivoProc,fechaProc):
         file.write(fecha+','+tile+','+archivo+','+archivoProc+','+fechaProc+'\n')
         file.close
 
+def logFecha(fecha,pathTmp)
+        file = open(pathTmp+'fecha.txt','w')
+        file.write(fecha)
+        file.close
+
+def leeLogFecha(pathTmp):
+    file = open(pathTmp+'fecha.txt','r')
+    fecha = file.readlines()
+    return fecha
+
 def obtieneTile(pathArchivo):
     tile = pathArchivo.split('/')[-1].split('_')[5]
     return tile
@@ -1092,7 +1102,8 @@ def enviaMail(fecha,tile,error):
     #The body and the attachments for the mail
     message.attach(MIMEText(mail_content, 'plain'))
     #Create SMTP session for sending the mail
-    port = 465
+    #port = 465
+    port = 587
     context = ssl.create_default_context()
     session = smtplib.SMTP_SSL('smtp.gmail.com', port, context=context) #use gmail with port
     #session.starttls() #enable security
