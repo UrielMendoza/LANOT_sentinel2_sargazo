@@ -78,6 +78,7 @@ def logFecha(fecha,pathTmp):
 def leeLogFecha(pathTmp):
     file = open(pathTmp+'fecha.txt','r')
     fecha = file.readlines()
+    fecha = fecha[0].split('\n')[0]
     return fecha
 
 def obtieneTile(pathArchivo):
