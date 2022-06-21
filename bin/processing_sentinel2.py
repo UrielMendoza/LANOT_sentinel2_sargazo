@@ -1093,7 +1093,8 @@ def enviaMail(fecha,tile,error):
 
     #The mail addresses and password
     sender_address = 'alertaslanot@gmail.com'
-    sender_pass = 'aet9iMei'
+    #sender_pass = 'aet9iMei'
+    sender_pass = 'cxwlhpdtwtctvjfu'
     receiver_address = 'urielmendozacastillo@gmail.com'
     #Setup the MIME
     message = MIMEMultipart()
@@ -1103,8 +1104,7 @@ def enviaMail(fecha,tile,error):
     #The body and the attachments for the mail
     message.attach(MIMEText(mail_content, 'plain'))
     #Create SMTP session for sending the mail
-    #port = 465
-    port = 587
+    port = 465
     context = ssl.create_default_context()
     session = smtplib.SMTP_SSL('smtp.gmail.com', port, context=context) #use gmail with port
     #session.starttls() #enable security
