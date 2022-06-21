@@ -244,11 +244,12 @@ if __name__ == '__main__':
             #lee_vertices(pathjson, im_in)
 
         gdf = gpd.GeoDataFrame(columns=["IDpoligono", "tile", "fecha", "fechaDia", "area_km2", "distCosta_km", "lugar", "nom_playa", "geometry"], crs="EPSG:32616")
-        # Crear un geodataframe con todos los geojson
-        for pathV in Path(pathSargazo).rglob('*'+label+'*.json'):
-            print(pathV, type(pathV))
-            gdf_v = gpd.read_file(pathV)
-            gdf = pd.concat([gdf, gdf_v], ignore_index=True)
+        # Crear un geodataframe con todos los geojson, solo los de la region
+        for tileNom in tiles_1:
+            for pathV in Path(pathSargazo).rglob('*'+tileNom+'*'+label+'*.json'):
+                print(pathV, type(pathV))
+                gdf_v = gpd.read_file(pathV)
+                gdf = pd.concat([gdf, gdf_v], ignore_index=True)
         
         df_sargazo_s = gdf.loc[(gdf['lugar'] == 'oceano') | (gdf['lugar'] == 'playa')]
         areaGDF = df_sargazo_s['area_km2'].sum()

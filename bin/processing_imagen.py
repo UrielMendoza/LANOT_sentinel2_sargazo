@@ -150,6 +150,53 @@ def manual():
 
     return start_date,end_date,region,SNbuffer
 
+def descargaImagenes(pathTmp,dateTime):
+    # MANUAL Y AUTOMATICO
+    # Borra el tmp
+    if dateTime == 'automatico' or dateTime == 'manual':
+        #os.system('rm -r '+pathTmp+'*')
+        print('No borra tmp')
+    # Fechas y buffer
+    if dateTime == 'automaticoTile':
+            tiles = sys.argv[1] 
+            os.system('mkdir '+pathTmp+tiles)
+            pathTmp = pathTmp + tiles +'/'
+            start_date,end_date,SNbuffer = automaticoTile()
+    if dateTime == 'automatico':
+        start_date,end_date,region,SNbuffer = automatico()
+
+    elif dateTime == 'manual':
+        start_date,end_date,region,SNbuffer = manual()
+
+    elif dateTime == 'semiManual':
+        start_date,end_date,region,SNbuffer = semiManual()
+
+    bandas20m = ('B02','B03','B04','B05','B8A','B11','B12','SCL')
+    bandas10m = ['B08']
+    if dateTime != 'automaticoTile':
+        tiles = base.tiles[region]
+    else:
+        tiles = tiles.split()
+    print(tiles)
+    
+    if dateTime != 'semiManual':
+        try:
+            # DESCARGA
+            print('1. Descargando...')
+            print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
+            download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
+
+            # Reste dias para prueba
+            #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
+            #daysDelta = 3
+            #download_datasets.search_and_download_datasets(tiles, start_date - datetime.timedelta(days=daysDelta), end_date - datetime.timedelta(days=daysDelta), pathInputL1C, unzip=False)
+        except Exception as e:
+            print('***Error en la descarga***')
+            processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',traceback.format_exc().replace("'",""))
+            processing_sentinel2.enviaMail(start_date.strftime('%Y%m%d')+'-'+end_date.strftime('%Y%m%d'),'descarga',traceback.format_exc().replace("'",""))
+        #    pass
+
+
 def mosaicoL2A(pathTmp,pathInputL1C,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,dateTime):
     fecha = processing_sentinel2.leeLogFecha(pathTmp)
     # MOSAICOS
@@ -402,10 +449,10 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
                     print('7. Creando compuesto RGB...')
                     print('7.1 Creando compuesto RGB FC...')
                     os.system('mkdir -p '+pathOutputGeoTiff+'sargazo/'+tile+'/')                
-                    processing_sentinel2.RGB(pathTmp+bandas20m[4]+'.tif',pathTmp+bandas20m[3]+'.tif',pathTmp+bandas20m[2]+'.tif',tile,anio,fecha,fechaImaProc,pathOutputGeoTiff,pathOutputPeta)
+                    processing_sentinel2.RGB(pathTmp+bandas20m[4]+'.tif',pathTmp+bandas20m[3]+'.tif',pathTmp+bandas20m[2]+'.tif',tile,anio,fecha,fechaImaProc,pathOutputGeoTiff,pathOutputPeta,pathTmp)
                     print('7.2 Creando compuesto RGB TC...')
                     os.system('mkdir -p '+pathOutputGeoTiff+'TC/'+tile+'/')
-                    processing_sentinel2.RGB_TC(tile,anio,fecha,fechaImaProc,'L2A','R10m',pathTmp+dirI,pathOutputGeoTiff,pathOutputPeta)
+                    processing_sentinel2.RGB_TC(tile,anio,fecha,fechaImaProc,'L2A','R10m',pathTmp+dirI,pathOutputGeoTiff,pathOutputPeta,pathTmp)
   
 #                except IndexError:
                 except Exception as e:
@@ -429,13 +476,18 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
                 print('======================================')
                 print('Archivo: '+archivo+' ya fue procesado')
                 print('======================================')
-    # Guarda fecha en un log para el mosaico
-    processing_sentinel2.logFecha(fecha,'/'.join(pathTmp.split('/')[:-2])+'/')
-    print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
-    # BORRA DIR DESCARGA
-    # NO DESCOMENTAR EN SEMIMANUAL PORQUE BORRA IMAGENES
-    if dateTime == 'automatico' or dateTime == 'manual':
-       os.system('rm -r '+pathTmp+'*')
+    try:
+        # Guarda fecha en un log para el mosaico
+        processing_sentinel2.logFecha(fecha,'/'.join(pathTmp.split('/')[:-2])+'/')
+        print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
+        # BORRA DIR DESCARGA
+        # NO DESCOMENTAR EN SEMIMANUAL PORQUE BORRA IMAGENES
+        if dateTime == 'automatico' or dateTime == 'manual':
+            os.system('rm -r '+pathTmp+'*')
+    except Exception as e:
+        print('***Error en el procesamiento***')
+        processing_sentinel2.agregaErrorSargazoDB('','','','',traceback.format_exc().replace("'",""))
+        processing_sentinel2.enviaMail('','',traceback.format_exc().replace("'",""))
 
 
 

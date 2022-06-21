@@ -7,7 +7,7 @@ Created on Wen Jun 08 15:35:37 2022
 
 import os
 from multiprocessing import Pool
-from processing_imagen import mosaicoL2A
+from processing_imagen import mosaicoL2A, descargaImagenes
 
 # DIRECTORIOS
 pathInputL1C = '/data/input/sentinel2/L1C/'
@@ -19,8 +19,12 @@ pathTmp = '/data/input/sentinel2/tmp/automatico/'
 #os.system('export PATH=/home/lanotadm/LANOT_sentinel2_sargazo/bin:$PATH')
 pathScript = '/home/lanotadm/LANOT_sentinel2_sargazo/bin/'
 
+# DESCARGA IMAGENES
+print('3. Descargando imagenes...')
+descargaImagenes(pathTmp,dateTime='automaticoTile')
+
 # IMAGENES L2A
-print('1. Procesando imagenes L2A...')
+print('2. Procesando imagenes L2A...')
 # Script para obtencion de sargazo por tile
 script_1 = 'python3 '+pathScript+'sargazo_automatico_imagenTile.py'
 
@@ -45,5 +49,5 @@ pool = Pool(processes=len(processes))
 pool.map(run_process, processes)
 
 # MOSAICO.
-print('2. Procesando mosaico...')
+print('3. Procesando mosaico...')
 mosaicoL2A(pathTmp,pathInputL1C,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,dateTime='automaticoTile')
