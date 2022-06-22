@@ -167,7 +167,6 @@ def descargaImagenes(pathTmp,dateTime):
 
     elif dateTime == 'manual':
         start_date,end_date,region,SNbuffer = manual()
-
     elif dateTime == 'semiManual':
         start_date,end_date,region,SNbuffer = semiManual()
 
@@ -179,6 +178,8 @@ def descargaImagenes(pathTmp,dateTime):
         tiles = tiles.split()
     print(tiles)
     
+    pathTmp = pathTmp + tiles +'/'
+
     if dateTime != 'semiManual':
         try:
             # DESCARGA
