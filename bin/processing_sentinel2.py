@@ -1195,7 +1195,7 @@ def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb,pat
     nomMosaicTif = pathInput+compuesto+'/mosaicos/catalogo_'+compuesto+'/'+nombre
     # Mosaico con fecha
     print('gdal_merge.py -o '+nomMosaicTif+' '+mosaicos)
-    os.system('gdal_merge.py -o '+pathTmp+compuesto'_mosaico.tif '+mosaicos)
+    os.system('gdal_merge.py -o '+pathTmp+compuesto+'_mosaico.tif '+mosaicos)
     # Optimiza el geotiff
     os.system('gdal_translate -CO "TILED=YES" -CO "BLOCKXSIZE=512" -CO "BLOCKYSIZE=512" '+pathTmp+compuesto+'_mosaico.tif '+nomMosaicTif)
     os.system('gdaladdo -r average '+nomMosaicTif+' 2 4 8 16 32')
