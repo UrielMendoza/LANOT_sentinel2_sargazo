@@ -271,7 +271,7 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
     if dateTime == 'automaticoTile':
             tiles = sys.argv[1] 
             #os.system('mkdir '+pathTmp+tiles)
-            pathTmp = pathTmp + tiles[1:] +'/'
+            pathTmp = pathTmp + 'T' + tiles +'/'
             start_date,end_date,SNbuffer = automaticoTile()
     if dateTime == 'automatico':
         start_date,end_date,region,SNbuffer = automatico()
