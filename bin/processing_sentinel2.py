@@ -228,20 +228,22 @@ def remuestrea(pathOutput,ds,dimx,dimy):
 
 def RGB(r,g,b,tile,anio,fecha,fechaProc,pathOutputGeoTiff,pathOutputPeta,pathTmp):
     nombre = pathOutputGeoTiff+'sargazo/'+tile+'/'+'S2_MSI_SAR_'+tile+'_'+fecha+'_'+fechaProc+".tif"
-    os.system('gdal_merge.py -separate -co PHOTOMETRIC=RGB -o '+pathTmp+'RGB.tif '+r+' '+g+' '+b)
+    #os.system('gdal_merge.py -separate -co PHOTOMETRIC=RGB -o '+pathTmp+'RGB.tif '+r+' '+g+' '+b)
+    os.system('gdal_merge.py -separate -co PHOTOMETRIC=RGB -o '+nombre+' '+r+' '+g+' '+b)
     # Optimiza el geotiff
-    os.system('gdal_translate -CO "TILED=YES" -CO "BLOCKXSIZE=512" -CO "BLOCKYSIZE=512" '+pathTmp+'RGB.tif '+nombre)
-    os.system('gdaladdo -r average '+nombre+' 2 4 8 16 32')
+    #os.system('gdal_translate -CO "TILED=YES" -CO "BLOCKXSIZE=512" -CO "BLOCKYSIZE=512" '+pathTmp+'RGB.tif '+nombre)
+    #os.system('gdaladdo -r average '+nombre+' 2 4 8 16 32')
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/sargazo/'+tile+'/')
 
 def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTiff,pathOutputPeta,pathTmp):
     dirTC = listaBandas(pathInput,nivel,resolucion,'TCI')
     nombre = pathOutputGeoTiff+'TC/'+tile+'/'+'S2_MSI_TC_'+tile+'_'+fecha+'_'+fechaProc+'.tif'
-    os.system('gdal_translate '+dirTC+' '+pathTmp+'TC.tif')
+    #os.system('gdal_translate '+dirTC+' '+pathTmp+'TC.tif')
+    os.system('gdal_translate '+dirTC+' '+nombre)
     # Optimiza el geotiff
-    os.system('gdal_translate -CO "TILED=YES" -CO "BLOCKXSIZE=512" -CO "BLOCKYSIZE=512" '+pathTmp+'TC.tif '+nombre)
-    os.system('gdaladdo -r average '+nombre+' 2 4 8 16 32')
+    #os.system('gdal_translate -CO "TILED=YES" -CO "BLOCKXSIZE=512" -CO "BLOCKYSIZE=512" '+pathTmp+'TC.tif '+nombre)
+    #os.system('gdaladdo -r average '+nombre+' 2 4 8 16 32')
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/TC/'+tile+'/')
 
