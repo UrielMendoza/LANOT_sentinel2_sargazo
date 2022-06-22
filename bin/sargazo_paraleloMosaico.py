@@ -21,7 +21,7 @@ pathScript = '/home/lanotadm/LANOT_sentinel2_sargazo/bin/'
 
 # DESCARGA IMAGENES
 print('3. Descargando imagenes...')
-descargaImagenes(pathTmp,dateTime='automaticoTile')
+descargaImagenes(pathTmp,dateTime='manual')
 
 # IMAGENES L2A
 print('2. Procesando imagenes L2A...')
