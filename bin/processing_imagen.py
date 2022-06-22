@@ -178,7 +178,6 @@ def descargaImagenes(pathTmp,dateTime):
         tiles = tiles.split()
     print(tiles)
     
-    pathTmp = pathTmp + tiles +'/'
 
     if dateTime != 'semiManual':
         try:
@@ -271,8 +270,8 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
     # Fechas y buffer
     if dateTime == 'automaticoTile':
             tiles = sys.argv[1] 
-            os.system('mkdir '+pathTmp+tiles)
-            pathTmp = pathTmp + tiles +'/'
+            #os.system('mkdir '+pathTmp+tiles)
+            pathTmp = pathTmp + tiles[1:] +'/'
             start_date,end_date,SNbuffer = automaticoTile()
     if dateTime == 'automatico':
         start_date,end_date,region,SNbuffer = automatico()
