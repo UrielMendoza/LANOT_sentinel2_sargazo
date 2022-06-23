@@ -1197,7 +1197,7 @@ def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb,pat
     print('gdal_merge.py -o '+nomMosaicTif+' '+mosaicos)
     os.system('gdal_merge.py -o '+pathTmp+compuesto+'_mosaico.tif '+mosaicos)
     # Optimiza el geotiff
-    os.system('gdal_translate -CO "TILED=YES" -CO "BLOCKXSIZE=512" -CO "BLOCKYSIZE=512" '+pathTmp+compuesto+'_mosaico.tif '+nomMosaicTif)
+    os.system('gdal_translate -CO "TILED=YES" -CO "BLOCKXSIZE=512" -CO "BLOCKYSIZE=512" "BIGTIFF=YES" '+pathTmp+compuesto+'_mosaico.tif '+nomMosaicTif)
     os.system('gdaladdo -r average '+nomMosaicTif+' 2 4 8 16 32')
     # MANDA A PETA    
     os.system('scp '+nomMosaicTif+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
