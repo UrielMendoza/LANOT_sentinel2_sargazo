@@ -7,7 +7,7 @@ Created on Fri Nov 20 23:52:19 2020
 """
 import time
 from processing import sargazoL2A
-from processing_imagen import imagenL2A
+from processing_imagen import imagenL2A, descargaImagenes
 from os import system
 
 if __name__ == "__main__":
@@ -49,6 +49,7 @@ if __name__ == "__main__":
 
         if respuesta == 1:
             #ini = time.time()
+            descargaImagenes(pathTmp,dateTime='manual')
             imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime='manual')
             #sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime='manual')
             #print("Tiempo de procesamiento: ",round((time.time()-ini)/60,2))
