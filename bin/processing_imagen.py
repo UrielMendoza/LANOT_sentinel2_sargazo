@@ -486,7 +486,7 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
             os.system('rm -r '+pathTmp+'*')
     except Exception as e:
         print('***Error en el procesamiento***')
-        processing_sentinel2.agregaErrorSargazoDB('','','','',traceback.format_exc().replace("'",""))
+        processing_sentinel2.agregaErrorSargazoDB('','',fecha,'',traceback.format_exc().replace("'",""))
         processing_sentinel2.enviaMail('','',traceback.format_exc().replace("'",""))
 
 
