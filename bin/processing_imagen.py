@@ -463,7 +463,7 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
                     processing_sentinel2.enviaMail(fecha,tile,traceback.format_exc().replace("'",""))
                     continue
 
-                finally:
+                #finally:
                 # BORRA BASURA
                     #os.system('rm -r '+pathTmp+'*.tif')
                     #os.system('rm -r '+pathTmp+'*json')
