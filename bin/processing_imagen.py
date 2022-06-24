@@ -465,11 +465,11 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
 
                 finally:
                 # BORRA BASURA
-                    os.system('rm -r '+pathTmp+'*.tif')
-                    os.system('rm -r '+pathTmp+'*json')
-                    os.system('rm -r '+pathTmp+'*.csv')
-                    os.system('rm -r '+pathTmp+'*.zip')
-                    os.system('rm -r '+pathTmp+'*.SAFE')
+                    #os.system('rm -r '+pathTmp+'*.tif')
+                    #os.system('rm -r '+pathTmp+'*json')
+                    #os.system('rm -r '+pathTmp+'*.csv')
+                    #s.system('rm -r '+pathTmp+'*.zip')
+                    #s.system('rm -r '+pathTmp+'*.SAFE')
                     #if dateTime == 'automatico' or dateTime == 'manual':
                     #    os.system('rm -r '+pathTmp+'*')
                 
@@ -484,7 +484,8 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
         # BORRA DIR DESCARGA
         # NO DESCOMENTAR EN SEMIMANUAL PORQUE BORRA IMAGENES
         if dateTime == 'automatico' or dateTime == 'manual':
-            os.system('rm -r '+pathTmp+'*')
+            #os.system('rm -r '+pathTmp+'*')
+            print('No borra')
     except Exception as e:
         print('***Error en el procesamiento***')
         processing_sentinel2.agregaErrorSargazoDB('','',fecha,'',traceback.format_exc().replace("'",""))
