@@ -278,6 +278,7 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
         start_date,end_date,region,SNbuffer = automatico()
 
     elif dateTime == 'manual':
+        pathTmpOr = pathTmp
         start_date,end_date,region,SNbuffer = manual()
 
     elif dateTime == 'semiManual':
