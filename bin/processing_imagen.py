@@ -480,7 +480,8 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
                 print('======================================')
     try:
         # Guarda fecha en un log para el mosaico
-        processing_sentinel2.logFecha(fecha,'/'.join(pathTmp.split('/')[:-2])+'/')
+        #processing_sentinel2.logFecha(fecha,'/'.join(pathTmp.split('/')[:-2])+'/')
+        processing_sentinel2.logFecha(fecha,pathTmpOr)
         print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
         # BORRA DIR DESCARGA
         # NO DESCOMENTAR EN SEMIMANUAL PORQUE BORRA IMAGENES
