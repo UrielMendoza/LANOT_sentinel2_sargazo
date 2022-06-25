@@ -262,6 +262,9 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
     iniTotal = time.time()
     owd = os.getcwd()
 
+    # Fecha para que no mande error
+    fecha = None
+
     # MANUAL Y AUTOMATICO
     # Borra el tmp
     if dateTime == 'automatico' or dateTime == 'manual':
