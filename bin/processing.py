@@ -355,10 +355,10 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                         print('5. Creando compuesto RGB...')
                         print('5.1 Creando compuesto RGB FC...')
                         os.system('mkdir -p '+pathOutputGeoTiff+'sargazo/'+tile+'/')                
-                        processing_sentinel2.RGB(pathTmp+bandas20m[4]+'.tif',pathTmp+bandas20m[3]+'.tif',pathTmp+bandas20m[2]+'.tif',tile,anio,fecha,fechaImaProc,pathOutputGeoTiff,pathOutputPeta)
+                        processing_sentinel2.RGB(pathTmp+bandas20m[4]+'.tif',pathTmp+bandas20m[3]+'.tif',pathTmp+bandas20m[2]+'.tif',tile,anio,fecha,fechaImaProc,pathOutputGeoTiff,pathOutputPeta,pathTmp)
                         print('5.2 Creando compuesto RGB TC...')
                         os.system('mkdir -p '+pathOutputGeoTiff+'TC/'+tile+'/')
-                        processing_sentinel2.RGB_TC(tile,anio,fecha,fechaImaProc,'L2A','R10m',pathTmp+dirI,pathOutputGeoTiff,pathOutputPeta)
+                        processing_sentinel2.RGB_TC(tile,anio,fecha,fechaImaProc,'L2A','R10m',pathTmp+dirI,pathOutputGeoTiff,pathOutputPeta,pathTmp)
                         # AGREGA A LA DB
                         archivoProc = ''
                         fechaLog = processing_sentinel2.obtieneFechaLog()
