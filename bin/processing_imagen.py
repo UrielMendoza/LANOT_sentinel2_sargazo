@@ -263,7 +263,7 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
     owd = os.getcwd()
 
     # Fecha para que no mande error
-    fecha = None
+    fecha = ''
 
     # MANUAL Y AUTOMATICO
     # Borra el tmp
