@@ -198,7 +198,12 @@ def descargaImagenes(pathTmp,dateTime):
 
 
 def mosaicoL2A(pathTmp,pathInputL1C,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,dateTime):
-    fecha = processing_sentinel2.leeLogFecha(pathTmp)
+    try:
+        fecha = processing_sentinel2.leeLogFecha(pathTmp)
+    except Exception as e:
+        print('***Error en listar archivos***')
+        processing_sentinel2.agregaErrorSargazoDB('','','','',traceback.format_exc().replace("'",""))
+        processing_sentinel2.enviaMail('','fecha',traceback.format_exc().replace("'",""))
     # MOSAICOS
     # Fechas y buffer
     if dateTime == 'automaticoTile':
