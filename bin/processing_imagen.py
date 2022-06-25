@@ -198,6 +198,7 @@ def descargaImagenes(pathTmp,dateTime):
 
 
 def mosaicoL2A(pathTmp,pathInputL1C,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,dateTime):
+    fecha = ''
     try:
         fecha = processing_sentinel2.leeLogFecha(pathTmp)
     except Exception as e:
