@@ -29,7 +29,7 @@ def semiManual():
 
 def automaticoTile():
     # Se le resta un dia, porque el servidor en UTC
-    daysDelta = 3
+    daysDelta = 0
     start_date = datetime.datetime.now() - datetime.timedelta(days=daysDelta)
     end_date = datetime.datetime.now()  - datetime.timedelta(days=daysDelta)
     #region = "sargazo_1"
