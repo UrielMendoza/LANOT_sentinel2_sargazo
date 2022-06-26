@@ -7,7 +7,16 @@ Created on Wen Jun 08 15:35:37 2022
 
 import os
 from multiprocessing import Pool
+from processing_imagen import descargaImagenes
 
+pathTmp = '/data/input/sentinel2/tmp/automatico/'
+
+# 1. DESCARGA
+# DESCARGA IMAGENES
+print('3. Descargando imagenes...')
+descargaImagenes(pathTmp,dateTime='manual')
+
+# 2. SARGAZO PARALELO
 #os.system('export PATH=/home/lanotadm/LANOT_sentinel2_sargazo/bin:$PATH')
 pathScript = '/home/lanotadm/LANOT_sentinel2_sargazo/bin/'
 
