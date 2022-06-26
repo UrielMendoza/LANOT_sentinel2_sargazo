@@ -179,7 +179,7 @@ def descargaImagenes(pathTmp,dateTime):
     print(tiles)
     
 
-    if dateTime != 'semiManual':
+    if dateTime != 'semiManual' or dateTime != 'automaticoTile':
         try:
             # DESCARGA
             print('1. Descargando...')
