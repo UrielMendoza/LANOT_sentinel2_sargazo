@@ -14,7 +14,7 @@ pathTmp = '/data/input/sentinel2/tmp/automatico/'
 # 1. DESCARGA
 # DESCARGA IMAGENES
 print('3. Descargando imagenes...')
-descargaImagenes(pathTmp,dateTime='manual')
+descargaImagenes(pathTmp,dateTime='automaticoTile')
 
 # 2. SARGAZO PARALELO
 #os.system('export PATH=/home/lanotadm/LANOT_sentinel2_sargazo/bin:$PATH')

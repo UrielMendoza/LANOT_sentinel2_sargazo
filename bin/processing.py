@@ -164,7 +164,9 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     if dateTime == 'automaticoTile':
             tiles = sys.argv[1] 
             os.system('mkdir '+pathTmp+tiles)
-            pathTmp = pathTmp + tiles +'/'
+            #pathTmp = pathTmp + tiles +'/'
+            pathTmpOr = pathTmp
+            pathTmp = pathTmp + 'T' + tiles +'/'
             start_date,end_date,SNbuffer = automaticoTile()
     if dateTime == 'automatico':
         start_date,end_date,region,SNbuffer = automatico()
@@ -199,7 +201,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             # DESCARGA
             print('1. Descargando...')
             print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
-            download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmp, unzip=False)
+            download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmpOr, unzip=False)
 
             # Reste dias para prueba
             #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))
@@ -213,7 +215,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     
     try:
         if dateTime == 'automaticoTile':
-            tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
+            tilesDirs = processing_sentinel2.listaArchivos(pathTmpOr+'*')
         elif dateTime == 'automatico':
             tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
         elif dateTime == 'manual':
