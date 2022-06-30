@@ -37,7 +37,7 @@ pathTmp = '/data/input/sentinel2/tmp/manual/'
 pathLanot = '/usr/local/share/lanot/'
 #region = 's1'
 tiles_1 = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
-tiles_2 = ['T16QCF','T16QCE','T16QDE','T16QEE','T16QCD','T16QDD','T16QED','T16PCC','T16PDC','T16PEC']
+tiles_2 = ['T16QDF','T16QEF','T16QCF','T16QCE','T16QDE','T16QEE','T16QCD','T16QDD','T16QED','T16PCC','T16PDC','T16PEC']
 
 #Image.MAX_IMAGE_PIXELS = 614960590  
 Image.MAX_IMAGE_PIXELS = 2000000000
