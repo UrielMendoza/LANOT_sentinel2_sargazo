@@ -35,16 +35,14 @@ pathVertices = '/data/output/sentinel2/l2/geojson/sargazo_vertices/'
 pathSargazo = '/data/output/sentinel2/l2/geojson/sargazo/'
 pathTmp = '/data/input/sentinel2/tmp/manual/'
 pathLanot = '/usr/local/share/lanot/'
-region = 's1'
+#region = 's1'
 tiles_1 = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
+tiles_2 = ['16QCF','16QCE','16QDE','16QEE','16QCD','16QDD','16QED','16PCC','16PDC','16PEC']
 
 Image.MAX_IMAGE_PIXELS = 614960590 
 white = (255, 255, 255)
 
-ulx = 399960.0
-uly = 2400000.0
-lrx = 709800.0
-lry = 1990200.0
+
 
 height = 1200
 width = 1200
@@ -128,7 +126,7 @@ def GetExtent(gt,cols,rows):
     return ext
 
 def get_limits(path):
-    global ulx, uly, lrx, lry
+    #global ulx, uly, lrx, lry
     ds = gdal.Open(path)
     gt=ds.GetGeoTransform()
     cols = ds.RasterXSize
@@ -147,6 +145,22 @@ if __name__ == '__main__':
 
         label = sys.argv[1]
         pattern = re.compile(label)
+        region = sys.argv[2]
+
+        global ulx, uly, lrx, lry
+        
+        if region == 's1':
+            ulx = 399960.0
+            uly = 2400000.0
+            lrx = 709800.0
+            lry = 1990200.0
+        elif region == 's2':
+            ulx = 299998.0
+            uly = 2100000.0
+            lrx = 609780.0
+            lry = 1690188.0
+            
+
         #lista = []
         #for filename in os.listdir(verticesdir):
         #   if pattern.match(filename, 18):
@@ -170,9 +184,15 @@ if __name__ == '__main__':
             for path in glob.glob(pathOutputGeoTiff+'*/*'+label+'*.tif'):
             #for path in Path(pathOutputGeoTiff).rglob('*/*'+label+'*.tif'):
                 tile = path.split('/')[7]
-                if tile in tiles_1:
-                    print(path, type(path))
-                    mosaicos += str(path) + ' '
+                if region == 's1':
+                    if tile in tiles_1:
+                        print(path, type(path))
+                        mosaicos += str(path) + ' '
+                elif region == 's2':
+                    if tile in tiles_2:
+                        print(path, type(path))
+                        mosaicos += str(path) + ' '
+
 
             print("gdal_merge.py -o "+pathTmp+"tmp.tif "+mosaicos)
             os.system("gdal_merge.py -o "+pathTmp+"tmp.tif "+mosaicos)
@@ -223,9 +243,14 @@ if __name__ == '__main__':
         for path in glob.glob(pathOutputGeoTiff+'*/*'+label+'*.tif'):
         #for path in Path(pathOutputGeoTiff).rglob('*/*'+label+'*.tif'):
             tile = path.split('/')[7]
-            if tile in tiles_1:
-                print(path, type(path))
-                mosaicos += str(path) + ' '
+            if region == 's1':
+                if tile in tiles_1:
+                    print(path, type(path))
+                    mosaicos += str(path) + ' '
+            elif region == 's2':
+                if tile in tiles_2:
+                    print(path, type(path))
+                    mosaicos += str(path) + ' '
 
         print("gdal_merge.py -o "+pathTmp+"tmp.tif "+mosaicos)
         os.system("gdal_merge.py -o "+pathTmp+"tmp.tif "+mosaicos)
@@ -245,11 +270,18 @@ if __name__ == '__main__':
 
         gdf = gpd.GeoDataFrame(columns=["IDpoligono", "tile", "fecha", "fechaDia", "area_km2", "distCosta_km", "lugar", "nom_playa", "geometry"], crs="EPSG:32616")
         # Crear un geodataframe con todos los geojson, solo los de la region
-        for tileNom in tiles_1:
-            for pathV in Path(pathSargazo).rglob('*'+tileNom+'*'+label+'*.json'):
-                print(pathV, type(pathV))
-                gdf_v = gpd.read_file(pathV)
-                gdf = pd.concat([gdf, gdf_v], ignore_index=True)
+        if region == 's1':
+            for tileNom in tiles_1:
+                for pathV in Path(pathSargazo).rglob('*'+tileNom+'*'+label+'*.json'):
+                    print(pathV, type(pathV))
+                    gdf_v = gpd.read_file(pathV)
+                    gdf = pd.concat([gdf, gdf_v], ignore_index=True)
+        elif region == 's2':
+            for tileNom in tiles_2:
+                for pathV in Path(pathSargazo).rglob('*'+tileNom+'*'+label+'*.json'):
+                    print(pathV, type(pathV))
+                    gdf_v = gpd.read_file(pathV)
+                    gdf = pd.concat([gdf, gdf_v], ignore_index=True)
         
         df_sargazo_s = gdf.loc[(gdf['lugar'] == 'oceano') | (gdf['lugar'] == 'playa')]
         areaGDF = df_sargazo_s['area_km2'].sum()

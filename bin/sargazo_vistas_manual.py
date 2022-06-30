@@ -35,7 +35,7 @@ if __name__ == "__main__":
         #createMosaicFecha(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
         # Vistas
         #sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
-        os.system('python3 sargazo_vistas_vertices.py '+fecha)
+        os.system('python3 sargazo_vistas_vertices.py '+fecha+' s1')
 
         # Borra Tmp
         os.system('rm -r '+pathTmp+'*.tif')
