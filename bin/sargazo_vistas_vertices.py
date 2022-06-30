@@ -126,7 +126,7 @@ def GetExtent(gt,cols,rows):
     return ext
 
 def get_limits(path):
-    #global ulx, uly, lrx, lry
+    global ulx, uly, lrx, lry
     ds = gdal.Open(path)
     gt=ds.GetGeoTransform()
     cols = ds.RasterXSize
@@ -147,7 +147,7 @@ if __name__ == '__main__':
         pattern = re.compile(label)
         region = sys.argv[2]
 
-        global ulx, uly, lrx, lry
+        
         
         if region == 's1':
             ulx = 399960.0
