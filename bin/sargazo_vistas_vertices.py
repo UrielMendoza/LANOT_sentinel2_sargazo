@@ -37,7 +37,7 @@ pathTmp = '/data/input/sentinel2/tmp/manual/'
 pathLanot = '/usr/local/share/lanot/'
 #region = 's1'
 tiles_1 = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
-tiles_2 = ['16QCF','16QCE','16QDE','16QEE','16QCD','16QDD','16QED','16PCC','16PDC','16PEC']
+tiles_2 = ['T16QCF','T16QCE','T16QDE','T16QEE','T16QCD','T16QDD','T16QED','T16PCC','T16PDC','T16PEC']
 
 Image.MAX_IMAGE_PIXELS = 614960590 
 white = (255, 255, 255)
@@ -176,6 +176,7 @@ if __name__ == '__main__':
 
         print("Lista", lista, len(lista))
         
+        # Sin sargazo
         if len(lista) == 0:
             print("Error: No existe fecha con sargazo", label)
             print('Procesando vista sin sargazo')
