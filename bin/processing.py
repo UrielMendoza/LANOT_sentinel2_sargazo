@@ -170,12 +170,15 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             start_date,end_date,SNbuffer = automaticoTile()
     if dateTime == 'automatico':
         start_date,end_date,region,SNbuffer = automatico()
+        pathTmpOr = pathTmp
 
     elif dateTime == 'manual':
         start_date,end_date,region,SNbuffer = manual()
+        pathTmpOr = pathTmp
 
     elif dateTime == 'semiManual':
         start_date,end_date,region,SNbuffer = semiManual()
+        pathTmpOr = pathTmp
 
     # OBTIENE NOMBRE DEL LOG
     #bufferLM = processing_sentinel2.obtieneBufferLM(landMask)

@@ -43,7 +43,7 @@ def automatico():
     daysDelta = 1
     start_date = datetime.datetime.now() - datetime.timedelta(days=daysDelta)
     end_date = datetime.datetime.now()  - datetime.timedelta(days=daysDelta)
-    region = "sargazo_1"
+    region = "sargazo_3"
     SNbuffer = True
     #landMask = "land_sargazo_UTM16N_20m_1.tif"
     #nubesBajas = 900
@@ -179,7 +179,7 @@ def descargaImagenes(pathTmp,dateTime):
     print(tiles)
     
 
-    if dateTime != 'semiManual' or dateTime != 'automaticoTile':
+    if dateTime != 'semiManual':
         try:
             # DESCARGA
             print('1. Descargando...')
