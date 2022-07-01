@@ -218,7 +218,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     
     try:
         if dateTime == 'automaticoTile':
-            tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
+            tilesDirs = processing_sentinel2.listaArchivos(pathTmpOr+'*')
         elif dateTime == 'automatico':
             tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
         elif dateTime == 'manual':
@@ -226,6 +226,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
         elif dateTime == 'semiManual':
             tilesDirs = processing_sentinel2.listaArchivos(pathInputL1C+'*')
         numImagenes = len(tilesDirs)
+        print('Tiles a procesar: ',tilesDirs)
         print(tilesDirs)
 
     except Exception as e:
@@ -242,6 +243,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             else:
                 archivos = processing_sentinel2.listaArchivos(tileDir+'/*')
             archivos.sort()
+            print('Archivos a procesar: ',archivos)
             
         except Exception as e:
             print('***Error en listar archivos***')
