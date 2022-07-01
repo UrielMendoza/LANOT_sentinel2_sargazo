@@ -218,7 +218,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     
     try:
         if dateTime == 'automaticoTile':
-            tilesDirs = processing_sentinel2.listaArchivos(pathTmpOr+'*')
+            tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
         elif dateTime == 'automatico':
             tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
         elif dateTime == 'manual':
