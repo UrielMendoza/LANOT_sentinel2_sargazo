@@ -14,7 +14,7 @@ pathTmp = '/data/input/sentinel2/tmp/automatico/'
 # 1. DESCARGA
 # DESCARGA IMAGENES
 print('1. Descargando imagenes...')
-descargaImagenes(pathTmp,dateTime='manual')
+descargaImagenes(pathTmp,dateTime='automatico')
 
 # 2. SARGAZO PARALELO
 print('2 Procesando sargazo en paralelo...')

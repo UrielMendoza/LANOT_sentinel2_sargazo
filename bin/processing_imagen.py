@@ -160,7 +160,7 @@ def descargaImagenes(pathTmp,dateTime):
     if dateTime == 'automaticoTile':
             tiles = sys.argv[1] 
             os.system('mkdir '+pathTmp+tiles)
-            pathTmp = pathTmp + tiles +'/'
+            pathTmp = pathTmp + 'T' + tiles +'/'
             start_date,end_date,SNbuffer = automaticoTile()
     if dateTime == 'automatico':
         start_date,end_date,region,SNbuffer = automatico()
