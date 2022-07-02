@@ -416,12 +416,12 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     print('5.2 Procesando mascara agua...')
                     #processing_sentinel2.aguaMascara(cuadrante,pathTmp+bandas20m[-1]+'.tif',pathTmp)
                     print('5.3 Procesando mascara nubes altas...')
-                    if dateTime == 'manual' and SNbuffer == True:
+                    if dateTime == 'manual' and dateTime == 'automatico' and SNbuffer == True:
                         banderaNub,porcNubeOceano = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp)
                     else:
                         #banderaNub,porcNubeOceano = processing_sentinel2.nubesMascara(cuadrante,bufferNubes,pathTmp+bandas20m[-1]+'.tif',pathLM,pathTmp)
-                        banderaNub,porcNubeOceano = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp)
-                        #banderaNub,porcNubeOceano = processing_sentinel2.nubesSombraMascaraSinBuffer(cuadrante,pathTmp,pathLM)
+                        #banderaNub,porcNubeOceano = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp)
+                        banderaNub,porcNubeOceano = processing_sentinel2.nubesSombraMascaraSinBuffer(cuadrante,pathTmp,pathLM)
                     print("Porcentaje de Nubes: ",porcNube)
                     print("Porcentaje de nubes oceanico: ",porcNubeOceano)
 
