@@ -40,10 +40,10 @@ def automaticoTile():
 
 def automatico():
     # Se le resta un dia, porque el servidor en UTC
-    daysDelta = 1
+    daysDelta = 2
     start_date = datetime.datetime.now() - datetime.timedelta(days=daysDelta)
     end_date = datetime.datetime.now()  - datetime.timedelta(days=daysDelta)
-    region = "sargazo_1"
+    region = "sargazo_3"
     SNbuffer = True
     #landMask = "land_sargazo_UTM16N_20m_1.tif"
     #nubesBajas = 900
@@ -517,9 +517,9 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
         if (dateTime == 'automatico') and numImagenes != 0:
             print('9. Procesando mosaico ...')
             # MOSAICO TC
-            processing_sentinel2.createMosaicLatest(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+            #processing_sentinel2.createMosaicLatest(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
             # MOSAICO SARGAZO
-            processing_sentinel2.createMosaicLatest(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
+            #processing_sentinel2.createMosaicLatest(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
             # MOSAICO TC
             processing_sentinel2.createMosaicFecha(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
             # MOSAICO SARGAZO
