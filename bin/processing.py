@@ -384,11 +384,13 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     elif porcNube >= 30.0:
                         #nubesBajas = 900
                         nubesBajas = 0.02
-                        bufferNubes = 200
+                        # antes 200
+                        bufferNubes = 500
                     else:
                         #nubesBajas = 2500
                         nubesBajas = 0.04
-                        bufferNubes = 400
+                        # antes 400
+                        bufferNubes = 1000
                     print('Valor de temperatura para filtro nubes bajas: ',nubesBajas)
                     print('Valor de buffer para nubes: ',bufferNubes)                  
           
