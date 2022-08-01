@@ -385,12 +385,12 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                         #nubesBajas = 900
                         nubesBajas = 0.02
                         # antes 200
-                        bufferNubes = 500
+                        bufferNubes = 200
                     else:
                         #nubesBajas = 2500
                         nubesBajas = 0.04
                         # antes 400
-                        bufferNubes = 1000
+                        bufferNubes = 400
                     print('Valor de temperatura para filtro nubes bajas: ',nubesBajas)
                     print('Valor de buffer para nubes: ',bufferNubes)                  
           
@@ -422,7 +422,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                         #banderaNub,porcNubeOceano = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp)
                         banderaNub,porcNubeOceano = processing_sentinel2.nubesMascara(cuadrante,bufferNubes,pathTmp+bandas20m[-1]+'.tif',pathLM,pathTmp)
                     else:
-                        banderaNub,porcNubeOceano = processing_sentinel2.nubesMascara(cuadrante,bufferNubes,pathTmp+bandas20m[-1]+'.tif',pathLM,pathTmp)
+                        #banderaNub,porcNubeOceano = processing_sentinel2.nubesMascara(cuadrante,bufferNubes,pathTmp+bandas20m[-1]+'.tif',pathLM,pathTmp)
+                        banderaNub,porcNubeOceano = processing_sentinel2.nubesMascaraSinBuffer(cuadrante,bufferNubes,pathTmp+bandas20m[-1]+'.tif',pathLM,pathTmp)
                         #banderaNub,porcNubeOceano = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp)
                         #banderaNub,porcNubeOceano = processing_sentinel2.nubesSombraMascaraSinBuffer(cuadrante,pathTmp,pathLM)
                     print("Porcentaje de Nubes: ",porcNube)

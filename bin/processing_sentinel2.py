@@ -468,6 +468,29 @@ def nubesMascara(cuadrante,bufferNubes,pathSCL,pathLM,pathTmp):
 
         return banderaNub,porcNubeOceano
 
+def nubesMascaraSinBuffer(cuadrante,pathSCL,pathLM,pathTmp):
+    cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
+
+    # Esta parte es para eficientizar la poligonizacion de las nubes
+    #os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cirrusMask.tif --calc="0*(A!=8)"')
+    os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cloudMaskShadow_bin_tmp.tif --calc="0*(A!=3)+0*(A!=8)+0*(A!=9)+0*(A!=10)+0*(A!=11)+1*(A==3)+1*(A==8)+1*(A==9)+1*(A==10)+1*(A==11)"')
+
+    os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_bin_tmp.tif -f "GeoJSON" '+pathTmp+'SCL_tmp.json')
+    df = gpd.read_file(pathTmp+'SCL_tmp.json')
+    df = df[df['DN'] == 1]
+    # Porcentaje nubosidad oceano
+    porcNubeOceano = porcNubosidadOceano(df, pathLM)
+    if len(df) == 0:
+        print("No buffer de nubes")
+        banderaNub = False
+        return banderaNub,porcNubeOceano
+    else:
+        print("Sin Buffer de nubes")
+        banderaNub = True
+        df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
+
+        return banderaNub,porcNubeOceano
+
 def nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp):
 
     cuadrante = str(cuadrante[0])+' '+str(cuadrante[1])+' '+str(cuadrante[2])+' '+str(cuadrante[3])
@@ -551,7 +574,7 @@ def nubesSombraMascaraSinBuffer(cuadrante,pathTmp,pathLM):
         banderaNub = False
         return banderaNub,porcNubeOceano
     else:
-        print("Buffer de nubes")
+        print("Sin Buffer de nubes")
         df.to_file(pathTmp+"cloudMaskShadow_b250_bin_rec_tmp.json", driver='GeoJSON')
         banderaNub = True
         return banderaNub,porcNubeOceano
