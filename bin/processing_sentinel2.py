@@ -434,7 +434,7 @@ def nubesMascara(cuadrante,bufferNubes,pathSCL,pathLM,pathTmp):
 
     # Esta parte es para eficientizar la poligonizacion de las nubes
     #os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cirrusMask.tif --calc="0*(A!=8)"')
-    os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cloudMaskShadow_bin_tmp.tif --calc="0*(A!=3)+0*(A!=8)+0*(A!=9)+0*(A!=10)+0*(A!=11)+1*(A==3)+1*(A==8)+1*(A==9)+1*(A==10)+1*(A==11)"')
+    os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cloudMaskShadow_bin_tmp.tif --calc="0*(A!=8)+0*(A!=9)+0*(A!=10)+0*(A!=11)+1*(A==8)+1*(A==9)+1*(A==10)+1*(A==11)"')
 
     os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_bin_tmp.tif -f "GeoJSON" '+pathTmp+'SCL_tmp.json')
     df = gpd.read_file(pathTmp+'SCL_tmp.json')
@@ -473,7 +473,7 @@ def nubesMascaraSinBuffer(cuadrante,pathSCL,pathLM,pathTmp):
 
     # Esta parte es para eficientizar la poligonizacion de las nubes
     #os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cirrusMask.tif --calc="0*(A!=8)"')
-    os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cloudMaskShadow_bin_tmp.tif --calc="0*(A!=3)+0*(A!=8)+0*(A!=9)+0*(A!=10)+0*(A!=11)+1*(A==3)+1*(A==8)+1*(A==9)+1*(A==10)+1*(A==11)"')
+    os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cloudMaskShadow_bin_tmp.tif --calc="0*(A!=8)+0*(A!=9)+0*(A!=10)+0*(A!=11)+1*(A==8)+1*(A==9)+1*(A==10)+1*(A==11)"')
 
     os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_bin_tmp.tif -f "GeoJSON" '+pathTmp+'SCL_tmp.json')
     df = gpd.read_file(pathTmp+'SCL_tmp.json')
