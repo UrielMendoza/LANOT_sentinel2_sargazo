@@ -235,6 +235,8 @@ def RGB(r,g,b,tile,anio,fecha,fechaProc,pathOutputGeoTiff,pathOutputPeta,pathTmp
     #os.system('gdaladdo -r average '+nombre+' 2 4 8 16 32')
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/sargazo/'+tile+'/')
+    # MANDA A KAWAK
+    os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geotiff/sargazo/'+tile+'/')
 
 def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTiff,pathOutputPeta,pathTmp):
     dirTC = listaBandas(pathInput,nivel,resolucion,'TCI')
@@ -246,6 +248,8 @@ def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTif
     #os.system('gdaladdo -r average '+nombre+' 2 4 8 16 32')
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/TC/'+tile+'/')
+    # MANDA A KAWAK
+    os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geotiff/TC/'+tile+'/')
 
 def porcNubosidadOceano(df,pathLM):
     # Porcentaje de nubosidad solo en el mar
@@ -317,6 +321,8 @@ def obtieneVertices(pathInput,pathOutput,pathOutputPeta):
     points.to_file(nombre,driver='GeoJSON')
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_vertices/')
+    # MANDA A KAWAK
+    os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geojson/sargazo_vertices/')
 
 def detfooMascaraVectorial(pathTmp):
     detfoo = 'MSK_DETFOO_B8A.json'
@@ -403,6 +409,9 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,SNbuffer,pathLM,pathTmp,pathOu
         df_sargazo.to_file(nombre, driver="GeoJSON")
         # MANDA A PETA
         os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo/'+tile+'/')
+        # MANDA A KAWAK
+        os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geojson/sargazo/'+tile+'/')
+
     else:
         print('=========================')
         print('NO DETECCIÓN DE SARGAZO')
@@ -1175,6 +1184,8 @@ def createMosaicLatest(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     fechaLog(pathInput+compuesto+'/mosaicos/', fecha)
     # MANDA A PETA
     os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')   
+    # MANDA A KAWAK
+    os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' lanotadm@kawak:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')  
     # MANDA A WEB
     os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')
     os.system('scp '+pathInput+compuesto+'/mosaicos/log.txt'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')  
@@ -1224,6 +1235,8 @@ def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb,pat
     os.system('gdaladdo -r average '+nomMosaicTif+' 2 4 8 16 32')
     # MANDA A PETA    
     os.system('scp '+nomMosaicTif+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
+    # MANDA A KAWAK
+    os.system('scp '+nomMosaicTif+' lanotadm@kawak:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
     # MANDA A WEB    
     os.system('scp '+nomMosaicTif+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
     # Agrega al catalogo
