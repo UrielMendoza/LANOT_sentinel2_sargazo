@@ -372,8 +372,12 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,SNbuffer,pathLM,pathTmp,pathOu
 
     # Con buffer de nubes
     if SNbuffer == True:
-        df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
-        res_difference = gpd.overlay(res_difference, df_maskCloudShadow, how='difference')
+        # Puede que algunas veces no genere la mascara de nubes
+        try:            
+            df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
+            res_difference = gpd.overlay(res_difference, df_maskCloudShadow, how='difference')
+        except:
+            pass
         print('=============================================')
         print('Detección de sargazo con mascara de nubes/sombra: ',len(res_difference),' elementos')
         print('=============================================')
