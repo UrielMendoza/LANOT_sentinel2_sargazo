@@ -235,6 +235,8 @@ def RGB(r,g,b,tile,anio,fecha,fechaProc,pathOutputGeoTiff,pathOutputPeta,pathTmp
     #os.system('gdaladdo -r average '+nombre+' 2 4 8 16 32')
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/sargazo/'+tile+'/')
+    # MANDA A KAWAK
+    os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geotiff/sargazo/'+tile+'/')
 
 def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTiff,pathOutputPeta,pathTmp):
     dirTC = listaBandas(pathInput,nivel,resolucion,'TCI')
@@ -246,6 +248,8 @@ def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTif
     #os.system('gdaladdo -r average '+nombre+' 2 4 8 16 32')
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/TC/'+tile+'/')
+    # MANDA A KAWAK
+    os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geotiff/TC/'+tile+'/')
 
 def porcNubosidadOceano(df,pathLM):
     # Porcentaje de nubosidad solo en el mar
@@ -317,6 +321,8 @@ def obtieneVertices(pathInput,pathOutput,pathOutputPeta):
     points.to_file(nombre,driver='GeoJSON')
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_vertices/')
+    # MANDA A KAWAK
+    os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geojson/sargazo_vertices/')
 
 def detfooMascaraVectorial(pathTmp):
     detfoo = 'MSK_DETFOO_B8A.json'
@@ -366,8 +372,12 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,SNbuffer,pathLM,pathTmp,pathOu
 
     # Con buffer de nubes
     if SNbuffer == True:
-        df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
-        res_difference = gpd.overlay(res_difference, df_maskCloudShadow, how='difference')
+        # Puede que algunas veces no genere la mascara de nubes
+        try:            
+            df_maskCloudShadow = gpd.read_file(pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json')
+            res_difference = gpd.overlay(res_difference, df_maskCloudShadow, how='difference')
+        except:
+            pass
         print('=============================================')
         print('Detección de sargazo con mascara de nubes/sombra: ',len(res_difference),' elementos')
         print('=============================================')
@@ -403,6 +413,9 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,SNbuffer,pathLM,pathTmp,pathOu
         df_sargazo.to_file(nombre, driver="GeoJSON")
         # MANDA A PETA
         os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo/'+tile+'/')
+        # MANDA A KAWAK
+        os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geojson/sargazo/'+tile+'/')
+
     else:
         print('=========================')
         print('NO DETECCIÓN DE SARGAZO')
@@ -434,7 +447,7 @@ def nubesMascara(cuadrante,bufferNubes,pathSCL,pathLM,pathTmp):
 
     # Esta parte es para eficientizar la poligonizacion de las nubes
     #os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cirrusMask.tif --calc="0*(A!=8)"')
-    os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cloudMaskShadow_bin_tmp.tif --calc="0*(A!=3)+0*(A!=8)+0*(A!=9)+0*(A!=10)+0*(A!=11)+1*(A==3)+1*(A==8)+1*(A==9)+1*(A==10)+1*(A==11)"')
+    os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cloudMaskShadow_bin_tmp.tif --calc="0*(A!=8)+0*(A!=9)+0*(A!=10)+0*(A!=11)+1*(A==8)+1*(A==9)+1*(A==10)+1*(A==11)"')
 
     os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_bin_tmp.tif -f "GeoJSON" '+pathTmp+'SCL_tmp.json')
     df = gpd.read_file(pathTmp+'SCL_tmp.json')
@@ -473,7 +486,7 @@ def nubesMascaraSinBuffer(cuadrante,pathSCL,pathLM,pathTmp):
 
     # Esta parte es para eficientizar la poligonizacion de las nubes
     #os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cirrusMask.tif --calc="0*(A!=8)"')
-    os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cloudMaskShadow_bin_tmp.tif --calc="0*(A!=3)+0*(A!=8)+0*(A!=9)+0*(A!=10)+0*(A!=11)+1*(A==3)+1*(A==8)+1*(A==9)+1*(A==10)+1*(A==11)"')
+    os.system('gdal_calc.py -A '+pathSCL+' --outfile='+pathTmp+'cloudMaskShadow_bin_tmp.tif --calc="0*(A!=8)+0*(A!=9)+0*(A!=10)+0*(A!=11)+1*(A==8)+1*(A==9)+1*(A==10)+1*(A==11)"')
 
     os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_bin_tmp.tif -f "GeoJSON" '+pathTmp+'SCL_tmp.json')
     df = gpd.read_file(pathTmp+'SCL_tmp.json')
@@ -1175,6 +1188,8 @@ def createMosaicLatest(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     fechaLog(pathInput+compuesto+'/mosaicos/', fecha)
     # MANDA A PETA
     os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')   
+    # MANDA A KAWAK
+    os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' lanotadm@kawak:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')  
     # MANDA A WEB
     os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')
     os.system('scp '+pathInput+compuesto+'/mosaicos/log.txt'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')  
@@ -1224,6 +1239,8 @@ def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb,pat
     os.system('gdaladdo -r average '+nomMosaicTif+' 2 4 8 16 32')
     # MANDA A PETA    
     os.system('scp '+nomMosaicTif+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
+    # MANDA A KAWAK
+    os.system('scp '+nomMosaicTif+' lanotadm@kawak:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
     # MANDA A WEB    
     os.system('scp '+nomMosaicTif+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
     # Agrega al catalogo
