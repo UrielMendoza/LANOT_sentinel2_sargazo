@@ -92,7 +92,7 @@ def manual():
         region = "prueba"
     elif resR == 9:
         region = "sargazo_2"
-    elif resR == "10":
+    elif resR == 10:
         region = "sargazo_3"
     # Opcion PathRow
     print("=================\n")
