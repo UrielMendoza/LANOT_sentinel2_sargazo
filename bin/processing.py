@@ -26,6 +26,15 @@ def semiManual():
     #landMask = "land_sargazo_UTM16N_20m_1.tif"
     #nubesBajas = 900
     return start_date,end_date,region,SNbuffer
+    
+def semiManualTile():
+    start_date = None
+    end_date = None
+    region = "sargazo_3"
+    SNbuffer = True
+    #landMask = "land_sargazo_UTM16N_20m_1.tif"
+    #nubesBajas = 900
+    return start_date,end_date,region,SNbuffer
 
 def automaticoTile():
     # Se le resta un dia, porque el servidor en UTC
@@ -168,7 +177,14 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             pathTmpOr = pathTmp
             pathTmp = pathTmp + 'T' + tiles +'/'
             start_date,end_date,SNbuffer = automaticoTile()
-    if dateTime == 'automatico':
+    elif dateTime == 'semiManualTile':
+            tiles = sys.argv[1] 
+            #os.system('mkdir '+pathTmp+tiles)
+            #pathTmp = pathTmp + tiles +'/'
+            pathTmpOr = pathTmp
+            pathTmp = pathTmp + 'T' + tiles +'/'
+            start_date,end_date,SNbuffer = semiManualTile()
+    elif dateTime == 'automatico':
         start_date,end_date,region,SNbuffer = automatico()
         pathTmpOr = pathTmp
 
@@ -193,13 +209,13 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     # agrego b02 y b03
     bandas20m = ('B02','B03','B04','B05','B8A','B11','B12','SCL')
     bandas10m = ['B08']
-    if dateTime != 'automaticoTile':
+    if dateTime != 'automaticoTile' or dateTime != 'semiManualTile':
         tiles = base.tiles[region]
     else:
         tiles = tiles.split()
     print(tiles)
     
-    if dateTime != 'semiManual' or dateTime != 'automaticoTile':
+    if dateTime != 'semiManual' or dateTime != 'automaticoTile' or dateTime != 'semiManualTile':
         try:
             # DESCARGA
             print('1. Descargando...')
@@ -219,6 +235,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     try:
         if dateTime == 'automaticoTile':
             tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
+        if dateTime == 'semiManualTile':
+            tilesDirs = processing_sentinel2.listaArchivos(pathInputL1C+'*')
         elif dateTime == 'automatico':
             tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
         elif dateTime == 'manual':
@@ -237,8 +255,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     # ALGORITMO
     for tileDir in tilesDirs:        
         try:
-            if dateTime == 'semiManual':
-                anioProc = '20220521'
+            if dateTime == 'semiManual' or dateTime == 'semiManualTile':
+                anioProc = '_20210101'
                 archivos = processing_sentinel2.listaArchivos(tileDir+'/*'+anioProc+'*')
             else:
                 archivos = processing_sentinel2.listaArchivos(tileDir+'/*')
@@ -262,7 +280,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                 print("Fecha: "+fecha)
                 print("Tile: "+tile)
                 # Borra sargazo si ya estaba
-                if dateTime == 'semiManual' or dateTime == 'manual':
+                if dateTime == 'semiManual' or dateTime == 'manual' or dateTime == 'semiManualTile':
                     fechaBorrar = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
                     fechaDiaBorrar = fechaBorrar.strftime('%Y-%m-%d')
                     processing_sentinel2.borraSargazoDB(fechaDiaBorrar,tile)
@@ -418,7 +436,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     print('5.2 Procesando mascara agua...')
                     #processing_sentinel2.aguaMascara(cuadrante,pathTmp+bandas20m[-1]+'.tif',pathTmp)
                     print('5.3 Procesando mascara nubes altas...')
-                    if (dateTime == 'manual' or dateTime == 'automatico') and SNbuffer == True:
+                    if (dateTime == 'manual' or dateTime == 'automatico' or dateTime == 'semiManualTile') and SNbuffer == True:
                         #banderaNub,porcNubeOceano = processing_sentinel2.nubesSombraMascara(cuadrante,bufferNubes,porcNube,pathLM,pathTmp)
                         banderaNub,porcNubeOceano = processing_sentinel2.nubesMascara(cuadrante,bufferNubes,pathTmp+bandas20m[-1]+'.tif',pathLM,pathTmp)
                     else:
@@ -533,7 +551,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')
 
-        elif (dateTime == 'manual') and numImagenes != 0:
+        elif (dateTime == 'manual' or dateTime == 'semiManualTile') and numImagenes != 0:
             print('9. Procesando mosaico ...')
             # MOSAICO TC
             processing_sentinel2.createMosaicFecha(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)

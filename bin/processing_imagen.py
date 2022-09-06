@@ -342,7 +342,7 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
     for tileDir in tilesDirs:        
         try:
             if dateTime == 'semiManual':
-                anioProc = '20220521'
+                anioProc = '_20210101'
                 archivos = processing_sentinel2.listaArchivos(tileDir+'/*'+anioProc+'*')
             else:
                 archivos = processing_sentinel2.listaArchivos(tileDir+'/*')
