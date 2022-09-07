@@ -172,6 +172,7 @@ def descargaImagenes(pathTmp,dateTime):
 
     bandas20m = ('B02','B03','B04','B05','B8A','B11','B12','SCL')
     bandas10m = ['B08']
+    
     if dateTime != 'automaticoTile':
         tiles = base.tiles[region]
     else:

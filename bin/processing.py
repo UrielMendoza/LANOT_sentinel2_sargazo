@@ -169,6 +169,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     if dateTime == 'automatico' or dateTime == 'manual':
         #os.system('rm -r '+pathTmp+'*')
         print('No borra tmp')
+
     # Fechas y buffer
     if dateTime == 'automaticoTile':
             tiles = sys.argv[1] 
@@ -177,6 +178,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             pathTmpOr = pathTmp
             pathTmp = pathTmp + 'T' + tiles +'/'
             start_date,end_date,SNbuffer = automaticoTile()
+
     elif dateTime == 'semiManualTile':
             tiles = sys.argv[1] 
             #os.system('mkdir '+pathTmp+tiles)
@@ -184,6 +186,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             pathTmpOr = pathTmp
             pathTmp = pathTmp + 'T' + tiles +'/'
             start_date,end_date,SNbuffer = semiManualTile()
+
     elif dateTime == 'automatico':
         start_date,end_date,region,SNbuffer = automatico()
         pathTmpOr = pathTmp
@@ -209,6 +212,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     # agrego b02 y b03
     bandas20m = ('B02','B03','B04','B05','B8A','B11','B12','SCL')
     bandas10m = ['B08']
+
+    print('DATETIME:'+dateTime)
     if dateTime != 'automaticoTile' or dateTime != 'semiManualTile':
         tiles = base.tiles[region]
     else:
