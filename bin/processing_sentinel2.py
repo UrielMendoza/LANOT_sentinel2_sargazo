@@ -1065,7 +1065,7 @@ def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube
         insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc,porcNubeOceano)
         print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
-        print('Ocurrio un error en la transacción DB: '+e)
+        print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo
         enviaMail(fecha, tile, traceback.format_exc().replace("'",""))
         cur.close()
@@ -1079,7 +1079,7 @@ def borraSargazoDB(fecha,tile):
         deleteSargazoDB(conect, cur, tile, fecha)
         print ("Se elimino sargazo de la DB: "+tile+" "+fecha)
     except Exception as e:
-        print('Ocurrio un error en la transacción DB: '+e)
+        print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo
         enviaMail(fecha, tile, traceback.format_exc().replace("'",""))
         cur.close()
@@ -1092,7 +1092,7 @@ def agregaNoSargazoDB(pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,p
         insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc,porcNubeOceano)
         #print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
-        print('Ocurrio un error en la transacción DB: '+e)
+        print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo
         enviaMail(fecha, tile, traceback.format_exc().replace("'",""))
         cur.close()
@@ -1105,7 +1105,7 @@ def agregaErrorSargazoDB(pathl1c,pathl2a,fecha,tile,tiperror):
         insertSargazoLogErrorDB(conect,cur,pathl1c,pathl2a,fecha,tile,tiperror)
         #print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
-        print('Ocurrio un error en la transacción DB: '+e)
+        print(f'Ocurrio un error en la transacción DB: {e}')
         # Mandar correo
         enviaMail(fecha, tile,traceback.format_exc().replace("'",""))
         cur.close()
@@ -1120,7 +1120,7 @@ def verificaSargazoDB(tile,fecha):
         #print(len(row))
         conect.commit()
     except Exception as e:
-        print('Ocurrio un error en la transacción DB log: '+e)
+        print(f'Ocurrio un error en la transacción DB log: {e}')
         # Mandar correo
         enviaMail(fecha, tile, traceback.format_exc().replace("'",""))
         cur.close()
@@ -1202,7 +1202,7 @@ def catalogoDB(fecha,nombre,compuesto,pathInput,pathOutput):
         deleteCatalogoDB(conect,cur,fecha,compuesto)
         insertCatalogoDB(compuesto,conect,cur,crs,archivoCSV)
     except Exception as e:
-        print('Ocurrio un error en la transacción DB catalogo: '+ e)
+        print(f'Ocurrio un error en la transacción DB catalogo: {e}')
         # Mandar correo
         enviaMail(fecha, '', traceback.format_exc().replace("'",""))
         cur.close()
