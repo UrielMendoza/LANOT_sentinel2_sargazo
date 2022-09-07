@@ -34,7 +34,7 @@ print('1. Descargando imagenes...')
 
 # 2. CORRECION ATMOSFERICA
 print('2. Correcion atmosferica...')
-imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime='semiManual')
+#imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime='semiManual')
 
 # 3. SARGAZO PARALELO
 print('3 Procesando sargazo en paralelo...')

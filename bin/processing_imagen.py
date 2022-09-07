@@ -294,6 +294,7 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
         start_date,end_date,region,SNbuffer = manual()
 
     elif dateTime == 'semiManual':
+        pathTmpOr = pathTmp
         start_date,end_date,region,SNbuffer = semiManual()
 
     bandas20m = ('B02','B03','B04','B05','B8A','B11','B12','SCL')
@@ -476,13 +477,13 @@ def imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathO
                     processing_sentinel2.enviaMail(fecha,tile,traceback.format_exc().replace("'",""))
                     continue
 
-                #finally:
+                finally:
                 # BORRA BASURA
-                    #os.system('rm -r '+pathTmp+'*.tif')
-                    #os.system('rm -r '+pathTmp+'*json')
-                    #os.system('rm -r '+pathTmp+'*.csv')
-                    #s.system('rm -r '+pathTmp+'*.zip')
-                    #s.system('rm -r '+pathTmp+'*.SAFE')
+                    os.system('rm -r '+pathTmp+'*.tif')
+                    os.system('rm -r '+pathTmp+'*json')
+                    os.system('rm -r '+pathTmp+'*.csv')
+                    os.system('rm -r '+pathTmp+'*.zip')
+                    os.system('rm -r '+pathTmp+'*.SAFE')
                     #if dateTime == 'automatico' or dateTime == 'manual':
                     #    os.system('rm -r '+pathTmp+'*')
                 
