@@ -213,8 +213,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     bandas20m = ('B02','B03','B04','B05','B8A','B11','B12','SCL')
     bandas10m = ['B08']
 
-    print('DATETIME:'+dateTime)
     if dateTime != 'automaticoTile' or dateTime != 'semiManualTile':
+        print('DATETIME:'+dateTime)
         tiles = base.tiles[region]
     else:
         tiles = tiles.split()
