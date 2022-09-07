@@ -1120,7 +1120,7 @@ def verificaSargazoDB(tile,fecha):
         #print(len(row))
         conect.commit()
     except Exception as e:
-        print(f'Ocurrio un error en la transacción DB log: {e}')
+        print('Ocurrio un error en la transacción DB log: '+e)
         # Mandar correo
         enviaMail(fecha, tile, traceback.format_exc().replace("'",""))
         cur.close()
@@ -1202,7 +1202,7 @@ def catalogoDB(fecha,nombre,compuesto,pathInput,pathOutput):
         deleteCatalogoDB(conect,cur,fecha,compuesto)
         insertCatalogoDB(compuesto,conect,cur,crs,archivoCSV)
     except Exception as e:
-        print(f'Ocurrio un error en la transacción DB catalogo: {e}')
+        print('Ocurrio un error en la transacción DB catalogo: '+ e)
         # Mandar correo
         enviaMail(fecha, '', traceback.format_exc().replace("'",""))
         cur.close()
