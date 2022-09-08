@@ -11,20 +11,20 @@ from processing import sargazoL2A
 if __name__ == "__main__":
 
     # DIRECTORIOS
-    pathInputL1C = '/data/input/sentinel2/L1C/'
-    pathInput = '/data/output/sentinel2/L2A/'
-    pathOutput = '/data/output/sentinel2/l2/geojson/sargazo/'
-    pathOutputEmpty = '/data/output/sentinel2/l2/geojson/sargazo/'
-    pathOutputGeoTiff = '/data/output/sentinel2/l2/geotiff/'
+    pathInputL1C = '/depot/sentinel2/input/L1C/'
+    pathInput = '/depot/sentinel2/output/L2A/'
+    pathOutput = '/depot/sentinel2/output/l2/geojson/sargazo/'
+    pathOutputEmpty = '/depot/sentinel2/output/l2/geojson/sargazo/'
+    pathOutputGeoTiff = '/depot/sentinel2/output/l2/geotiff/'
     pathOutputWeb = '/home/sargazo/data/'
     pathOutputPeta = '/depot/sentinel2/output/'
     pathInputPeta = '/depot/sentinel2/input/L1C/'
-    pathVertices = '/data/output/sentinel2/l2/geojson/sargazo_vertices/'
+    pathVertices = '/depot/sentinel2/output/sentinel2/l2/geojson/sargazo_vertices/'
     pathTmp = '/data/input/sentinel2/tmp/semi_manual/'
-    pathLM = '/home/lanotadm/LANOT_sentinel2_sargazo/data/masks/'
+    pathLM = '../data/masks/'
+    pathLog = '../../logs_sentinel2_sargazo/'
+    pathOutputVistas = '/depot/sentinel2/output/vistas/sargazo/sargazo_TC/'
     pathSen2cor = '/home/lanotadm/'
     pathLanot = '/usr/local/share/lanot/'
-    pathOutputVistas = '/data/output/sentinel2/vistas/sargazo/sargazo_TC/'
-    pathLog = '/home/lanotadm/logs_sentinel2_sargazo/'
 
     sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime='semiManual')
