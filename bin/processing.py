@@ -184,7 +184,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             #os.system('mkdir '+pathTmp+tiles)
             #pathTmp = pathTmp + tiles +'/'
             pathTmpOr = pathTmp
-            pathTmp = pathTmp + 'T' + tiles +'/'
+            #pathTmp = pathTmp + 'T' + tiles +'/'
             start_date,end_date,SNbuffer = semiManualTile()
 
     elif dateTime == 'automatico':
