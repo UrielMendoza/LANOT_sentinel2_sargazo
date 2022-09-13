@@ -95,10 +95,10 @@ def manual():
     # Catalogo de dias 
     print("=================\n")
     print("REGION")
-    print("Regiones disponibles establecidas por PATH/ROW: \n1. sargazo_1\n2. Cancun\n3. Cancun-Tulum\n4. Caribe Mexicano\n5. Antillas francesas\n6. Guyane\n7. Mascara Tierra\n8. sargazo_2\n9. sargazo_3\n10. Prueba")
+    print("Regiones disponibles establecidas por PATH/ROW: \n1. sargazo_1\n2. Cancun\n3. Cancun-Tulum\n4. Caribe Mexicano\n5. Antillas francesas\n6. Guyane\n7. Mascara Tierra\n8. sargazo_2\n9. sargazo_3\n10. sargazo_4\n11. sargazo_5\n12. Prueba")
     while True:
         resR = int(input())
-        if resR == 1 or resR == 2 or resR == 3 or resR == 4 or resR == 5 or resR == 6 or resR == 7 or resR == 8 or resR == 9 or resR == 10:
+        if resR == 1 or resR == 2 or resR == 3 or resR == 4 or resR == 5 or resR == 6 or resR == 7 or resR == 8 or resR == 9 or resR == 10 or resR == 11 or resR == 12:
             break
     if resR == 1:
         region = "sargazo_1"
@@ -119,6 +119,10 @@ def manual():
     elif resR == 9:
         region = "sargazo_3"
     elif resR == 10:
+        region = "sargazo_4"
+    elif resR == 11:
+        region = "sargazo_5"
+    elif resR == 12:
         region = "prueba"
     # Opcion PathRow
     #print("=================\n")
