@@ -73,6 +73,10 @@ tiles['sargazo_5'] = [
 "21PTQ","21PTP","21PTN","21PTM","21PUQ","21PUP","21PUN","21PUM"
 ]
 
+# Sargazo4: Region de monitoreo de sargazo
+tiles['sargazo_6'] = [
+"20PPV","20PPU","20PPT","20PPS","20PQV","20PQU","20PQT","20PQS","20PRV","20PRU","20PRT","20PRS","21PTQ","21PTP","21PTN","21PTM","21PUQ","21PUP","21PUN","21PUM"
+]
 
 # Mascara Tierra: Region para generar las mascaras de tierra por año
 tiles['mascara_tierra'] = [
