@@ -293,7 +293,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                 print("Fecha: "+fecha)
                 print("Tile: "+tile)
                 # Borra sargazo si ya estaba
-                if dateTime == 'semiManual' or dateTime == 'manual' or dateTime == 'semiManualTile':
+                if dateTime == 'semiManual' or dateTime == 'manual':
                     fechaBorrar = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
                     fechaDiaBorrar = fechaBorrar.strftime('%Y-%m-%d')
                     processing_sentinel2.borraSargazoDB(fechaDiaBorrar,tile)
