@@ -312,7 +312,7 @@ def poligonizacion(tile,anio,fecha,pathLM,pathInput,pathOutput,pathOutputEmpty):
         #totalSar = '0'
         return nombre, banderaSar
 
-def obtieneVertices(pathInput,pathOutput,pathOutputPeta):
+def obtieneVertices(pathInput,pathOutput,pathOutputPeta,pathOutputWeb):
     polys = gpd.read_file(pathInput)
     points = polys.copy()
     points = points.explode()
@@ -323,6 +323,27 @@ def obtieneVertices(pathInput,pathOutput,pathOutputPeta):
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_vertices/')
     # MANDA A KAWAK
     os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geojson/sargazo_vertices/')
+    # MANDA A WEB
+    os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_vertices/')
+
+def obtieneCentroides(pathInput,pathOutput,pathOutputPeta,pathOutputWeb,pathLM):
+    df = gpd.read_file(pathInput)
+    df_maskLand= gpd.read_file(pathLM+'land_2_UTM16N_20m_SPlaya_b100m_2021.geojson')
+    geoSc = df.geometry.centroid
+    df['geometry'] = geoSc
+    res_difference = gpd.overlay(df, df_maskLand, how='difference')
+    nombre = pathOutput+pathInput.split('/')[-1].split('.')[0]+'_centroides.json'
+    # Shapefile
+    #os.system('mkdir '+'S2_MSI_SAR_T16QEJ_20220814T160911_20220814T212806')
+    #res_difference.to_file("./S2_MSI_SAR_T16QEJ_20220814T160911_20220814T212806/S2_MSI_SAR_T16QEJ_20220814T160911_20220814T212806.shp")
+    # Geojson 
+    res_difference.to_file(nombre,driver='GeoJSON')
+    # MANDA A PETA
+    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_centroides/')
+    # MANDA A KAWAK
+    os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geojson/sargazo_centroides/')
+    # MANDA A WEB
+    os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_centroides/')
 
 def detfooMascaraVectorial(pathTmp):
     detfoo = 'MSK_DETFOO_B8A.json'

@@ -13,7 +13,7 @@ if __name__ == "__main__":
     pathOutputGeoTiff = '/data/output/sentinel2/l2/geotiff/'
     pathOutputWeb = '/home/sargazo/data/'
     pathOutputPeta = '/depot/sentinel2/output/'
-    pathVertices = '/data/output/sentinel2/l2/geojson/sargazo_vertices/'
+    pathVertices = '/data/output/sentinel2/l2/geojson/'
     pathTmp = '/data/input/sentinel2/tmp/manual/'
     pathLanot = '/usr/local/share/lanot/'
     region = 's1'

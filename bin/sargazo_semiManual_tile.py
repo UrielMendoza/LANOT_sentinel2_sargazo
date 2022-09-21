@@ -21,7 +21,7 @@ if __name__ == "__main__":
     pathOutputWeb = '/home/sargazo/data/'
     pathOutputPeta = '/depot/sentinel2/output/'
     pathInputPeta = '/depot/sentinel2/input/L1C/'
-    pathVertices = '/depot/sentinel2/output/l2/geojson/sargazo_vertices/'
+    pathVertices = '/depot/sentinel2/output/l2/geojson/'
     pathTmp = '/data/input/sentinel2/tmp/semi_manual/'
     pathLM = '../data/masks/'
     pathLog = '../../logs_sentinel2_sargazo/'

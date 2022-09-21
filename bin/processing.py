@@ -513,7 +513,10 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     if banderaSar == True:
                             #banderaSar_log = 'si'
                             #totalSar = str((float(totalSar)+ float(totalSarMask))/2)
-                            processing_sentinel2.obtieneVertices(archivoProc,pathVertices,pathOutputPeta)
+                            # Vertices
+                            processing_sentinel2.obtieneVertices(archivoProc,pathVertices+'sargazo_vertices/',pathOutputPeta,pathOutputWeb)
+                            # Centroides
+                            processing_sentinel2.obtieneCentroides(archivoProc,pathVertices+'sargazo_centroides/',pathOutputPeta,pathOutputWeb,pathLM)
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
                             tproc = round((time.time()-iniTProc)/60,2)
