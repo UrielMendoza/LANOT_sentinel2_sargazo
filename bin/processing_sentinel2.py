@@ -345,6 +345,34 @@ def obtieneCentroides(pathInput,pathOutput,pathOutputPeta,pathOutputWeb,pathLM):
     # MANDA A WEB
     os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_centroides/')
 
+def uneCentroides(pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWeb):
+    archivos = glob(pathInput+'*'+fecha+'*')
+    archivos.sort()
+
+    archivoB = archivos[0]
+    nombreB = archivoB.split('/')[-1].split('_')
+    df_b = gpd.read_file(archivoB)
+
+    for i in archivos[1:]:
+        df_t = gpd.read_file(i)
+        df = df_b.append(df_t)
+
+    del nombreB[3]
+    del nombreB[4]
+
+    nombreB = "_".join(nombreB)
+    nombre = pathOutput+nombreB
+    
+    df.to_file(nombre,driver='GeoJSON')
+
+    # MANDA A PETA
+    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_centroides/s1/')
+    # MANDA A KAWAK
+    os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geojson/sargazo_centroides/s1/')
+    # MANDA A WEB
+    os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_centroides/s1/')
+    
+
 def detfooMascaraVectorial(pathTmp):
     detfoo = 'MSK_DETFOO_B8A.json'
     df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar.json')

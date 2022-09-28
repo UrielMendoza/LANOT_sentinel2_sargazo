@@ -566,6 +566,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')
+            # GENERA CENTROIDES CONJUNTO
+            processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
 
         elif (dateTime == 'manual') and numImagenes != 0:
             print('9. Procesando mosaico ...')
@@ -576,7 +578,9 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             # GENERA VISTA
             #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
-            os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')            
+            os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')  
+            # GENERA CENTROIDES CONJUNTO 
+            processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
             
         print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
 
