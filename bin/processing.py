@@ -286,6 +286,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                 iniTProc = time.time()
                 print('Procesando: '+archivo)
                 fecha = processing_sentinel2.obtieneFecha(archivo)
+                fechaDia = fecha.split('T')[0]
                 fechaImaProc = processing_sentinel2.obtieneFechaImaProc(archivo)
                 tile = processing_sentinel2.obtieneTile(archivo)
                 anio = processing_sentinel2.obtieneAnio(archivo)
@@ -567,7 +568,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')
             # GENERA CENTROIDES CONJUNTO
-            processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
+            processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
 
         elif (dateTime == 'manual') and numImagenes != 0:
             print('9. Procesando mosaico ...')
@@ -579,8 +580,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')  
-            # GENERA CENTROIDES CONJUNTO 
-            processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
+            # GENERA CENTROIDES CONJUNTO
+            processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
             
         print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
 
