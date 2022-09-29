@@ -363,6 +363,7 @@ def uneCentroides(pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWeb):
     nombreB = "_".join(nombreB)
     nombre = pathOutput+nombreB
     
+    df_b  = df_b.to_crs({'init': 'epsg:4326'})
     df_b.to_file(nombre,driver='GeoJSON')
 
     # MANDA A PETA
