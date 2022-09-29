@@ -236,7 +236,7 @@ def RGB(r,g,b,tile,anio,fecha,fechaProc,pathOutputGeoTiff,pathOutputPeta,pathTmp
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/sargazo/'+tile+'/')
     # MANDA A KAWAK
-    os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geotiff/sargazo/'+tile+'/')
+    os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geotiff/sargazo/'+tile+'/')
 
 def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTiff,pathOutputPeta,pathTmp):
     dirTC = listaBandas(pathInput,nivel,resolucion,'TCI')
@@ -249,7 +249,7 @@ def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTif
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/TC/'+tile+'/')
     # MANDA A KAWAK
-    os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geotiff/TC/'+tile+'/')
+    os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geotiff/TC/'+tile+'/')
 
 def porcNubosidadOceano(df,pathLM):
     # Porcentaje de nubosidad solo en el mar
@@ -322,7 +322,7 @@ def obtieneVertices(pathInput,pathOutput,pathOutputPeta,pathOutputWeb):
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_vertices/')
     # MANDA A KAWAK
-    os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geojson/sargazo_vertices/')
+    os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geojson/sargazo_vertices/')
     # MANDA A WEB
     os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_vertices/')
 
@@ -341,7 +341,7 @@ def obtieneCentroides(pathInput,pathOutput,pathOutputPeta,pathOutputWeb,pathLM):
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_centroides/')
     # MANDA A KAWAK
-    os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geojson/sargazo_centroides/')
+    os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geojson/sargazo_centroides/')
     # MANDA A WEB
     os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_centroides/')
 
@@ -368,7 +368,7 @@ def uneCentroides(pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWeb):
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_centroides/s1/')
     # MANDA A KAWAK
-    os.system('scp '+nombre+' lanotadm@172.16.0.3:'+pathOutputPeta+'l2/geojson/sargazo_centroides/s1/')
+    os.system('scp '+nombre+' lanotadm@kawak:'+'/data/output/sentinel2/l2/geojson/sargazo_centroides/s1/')
     # MANDA A WEB
     os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_centroides/s1/')
     
@@ -463,7 +463,7 @@ def mascarasVectoriales(tile,anio,fecha,fechaProc,SNbuffer,pathLM,pathTmp,pathOu
         # MANDA A PETA
         os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo/'+tile+'/')
         # MANDA A KAWAK
-        os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geojson/sargazo/'+tile+'/')
+        os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geojson/sargazo/'+tile+'/')
 
     else:
         print('=========================')
