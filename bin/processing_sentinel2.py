@@ -368,7 +368,7 @@ def uneCentroides(pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWeb):
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_centroides/s1/')
     # MANDA A KAWAK
-    os.system('scp '+nombre+' lanotadm@kawak:'+pathOutputPeta+'l2/geojson/sargazo_centroides/s1/')
+    os.system('scp '+nombre+' lanotadm@172.16.0.3:'+pathOutputPeta+'l2/geojson/sargazo_centroides/s1/')
     # MANDA A WEB
     os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_centroides/s1/')
     
