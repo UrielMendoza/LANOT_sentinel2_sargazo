@@ -355,7 +355,7 @@ def uneCentroides(pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWeb):
 
     for i in archivos[1:]:
         df_t = gpd.read_file(i)
-        df = df_b.append(df_t)
+        df_b = df_b.append(df_t)
 
     del nombreB[3]
     del nombreB[4]
@@ -363,7 +363,7 @@ def uneCentroides(pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWeb):
     nombreB = "_".join(nombreB)
     nombre = pathOutput+nombreB
     
-    df.to_file(nombre,driver='GeoJSON')
+    df_b.to_file(nombre,driver='GeoJSON')
 
     # MANDA A PETA
     os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_centroides/s1/')
