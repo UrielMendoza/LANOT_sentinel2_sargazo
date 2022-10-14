@@ -42,7 +42,7 @@ print('3 Procesando sargazo en paralelo...')
 pathScript = '/home/lanotadm/LANOT_sentinel2_sargazo/bin/'
 
 # Script para obtencion de sargazo por tile
-script_1 = 'python '+pathScript+'sargazo_semiManual_tile.py'
+script_1 = 'python3 '+pathScript+'sargazo_semiManual_tile.py'
 
 # Regiones
 prueba = ("16QDJ","16QEJ")
