@@ -222,9 +222,9 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     # Regiones
     if region == 'sargazo_1' or region == 'sargazo_2' or region == 'sargazo_3':
         regionMosaicoTC = 'TC'
-        regionMosaicoSar = 'TC_2'
+        regionMosaicoSar = 'sargazo'
     elif  'sargazo_4' or region == 'sargazo_5' or region == 'sargazo_6':
-        regionMosaicoTC = 'sargazo'
+        regionMosaicoTC = 'TC_2'
         regionMosaicoSar = 'sargazo_2'
 
     if dateTime != 'automaticoTile' and dateTime != 'semiManualTile':
