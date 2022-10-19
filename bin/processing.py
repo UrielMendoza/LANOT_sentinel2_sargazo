@@ -576,7 +576,10 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')
             # GENERA CENTROIDES CONJUNTO
-            processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
+            if regionMosaicoTC == 'TC_2' or regionMosaicoSar == 'sargazo_2':
+                processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s2/',pathOutputPeta,pathOutputWeb)
+            else:
+                processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
 
         elif (dateTime == 'manual') and numImagenes != 0:
             print('9. Procesando mosaico ...')
@@ -589,7 +592,10 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')  
             # GENERA CENTROIDES CONJUNTO
-            processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
+            if regionMosaicoTC == 'TC_2' or regionMosaicoSar == 'sargazo_2':
+                processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s2/',pathOutputPeta,pathOutputWeb)
+            else:
+                processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
             
         print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
 
