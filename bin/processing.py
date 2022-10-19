@@ -219,6 +219,14 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     bandas20m = ('B02','B03','B04','B05','B8A','B11','B12','SCL')
     bandas10m = ['B08']
 
+    # Regiones
+    if region == 'sargazo_1' or region == 'sargazo_2' or region == 'sargazo_3':
+        regionMosaicoTC = 'TC'
+        regionMosaicoSar = 'TC_2'
+    elif  'sargazo_4' or region == 'sargazo_5' or region == 'sargazo_6':
+        regionMosaicoTC = 'sargazo'
+        regionMosaicoSar = 'sargazo_2'
+
     if dateTime != 'automaticoTile' and dateTime != 'semiManualTile':
         tiles = base.tiles[region]
     else:
@@ -573,9 +581,9 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
         elif (dateTime == 'manual') and numImagenes != 0:
             print('9. Procesando mosaico ...')
             # MOSAICO TC
-            processing_sentinel2.createMosaicFecha(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
+            processing_sentinel2.createMosaicFecha(fecha,regionMosaicoTC,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
             # MOSAICO SARGAZO
-            processing_sentinel2.createMosaicFecha(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
+            processing_sentinel2.createMosaicFecha(fecha,regionMosaicoSar,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
             # GENERA VISTA
             #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
