@@ -1247,7 +1247,10 @@ def createMosaicLatest(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
 def catalogoDB(fecha,nombre,compuesto,pathInput,pathOutput):
     conect,cur = conexionDB()
     try:
-        archivoCuadrante = cuadranteMosaico(fecha,nombre,compuesto,32616,pathInput,pathOutput)
+        if compuesto == 'TC_2' or compuesto == 'sargazo_2':
+            archivoCuadrante = cuadranteMosaico(fecha,nombre,compuesto,4326,pathInput,pathOutput)
+        else:
+            archivoCuadrante = cuadranteMosaico(fecha,nombre,compuesto,32616,pathInput,pathOutput)
         archivoCSV,crs = creaCSV_catalogo(archivoCuadrante, pathOutput)
         deleteCatalogoDB(conect,cur,fecha,compuesto)
         insertCatalogoDB(compuesto,conect,cur,crs,archivoCSV)
@@ -1276,10 +1279,18 @@ def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb,pat
     mosaicos = ''
     for path in Path(pathInput+compuesto).rglob('*'+fecha+'*.tif'):
         print(path, type(path))
-        mosaicos += str(path) + ' '    
+        if compuesto == 'TC_2' or compuesto == 'sargazo_2':
+            nombreTmp = pathTmp+path.split('/')[-1]
+            os.system('gdal_translate -s_srs EPSG:4326 '+path+' '+nombreTmp)
+            mosaicos += str(nombreTmp) + ' '
+        else:
+            mosaicos += str(path) + ' '    
 
     # S2_MSI_sargazoTC_s1_20151023T162332.png
-    nombre = 'S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'	
+    if compuesto == 'TC_2' or compuesto == 'sargazo_2':
+        nombre = 'S2_MSI_'+compuesto+'_s2_'+fecha+'.tif'
+    else:
+        nombre = 'S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'
     nomMosaicTif = pathInput+compuesto+'/mosaicos/catalogo_'+compuesto+'/'+nombre
     # Mosaico con fecha
     print('gdal_merge.py -o '+nomMosaicTif+' '+mosaicos)
@@ -1290,7 +1301,7 @@ def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb,pat
     # MANDA A PETA    
     os.system('scp '+nomMosaicTif+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
     # MANDA A KAWAK
-    os.system('scp '+nomMosaicTif+' lanotadm@kawak:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
+    os.system('scp '+nomMosaicTif+' lanotadm@kawak:/data/output/sentinel2/l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
     # MANDA A WEB    
     os.system('scp '+nomMosaicTif+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
     # Agrega al catalogo
