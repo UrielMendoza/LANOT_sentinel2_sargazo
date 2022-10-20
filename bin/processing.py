@@ -568,9 +568,9 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             # MOSAICO SARGAZO
             #processing_sentinel2.createMosaicLatest(fecha,'sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
             # MOSAICO TC
-            processing_sentinel2.createMosaicFecha(fecha,regionMosaicoTC,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
+            processing_sentinel2.createMosaicFecha(fecha,'TC',regionMosaicoTC,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
             # MOSAICO SARGAZO
-            processing_sentinel2.createMosaicFecha(fecha,regionMosaicoSar,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
+            processing_sentinel2.createMosaicFecha(fecha,'sargazo',regionMosaicoSar,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
             # GENERA VISTA
             #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
@@ -584,9 +584,9 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
         elif (dateTime == 'manual') and numImagenes != 0:
             print('9. Procesando mosaico ...')
             # MOSAICO TC
-            processing_sentinel2.createMosaicFecha(fecha,regionMosaicoTC,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
+            processing_sentinel2.createMosaicFecha(fecha,'TC',regionMosaicoTC,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
             # MOSAICO SARGAZO
-            processing_sentinel2.createMosaicFecha(fecha,regionMosaicoSar,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
+            processing_sentinel2.createMosaicFecha(fecha,'sargazo',regionMosaicoSar,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
             # GENERA VISTA
             #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')

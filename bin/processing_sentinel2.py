@@ -1058,11 +1058,11 @@ def insertCatalogoDB(compuesto,conect,cur,crs,pathInput):
         next(reader)
         for row in reader:
             #print('Añadiendo a DB: ', row[2])
-            if compuesto == 'TC':
+            if compuesto == 'TC' or compuesto == 'TC_2':
                 cur.execute('INSERT INTO public."catalogo_'+compuesto.upper()+'" (fid, location, ingestion, the_geom) VALUES (DEFAULT, %s, %s, ST_GeomFromText(%s,'+crs+'))', row)
             else:
                 cur.execute('INSERT INTO public."catalogo_'+compuesto+'" (fid, location, ingestion, the_geom) VALUES (DEFAULT, %s, %s, ST_GeomFromText(%s,'+crs+'))', row)
-        if compuesto == 'TC':
+        if compuesto == 'TC' or compuesto == 'TC_2':
             cur.execute('SELECT * from public."catalogo_'+compuesto.upper()+'"')
         else: 
             cur.execute('SELECT * from public."catalogo_'+compuesto+'"')
@@ -1244,16 +1244,16 @@ def createMosaicLatest(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')
     os.system('scp '+pathInput+compuesto+'/mosaicos/log.txt'+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/')  
 
-def catalogoDB(fecha,nombre,compuesto,pathInput,pathOutput):
+def catalogoDB(fecha,nombre,compuesto,mosaico,pathInput,pathOutput):
     conect,cur = conexionDB()
     try:
-        if compuesto == 'TC_2' or compuesto == 'sargazo_2':
+        if mosaico == 'TC_2' or mosaico == 'sargazo_2':
             archivoCuadrante = cuadranteMosaico(fecha,nombre,compuesto,4326,pathInput,pathOutput)
         else:
             archivoCuadrante = cuadranteMosaico(fecha,nombre,compuesto,32616,pathInput,pathOutput)
         archivoCSV,crs = creaCSV_catalogo(archivoCuadrante, pathOutput)
-        deleteCatalogoDB(conect,cur,fecha,compuesto)
-        insertCatalogoDB(compuesto,conect,cur,crs,archivoCSV)
+        deleteCatalogoDB(conect,cur,fecha,mosaico)
+        insertCatalogoDB(mosaico,conect,cur,crs,archivoCSV)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB catalogo: {e}')
         # Mandar correo
@@ -1291,7 +1291,7 @@ def createMosaicFecha(fecha,compuesto,mosaico,pathInput,pathOutputPeta,pathOutpu
         nombre = 'S2_MSI_'+compuesto+'_s2_'+fecha+'.tif'
     else:
         nombre = 'S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'
-    nomMosaicTif = pathInput+compuesto+'/mosaicos/catalogo_'+compuesto+'/'+nombre
+    nomMosaicTif = pathInput+compuesto+'/mosaicos/catalogo_'+mosaico+'/'+nombre
     # Mosaico con fecha
     print('gdal_merge.py -o '+nomMosaicTif+' '+mosaicos)
     os.system('gdal_merge.py -o '+pathTmp+compuesto+'_mosaico.tif '+mosaicos)
@@ -1306,4 +1306,4 @@ def createMosaicFecha(fecha,compuesto,mosaico,pathInput,pathOutputPeta,pathOutpu
     os.system('scp '+nomMosaicTif+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
     # Agrega al catalogo
     fechaCatalogo = obtieneFechaCatalogo(fecha)
-    catalogoDB(fechaCatalogo,nombre,compuesto,nomMosaicTif,pathTmp)
+    catalogoDB(fechaCatalogo,nombre,compuesto,mosaico,nomMosaicTif,pathTmp)
