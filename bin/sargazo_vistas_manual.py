@@ -40,7 +40,7 @@ if __name__ == "__main__":
         #uneCentroides(pathVertices+'sargazo_centroides/',fecha,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
 
         # Borra Tmp
-        os.system('rm -r '+pathTmp+'*.tif')
+        #os.system('rm -r '+pathTmp+'*.tif')
         os.system('rm -r '+pathTmp+'*json')
         os.system('rm -r '+pathTmp+'*.csv')
         os.system('rm -r '+pathTmp+'*.zip')
