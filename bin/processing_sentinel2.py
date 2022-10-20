@@ -1263,7 +1263,7 @@ def catalogoDB(fecha,nombre,compuesto,pathInput,pathOutput):
     conect.close()
 
 
-def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb,pathTmp):
+def createMosaicFecha(fecha,compuesto,mosaico,pathInput,pathOutputPeta,pathOutputWeb,pathTmp):
     tiles = ['T16QDF','T16QDG','T16QDH','T16QDJ','T16QEF','T16QEG','T16QEH','T16QEJ']
     
     #archivosTiff = []
@@ -1279,7 +1279,7 @@ def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb,pat
     mosaicos = ''
     for path in Path(pathInput+compuesto).rglob('*'+fecha+'*.tif'):
         print(path, type(path))
-        if compuesto == 'TC_2' or compuesto == 'sargazo_2':
+        if mosaico == 'TC_2' or mosaico == 'sargazo_2':
             nombreTmp = pathTmp+path.split('/')[-1]
             os.system('gdal_translate -s_srs EPSG:4326 '+path+' '+nombreTmp)
             mosaicos += str(nombreTmp) + ' '
@@ -1287,7 +1287,7 @@ def createMosaicFecha(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb,pat
             mosaicos += str(path) + ' '    
 
     # S2_MSI_sargazoTC_s1_20151023T162332.png
-    if compuesto == 'TC_2' or compuesto == 'sargazo_2':
+    if mosaico == 'TC_2' or mosaico == 'sargazo_2':
         nombre = 'S2_MSI_'+compuesto+'_s2_'+fecha+'.tif'
     else:
         nombre = 'S2_MSI_'+compuesto+'_s1_'+fecha+'.tif'
