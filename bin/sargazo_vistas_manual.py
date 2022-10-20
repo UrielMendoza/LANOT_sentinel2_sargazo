@@ -32,7 +32,7 @@ if __name__ == "__main__":
         # Mosaicos
         #createMosaicLatest(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
         createMosaicFecha(fecha,'TC','TC_2',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
-        #createMosaicFecha(fecha,'sargazo','sargazo_2',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
+        createMosaicFecha(fecha,'sargazo','sargazo_2',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
         # Vistas
         #sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
         #os.system('python3 sargazo_vistas_vertices.py '+fecha+' s1')
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         #uneCentroides(pathVertices+'sargazo_centroides/',fecha,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
 
         # Borra Tmp
-        #os.system('rm -r '+pathTmp+'*.tif')
+        os.system('rm -r '+pathTmp+'*.tif')
         os.system('rm -r '+pathTmp+'*json')
         os.system('rm -r '+pathTmp+'*.csv')
         os.system('rm -r '+pathTmp+'*.zip')
