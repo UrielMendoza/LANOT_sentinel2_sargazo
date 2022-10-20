@@ -1280,7 +1280,7 @@ def createMosaicFecha(fecha,compuesto,mosaico,pathInput,pathOutputPeta,pathOutpu
     for path in Path(pathInput+compuesto).rglob('*'+fecha+'*.tif'):
         print(path, type(path))
         if mosaico == 'TC_2' or mosaico == 'sargazo_2':
-            nombreTmp = pathTmp+path.split('/')[-1]
+            nombreTmp = pathTmp+str(path).split('/')[-1]
             os.system('gdal_translate -s_srs EPSG:4326 '+path+' '+nombreTmp)
             mosaicos += str(nombreTmp) + ' '
         else:
