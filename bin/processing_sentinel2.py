@@ -1299,11 +1299,11 @@ def createMosaicFecha(fecha,compuesto,mosaico,pathInput,pathOutputPeta,pathOutpu
     os.system('gdal_translate -CO "TILED=YES" -CO "BLOCKXSIZE=512" -CO "BLOCKYSIZE=512" -CO "BIGTIFF=YES" '+pathTmp+compuesto+'_mosaico.tif '+nomMosaicTif)
     os.system('gdaladdo -r average '+nomMosaicTif+' 2 4 8 16 32')
     # MANDA A PETA    
-    os.system('scp '+nomMosaicTif+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
+    os.system('scp '+nomMosaicTif+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+mosaico+'/')
     # MANDA A KAWAK
-    os.system('scp '+nomMosaicTif+' lanotadm@kawak:/data/output/sentinel2/l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
+    os.system('scp '+nomMosaicTif+' lanotadm@kawak:/data/output/sentinel2/l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+mosaico+'/')
     # MANDA A WEB    
-    os.system('scp '+nomMosaicTif+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+compuesto+'/')
+    os.system('scp '+nomMosaicTif+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+mosaico+'/')
     # Agrega al catalogo
     fechaCatalogo = obtieneFechaCatalogo(fecha)
     catalogoDB(fechaCatalogo,nombre,compuesto,mosaico,nomMosaicTif,pathTmp)
