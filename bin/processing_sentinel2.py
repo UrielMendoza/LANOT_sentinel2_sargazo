@@ -1281,7 +1281,7 @@ def createMosaicFecha(fecha,compuesto,mosaico,pathInput,pathOutputPeta,pathOutpu
         print(path, type(path))
         if mosaico == 'TC_2' or mosaico == 'sargazo_2':
             nombreTmp = pathTmp+str(path).split('/')[-1]
-            os.system('gdalwarp -t_srs EPSG:4326 '+str(path)+' '+nombreTmp)
+            os.system('gdalwarp -t_srs EPSG:3857 '+str(path)+' '+nombreTmp)
             mosaicos += str(nombreTmp) + ' '
         else:
             mosaicos += str(path) + ' '    
