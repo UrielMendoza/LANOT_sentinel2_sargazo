@@ -30,11 +30,11 @@ def semiManual():
 def semiManualTile():
     start_date = None
     end_date = None
-    region = "sargazo_3"
+    region = "sargazo_1"
     SNbuffer = True
     #landMask = "land_sargazo_UTM16N_20m_1.tif"
     #nubesBajas = 900
-    return start_date,end_date,SNbuffer
+    return start_date,end_date,region,SNbuffer
 
 def automaticoTile():
     # Se le resta un dia, porque el servidor en UTC
@@ -191,7 +191,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             pathTmp = pathTmp + tiles +'/'
             pathTmpOr = pathTmp
             #pathTmp = pathTmp + 'T' + tiles +'/'
-            start_date,end_date,SNbuffer = semiManualTile()
+            start_date,end_date,region,SNbuffer = semiManualTile()
 
     elif dateTime == 'automatico':
         start_date,end_date,region,SNbuffer = automatico()
