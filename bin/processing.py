@@ -21,7 +21,7 @@ import sargazo_vistas
 def semiManual():
     start_date = None
     end_date = None
-    region = "prueba"
+    region = "sargazo_1"
     SNbuffer = True
     #landMask = "land_sargazo_UTM16N_20m_1.tif"
     #nubesBajas = 900
@@ -276,7 +276,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     for tileDir in tilesDirs:        
         try:
             if dateTime == 'semiManual' or dateTime == 'semiManualTile':
-                anioProc = '_2021*'
+                anioProc = '_202101*'
                 #print('AQUI: '+tileDir+'/*'+anioProc+'*')
                 archivos = processing_sentinel2.listaArchivos(tileDir+'/*'+anioProc+'*')
             else:
