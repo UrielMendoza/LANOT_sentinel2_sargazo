@@ -272,6 +272,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
         processing_sentinel2.agregaErrorSargazoDB('','',start_date.strftime('%Y%m%dT%H%M%S'),'',traceback.format_exc().replace("'",""))
         processing_sentinel2.enviaMail(start_date.strftime('%Y%m%d')+'-'+end_date.strftime('%Y%m%d'),'lista',traceback.format_exc().replace("'",""))
 
+    print("Tiempo de procesamiento 1: ",round((time.time()-iniTotal)/60,2))
     # ALGORITMO
     for tileDir in tilesDirs:        
         try:
@@ -380,6 +381,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     processing_sentinel2.agregaErrorSargazoDB(archivol1c,'',fecha,tile,traceback.format_exc().replace("'",""))
                     processing_sentinel2.enviaMail(fecha,tile,traceback.format_exc().replace("'",""))
                     continue
+                print("Tiempo de procesamiento 2: ",round((time.time()-iniTotal)/60,2))
                 try:
                     os.chdir(owd)
                     # PORCENTAJE DE NUBES
@@ -432,7 +434,9 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                         # antes 400
                         bufferNubes = 400
                     print('Valor de temperatura para filtro nubes bajas: ',nubesBajas)
-                    print('Valor de buffer para nubes: ',bufferNubes)                  
+                    print('Valor de buffer para nubes: ',bufferNubes)      
+
+                    print("Tiempo de procesamiento 3: ",round((time.time()-iniTotal)/60,2))            
           
                     print('4. Convirtiendo a GeoTIFF...')
                     for banda20 in bandas20m:
@@ -472,21 +476,26 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     print('5.4 Procesando mascara detfoo...')
                     # Se usa la manual
                     #processing_sentinel2.detfooMascara(200,pathTmp+dirI,pathTmp)
+                    print("Tiempo de procesamiento 4: ",round((time.time()-iniTotal)/60,2))
                     print('5.5 Procesando sargazo sin filtro...')
                     #processing_sentinel2.sargazoBin(banderaNub,'L2A',pathTmp,pathTmp)
                     processing_sentinel2.sargazoBinNumpy(pathTmp)
                     dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_tmp_numpy.tif')
+                    print("Tiempo de procesamiento 5: ",round((time.time()-iniTotal)/60,2))
                     print('5.6 Obteniendo entropia...')
                     entropia = processing_sentinel2.entropiaNumpy(pathTmp)
+                    print("Tiempo de procesamiento 6: ",round((time.time()-iniTotal)/60,2))
                     #entropia = None
                     print('5.7 Procesando sargazo con filtro...')
                     nuMask = processing_sentinel2.filtroPixel(ref,dsSar,nubesBajas,entropia,scl,SNbuffer,pathTmp,pathLM)
                     processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')
                     del nuMask 
+                    print("Tiempo de procesamiento 7: ",round((time.time()-iniTotal)/60,2))
 
                     # POLIGONIZACION
                     print('6 Procesando poligonizacion...')
                     archivoProc,banderaSar = processing_sentinel2.poligonizacion(tile,anio,fecha,pathLM,pathTmp,pathOutput,pathOutputEmpty)
+                    print("Tiempo de procesamiento 8: ",round((time.time()-iniTotal)/60,2))
                     if banderaSar == True:
                         #print('6.1 Aplicando mascara detfoo vectorial...')
                         #processing_sentinel2.detfooMascaraVectorial(pathTmp)
@@ -505,6 +514,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                         banderaSar_log = 'no'
                         totalSar = '0'
 
+                    print("Tiempo de procesamiento 9: ",round((time.time()-iniTotal)/60,2))
                     # COMPUESTO RGB
                     print('7. Creando compuesto RGB...')
                     print('7.1 Creando compuesto RGB FC...')
@@ -513,6 +523,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     print('7.2 Creando compuesto RGB TC...')
                     os.system('mkdir -p '+pathOutputGeoTiff+'TC/'+tile+'/')
                     processing_sentinel2.RGB_TC(tile,anio,fecha,fechaImaProc,'L2A','R10m',pathTmp+dirI,pathOutputGeoTiff,pathOutputPeta,pathTmp)
+
+                    print("Tiempo de procesamiento 10: ",round((time.time()-iniTotal)/60,2))
 
                     #fechaLog = processing_sentinel2.obtieneFechaLog()
                     #processing_sentinel2.logArchivo(pathLog+'L2A_GeoTiff.csv',fecha,tile,archivo,archivoProc,fechaLog)
