@@ -1038,7 +1038,7 @@ def conexionDB():
     cur = conect.cursor()
     return conect,cur
 
-def insertSargazoDB(conect,cur,crs,pathInput):
+def insertSargazoDB(conect,cur,crs,pathInput,region):
     print('Añadiendo a DB')
     with open(pathInput, 'r') as f:
         reader = csv.reader(f)
@@ -1046,7 +1046,10 @@ def insertSargazoDB(conect,cur,crs,pathInput):
         for row in reader:
             #print('Añadiendo a DB: ', row)
             #cur.execute("INSERT INTO sargazo VALUES (DEFAULT, %s, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)
-            cur.execute("INSERT INTO sargazo (idpoligono, tile, fecha, fechadia, distcosta_km, area_km2, lugar, nom_playa, geom) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)
+            if region == 1:
+                cur.execute("INSERT INTO sargazo (idpoligono, tile, fecha, fechadia, distcosta_km, area_km2, lugar, nom_playa, geom) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)
+            elif region == 2:
+                cur.execute("INSERT INTO sargazo_2 (idpoligono, tile, fecha, fechadia, distcosta_km, area_km2, lugar, nom_playa, geom) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, ST_Transform(ST_GeomFromText(%s,"+crs+"),4326))", row)
         cur.execute("SELECT * from sargazo")
     row = cur.fetchall()
     conect.commit()
@@ -1069,9 +1072,12 @@ def insertCatalogoDB(compuesto,conect,cur,crs,pathInput):
     row = cur.fetchall()
     conect.commit()
 
-def deleteSargazoDB(conect,cur,tile,fecha):
+def deleteSargazoDB(conect,cur,tile,fecha,region):
     print('Borrando sargazo de DB: ')
-    cur.execute("DELETE FROM sargazo WHERE tile='"+tile+"' AND fechadia='"+fecha+"'")
+    if region == 1:
+        cur.execute("DELETE FROM sargazo WHERE tile='"+tile+"' AND fechadia='"+fecha+"'")
+    elif region == 2:
+        cur.execute("DELETE FROM sargazo_2 WHERE tile='"+tile+"' AND fechadia='"+fecha+"'")
     conect.commit()
 
 def deleteSargazoLogDB(conect,cur,tile,fecha):
@@ -1108,10 +1114,10 @@ def insertSargazoLogErrorDB(conect,cur,pathl1c,pathl2a,fecha,tile,tiperror):
     conect.commit()
 
 
-def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,porcNubeOceano,tproc,pathInput):
+def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,porcNubeOceano,tproc,pathInput,region):
     conect,cur = conexionDB()
     try:
-        insertSargazoDB(conect,cur,crs,pathInput)
+        insertSargazoDB(conect,cur,crs,pathInput,region)
         insertSargazoLogDB(conect,cur,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube,tproc,porcNubeOceano)
         print ("Se agrego a la DB archivo: "+pathInput)
     except Exception as e:
@@ -1122,11 +1128,11 @@ def agregaSargazoDB(crs,pathl2a,pathsargazo,fecha,tile,sargazo,totalsar,porcNube
         conect.close()
     conect.close()
 
-def borraSargazoDB(fecha,tile):
+def borraSargazoDB(fecha,tile,region):
     conect,cur = conexionDB()
     try:
         deleteSargazoLogDB(conect, cur, tile, fecha)
-        deleteSargazoDB(conect, cur, tile, fecha)
+        deleteSargazoDB(conect, cur, tile, fecha, region)
         print ("Se elimino sargazo de la DB: "+tile+" "+fecha)
     except Exception as e:
         print(f'Ocurrio un error en la transacción DB: {e}')

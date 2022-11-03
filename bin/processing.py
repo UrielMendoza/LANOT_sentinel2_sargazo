@@ -306,7 +306,10 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                 if dateTime == 'manual':
                     fechaBorrar = datetime.datetime.strptime(fecha,'%Y%m%dT%H%M%S')
                     fechaDiaBorrar = fechaBorrar.strftime('%Y-%m-%d')
-                    processing_sentinel2.borraSargazoDB(fechaDiaBorrar,tile)
+                    if regionMosaicoTC == 'TC_2' or regionMosaicoSar == 'sargazo_2':
+                        processing_sentinel2.borraSargazoDB(fechaDiaBorrar,tile,2)
+                    else:
+                        processing_sentinel2.borraSargazoDB(fechaDiaBorrar,tile,1)
             except Exception as e:
                 print('***Error en obtener datos***')
                 processing_sentinel2.agregaErrorSargazoDB(archivo,'',fecha,tile,traceback.format_exc().replace("'",""))
@@ -541,7 +544,10 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
                             tproc = round((time.time()-iniTProc)/60,2)
-                            processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,tile,banderaSar_log,totalSar,str(porcNube),str(porcNubeOceano),str(tproc),archivoCSV)
+                            if regionMosaicoTC == 'TC_2' or regionMosaicoSar == 'sargazo_2':
+                                processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,tile,banderaSar_log,totalSar,str(porcNube),str(porcNubeOceano),str(tproc),archivoCSV,2)
+                            else:
+                                processing_sentinel2.agregaSargazoDB(crs,archivol2,archivoProc,fecha,tile,banderaSar_log,totalSar,str(porcNube),str(porcNubeOceano),str(tproc),archivoCSV,1)    
                     else:
                             #banderaSar_log = 'no'
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
