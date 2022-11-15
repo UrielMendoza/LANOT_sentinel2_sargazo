@@ -235,7 +235,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
 
     print(tiles)
     
-    if dateTime != 'semiManual' and dateTime != 'semiManualTile':
+    if dateTime != 'semiManual' and dateTime != 'automaticoTile' and dateTime != 'semiManualTile':
         try:
             # DESCARGA
             print('1. Descargando...')
