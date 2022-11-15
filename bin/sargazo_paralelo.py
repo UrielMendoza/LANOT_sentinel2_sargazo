@@ -32,8 +32,10 @@ prueba = ("16QDJ","16QEJ")
 sargazo_6 = ("20QME","20QNE","20QPE","20QQE","20QRE","20QMD","20QND","20QPD","20QQD","20QRD","20PMC","20PNC","20PPC","20PQC","20PRC","20PMB","20PNB","T20PPB","20PQB","20PRB","20PMA","20PNA","20PPA","20PQA","20PRA","20PPV","20PPU","20PPT","20PPS","20PQV","20PQU","20PQT","20PQS","20PRV","20PRU","20PRT","20PRS","21QTV","21QTU","21PTT","21PTS","21PTR","21PTQ","21PTP","21PTN","21PTM","21PUQ","21PUP","21PUN","21PUM")
 #=========================================================================================================
 processes = []
+cont = 0
 for i in sargazo_6:
-    processes.append(script_1+' '+i)
+    processes.append('sleep '+str(cont)+' && '+script_1+' '+i)
+    cont += 3
 #=========================================================================================================
 
 # Tupla de procesos que entraran a la ejecucion paralela
