@@ -179,10 +179,10 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     # Fechas y buffer
     if dateTime == 'automaticoTile':
             tiles = sys.argv[1] 
-            os.system('mkdir '+pathTmp+tiles)
+            os.system('mkdir '+pathTmp+'T'+tiles)
             #pathTmp = pathTmp + tiles +'/'
             pathTmpOr = pathTmp
-            pathTmp = pathTmp + tiles + '/'
+            pathTmp = pathTmp+'T'+tiles + '/'
             start_date,end_date,SNbuffer = automaticoTile()
             region = 'sargazo_6'
 
@@ -255,7 +255,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
     try:
         if dateTime == 'automaticoTile':
             #tilesDirs = processing_sentinel2.listaArchivos(pathTmp+'*')
-            tilesDirs = [pathTmp+'T'+tiles[0]]
+            tilesDirs = [pathTmpOr+'T'+tiles[0]]
         if dateTime == 'semiManualTile':
             #tilesDirs = processing_sentinel2.listaArchivos(pathInputL1C+'*')
             tilesDirs = [pathInputL1C+'T'+tiles[0]]
