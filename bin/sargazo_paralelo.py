@@ -35,7 +35,7 @@ processes = []
 cont = 0
 for i in sargazo_6:
     processes.append('sleep '+str(cont)+' && '+script_1+' '+i)
-    cont += 3
+    cont += 5
 #=========================================================================================================
 
 # Tupla de procesos que entraran a la ejecucion paralela
