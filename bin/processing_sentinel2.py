@@ -408,13 +408,17 @@ def verificaLugar(df_sargazo,pathLM):
 
     return df_sargazo
 
-def mascarasVectoriales(tile,anio,fecha,fechaProc,SNbuffer,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta):
+def mascarasVectoriales(maskUTM,tile,anio,fecha,fechaProc,SNbuffer,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta):
     # CON DETFOO BARRIENDO
     #df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json')
 
     # SIN DETFOO
     df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar.json')
-    df_mask = gpd.read_file(pathLM+'land_2_UTM16N_20m_SPlaya_2021.geojson')
+    if maskUTM == 1:
+        df_mask = gpd.read_file(pathLM+'land_2_UTM16N_20m_SPlaya_2021.geojson')
+    elif maskUTM == 2:
+        df_mask = gpd.read_file(pathLM+'land_1_UTM20N_2021.geojson')
+
     res_difference = gpd.overlay(df, df_mask, how='difference')
     print('=============================================')
     print('Detección de sargazo con mascara de tierra: ',len(res_difference),' elementos')

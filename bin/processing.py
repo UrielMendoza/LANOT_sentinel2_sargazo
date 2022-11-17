@@ -505,7 +505,10 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                         #print('6.1 Aplicando mascara detfoo vectorial...')
                         #processing_sentinel2.detfooMascaraVectorial(pathTmp)
                         print('6.2 Aplicando mascaras vectoriales...')
-                        banderaSar, totalSarMask, archivoProc = processing_sentinel2.mascarasVectoriales(tile,anio,fecha,fechaImaProc,SNbuffer,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta)
+                        if regionMosaicoTC == 'TC_2' or regionMosaicoSar == 'sargazo_2':
+                            banderaSar, totalSarMask, archivoProc = processing_sentinel2.mascarasVectoriales(2,tile,anio,fecha,fechaImaProc,SNbuffer,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta)
+                        else:
+                            banderaSar, totalSarMask, archivoProc = processing_sentinel2.mascarasVectoriales(1,tile,anio,fecha,fechaImaProc,SNbuffer,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta)  
                         banderaSar_log = 'si'
                         totalSar = totalSarMask
                     
