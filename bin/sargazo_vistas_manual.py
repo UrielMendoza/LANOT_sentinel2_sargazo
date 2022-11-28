@@ -26,13 +26,13 @@ if __name__ == "__main__":
     fechas = list(set(fechas))
     fechas.sort()    
     # Manual
-    fechas = ['20221124T143729']
+    fechas = ['20221127T161619']
     print(fechas)
     for fecha in fechas:
         # Mosaicos
         #createMosaicLatest(fecha,'TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb)
-        createMosaicFecha(fecha,'TC','TC_2',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
-        createMosaicFecha(fecha,'sargazo','sargazo_2',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
+        createMosaicFecha(fecha,'TC','TC',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
+        createMosaicFecha(fecha,'sargazo','sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
         # Vistas
         #sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
         #os.system('python3 sargazo_vistas_vertices.py '+fecha+' s1')
