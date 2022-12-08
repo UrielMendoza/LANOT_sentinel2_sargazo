@@ -49,7 +49,7 @@ def automaticoTile():
 
 def automatico():
     # Se le resta un dia, porque el servidor en UTC
-    daysDelta = 2
+    daysDelta = 1
     start_date = datetime.datetime.now() - datetime.timedelta(days=daysDelta)
     end_date = datetime.datetime.now()  - datetime.timedelta(days=daysDelta)
     region = "sargazo_3"
