@@ -333,7 +333,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     print('2.1 Moviendo L1C a data y peta...')
                     archivol1c = pathInputL1C+tile+'/'+archivo
                     os.system('mkdir -p '+pathInputL1C+tile+'/')
-                    os.system('cp '+archivo+' '+pathInputL1C+tile+'/')
+                    #os.system('cp '+archivo+' '+pathInputL1C+tile+'/')
                     # MANDA A PETA
                     os.system('scp '+archivo+' lanotadm@stratus:'+pathInputPeta+tile+'/')                   
                 except Exception as e:
