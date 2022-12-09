@@ -335,7 +335,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     os.system('mkdir -p '+pathInputL1C+tile+'/')
                     #os.system('cp '+archivo+' '+pathInputL1C+tile+'/')
                     # MANDA A PETA
-                    os.system('scp '+archivo+' lanotadm@stratus:'+pathInputPeta+tile+'/')                   
+                    #os.system('scp '+archivo+' lanotadm@stratus:'+pathInputPeta+tile+'/')                   
                 except Exception as e:
                     print('***Error en el procesamiento***')
                     #pass
