@@ -9,6 +9,7 @@ from os import path
 import time
 from processing import sargazoL2A
 from processing_imagen import descargaImagenes, imagenL2A, mosaicoL2A
+from processing_sentinel2 import verificadorDia
 
 if __name__ == "__main__":
 
@@ -29,8 +30,12 @@ if __name__ == "__main__":
     pathOutputVistas = '/data/output/sentinel2/vistas/sargazo/sargazo_TC/'
     pathLog = '/home/lanotadm/logs_sentinel2_sargazo/'
 
+    if verificadorDia() == True:
 
-    #descargaImagenes(pathTmp,dateTime='automatico')
-    #imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime='automatico')
-    #mosaicoL2A(pathTmp,pathInputL1C,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,dateTime='automatico')
-    sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime='automatico')
+        #descargaImagenes(pathTmp,dateTime='automatico')
+        #imagenL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime='automatico')
+        #mosaicoL2A(pathTmp,pathInputL1C,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,dateTime='automatico')
+        sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,pathOutputEmpty,pathOutputGeoTiff,pathOutputWeb,pathOutputPeta,pathInputPeta,pathVertices,pathLog,pathLanot,pathOutputVistas,dateTime='automatico')
+
+    else: 
+        print('No hubo paso')

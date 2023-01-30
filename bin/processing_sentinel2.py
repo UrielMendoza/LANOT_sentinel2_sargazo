@@ -31,6 +31,15 @@ import ssl
 import traceback
 from pathlib import Path
 
+def verificadorDia():
+    d1 = datetime.datetime.strptime('2016-05-22','%Y-%m-%d')
+    d2 = datetime.datetime.now() - datetime.timedelta(days=1)
+    deltaD = (d2 - d1).days % 5
+    if deltaD == 0:
+        return True
+    else:
+        return False
+
 def obtienePorcentajeNube(pathInput):
     mydoc = minidom.parse(pathInput+'/MTD_MSIL2A.xml')
     items = mydoc.getElementsByTagName('n1:Quality_Indicators_Info')
