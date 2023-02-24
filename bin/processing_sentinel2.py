@@ -897,10 +897,10 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
                     contEnt += 1 
                 #continue
                 # NUBE BAJA B12
-                #elif b12[i,j] >= nubeBaja:
-                #    nuMask[i,j] = 0
-                #    listaBanderas.append('Nube baja')
-                #    contB12 += 1 
+                elif b12[i,j] >= nubeBaja:
+                    nuMask[i,j] = 0
+                    listaBanderas.append('Nube baja')
+                    contB12 += 1 
                 # SOMBRA DE NUBE
                 elif b12[i,j] <= sombraNube:
                     nuMask[i,j] = 0
