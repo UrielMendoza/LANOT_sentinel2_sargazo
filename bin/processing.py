@@ -546,6 +546,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                             processing_sentinel2.obtieneVertices(archivoProc,pathVertices+'sargazo_vertices/',pathOutputPeta,pathOutputWeb)
                             # Centroides
                             processing_sentinel2.obtieneCentroides(archivoProc,pathVertices+'sargazo_centroides/',pathOutputPeta,pathOutputWeb,pathLM)
+                            processing_sentinel2.obtieneSegmentado(archivoProc,pathVertices+'sargazo_segmentados/',pathOutputPeta,pathOutputWeb,pathLM)
                             #processing_sentinel2.logSargazo(pathLog+nomLog,fecha,tile,banderaSar_log,totalSar,archivol2,archivoProc,fechaLog)
                             archivoCSV, crs = processing_sentinel2.creaCSV(archivoProc,pathTmp)
                             tproc = round((time.time()-iniTProc)/60,2)
@@ -600,9 +601,16 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')
             # GENERA CENTROIDES CONJUNTO
             if regionMosaicoTC == 'TC_2' or regionMosaicoSar == 'sargazo_2':
-                processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s2/',pathOutputPeta,pathOutputWeb)
+                # Centroides
+                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s2/',pathOutputPeta,pathOutputWeb)
+                # Segmentados
+                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s2/',pathOutputPeta,pathOutputWeb)
             else:
-                processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
+                #Centroides
+                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
+                #Segementados
+                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s1/',pathOutputPeta,pathOutputWeb)
+
 
         elif (dateTime == 'manual') and numImagenes != 0:
             print('9. Procesando mosaico ...')
@@ -616,9 +624,15 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')  
             # GENERA CENTROIDES CONJUNTO
             if regionMosaicoTC == 'TC_2' or regionMosaicoSar == 'sargazo_2':
-                processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s2/',pathOutputPeta,pathOutputWeb)
+                # Centroides
+                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s2/',pathOutputPeta,pathOutputWeb)
+                # Segmentados
+                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s2/',pathOutputPeta,pathOutputWeb)
             else:
-                processing_sentinel2.uneCentroides(pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
+                #Centroides
+                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
+                #Segementados
+                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s1/',pathOutputPeta,pathOutputWeb)
             
         print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
 

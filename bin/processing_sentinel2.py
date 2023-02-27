@@ -354,7 +354,52 @@ def obtieneCentroides(pathInput,pathOutput,pathOutputPeta,pathOutputWeb,pathLM):
     # MANDA A WEB
     os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_centroides/')
 
-def uneCentroides(pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWeb):
+def obtieneSegmentado(pathInput,pathOutput,pathOutputPeta,pathOutputWeb,pathLM):
+
+    df = gpd.read_file(pathInput)
+    df_maskLand= gpd.read_file(pathLM+'land_2_UTM16N_20m_SPlaya_b100m_2021.geojson')
+    crs = df.crs
+
+    lista_df_puntos = list()
+    for poly_index in df.index:
+        poly = df.loc[poly_index, 'geometry']
+        x0, y0, x1, y1 = poly.bounds
+        x = np.arange(x0, x1, 10)
+        y = np.arange(y0, y1, 10)
+        X,Y = np.meshgrid(x, y)
+        idPoligono = df.loc[poly_index, 'idpoligono']
+        tile = df.loc[poly_index, 'tile']
+        fecha = df.loc[poly_index, 'fecha']
+        fechadia = df.loc[poly_index, 'fechadia']
+        areakm2 = df.loc[poly_index, 'area_km2']
+        distCosta = df.loc[poly_index, 'distcosta_km']
+        lugar = df.loc[poly_index, 'lugar']
+        nomPlaya = df.loc[poly_index, 'nom_playa']
+        df_puntos_alc = pd.DataFrame(np.array([X.flatten(), Y.flatten()]).T, columns=['x', 'y'])\
+            .assign(clave=poly_index)\
+            .pipe(lambda df: gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['x'], df['y'])))\
+            .loc[lambda df: df.within(poly)]
+        df_puntos_alc['idpoligono'], df_puntos_alc['tile'], df_puntos_alc['fecha'], df_puntos_alc['fechadia'], df_puntos_alc['area_km2'], df_puntos_alc['distcosta_km'], df_puntos_alc['lugar'], df_puntos_alc['nom_playa'] = [idPoligono, tile, fecha, fechadia, areakm2, distCosta, lugar, nomPlaya]
+        lista_df_puntos.append(df_puntos_alc.iloc[::-1])
+        
+    df_xy = pd.concat(lista_df_puntos, axis=0)
+    df_xy.crs = crs
+
+    res_difference = gpd.overlay(df_xy, df_maskLand, how='difference')
+    nombre = pathOutput+pathInput.split('/')[-1].split('.')[0]+'_segmentado.json'
+    # Shapefile
+    #os.system('mkdir '+'S2_MSI_SAR_T16QEJ_20220814T160911_20220814T212806')
+    #res_difference.to_file("./S2_MSI_SAR_T16QEJ_20220814T160911_20220814T212806/S2_MSI_SAR_T16QEJ_20220814T160911_20220814T212806.shp")
+    # Geojson 
+    res_difference.to_file(nombre,driver='GeoJSON')
+    # MANDA A PETA
+    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_segmentados/')
+    # MANDA A KAWAK
+    os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geojson/sargazo_segmentados/')
+    # MANDA A WEB
+    os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_segmentados/')
+
+def uneVectorial(crs,pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWeb):
     archivos = glob(pathInput+'*'+fecha+'*')
     archivos.sort()
 
@@ -372,7 +417,7 @@ def uneCentroides(pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWeb):
     nombreB = "_".join(nombreB)
     nombre = pathOutput+nombreB
     
-    df_b  = df_b.to_crs({'init': 'epsg:4326'})
+    df_b  = df_b.to_crs({'init': 'epsg:'+str(crs)})
     df_b.to_file(nombre,driver='GeoJSON')
 
     # MANDA A PETA
