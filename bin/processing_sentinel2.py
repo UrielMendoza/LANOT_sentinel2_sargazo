@@ -367,19 +367,19 @@ def obtieneSegmentado(pathInput,pathOutput,pathOutputPeta,pathOutputWeb,pathLM):
         x = np.arange(x0, x1, 10)
         y = np.arange(y0, y1, 10)
         X,Y = np.meshgrid(x, y)
-        idPoligono = df.loc[poly_index, 'idpoligono']
+        idPoligono = df.loc[poly_index, 'IDpoligono']
         tile = df.loc[poly_index, 'tile']
         fecha = df.loc[poly_index, 'fecha']
-        fechadia = df.loc[poly_index, 'fechadia']
+        fechadia = df.loc[poly_index, 'fechaDia']
+        distCosta = df.loc[poly_index, 'distCosta_km']
         areakm2 = df.loc[poly_index, 'area_km2']
-        distCosta = df.loc[poly_index, 'distcosta_km']
         lugar = df.loc[poly_index, 'lugar']
         nomPlaya = df.loc[poly_index, 'nom_playa']
         df_puntos_alc = pd.DataFrame(np.array([X.flatten(), Y.flatten()]).T, columns=['x', 'y'])\
             .assign(clave=poly_index)\
             .pipe(lambda df: gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df['x'], df['y'])))\
             .loc[lambda df: df.within(poly)]
-        df_puntos_alc['idpoligono'], df_puntos_alc['tile'], df_puntos_alc['fecha'], df_puntos_alc['fechadia'], df_puntos_alc['area_km2'], df_puntos_alc['distcosta_km'], df_puntos_alc['lugar'], df_puntos_alc['nom_playa'] = [idPoligono, tile, fecha, fechadia, areakm2, distCosta, lugar, nomPlaya]
+        df_puntos_alc['idpoligono'], df_puntos_alc['tile'], df_puntos_alc['fecha'], df_puntos_alc['fechadia'], df_puntos_alc['distcosta_km'],  df_puntos_alc['area_km2'], df_puntos_alc['lugar'], df_puntos_alc['nom_playa'] = [idPoligono, tile, fecha, fechadia, areakm2, distCosta, lugar, nomPlaya]
         lista_df_puntos.append(df_puntos_alc.iloc[::-1])
         
     df_xy = pd.concat(lista_df_puntos, axis=0)
