@@ -602,14 +602,14 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             # GENERA CENTROIDES CONJUNTO
             if regionMosaicoTC == 'TC_2' or regionMosaicoSar == 'sargazo_2':
                 # Centroides
-                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s2/',pathOutputPeta,pathOutputWeb)
+                processing_sentinel2.uneVectorial(4326,'sargazo_centroides',pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s2/',pathOutputPeta,pathOutputWeb)
                 # Segmentados
-                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s2/',pathOutputPeta,pathOutputWeb)
+                processing_sentinel2.uneVectorial(4326,'sargazo_segmentados',pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s2/',pathOutputPeta,pathOutputWeb)
             else:
                 #Centroides
-                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
+                processing_sentinel2.uneVectorial(4326,'sargazo_centroides',pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
                 #Segementados
-                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s1/',pathOutputPeta,pathOutputWeb)
+                processing_sentinel2.uneVectorial(4326,'sargazo_segmentados',pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s1/',pathOutputPeta,pathOutputWeb)
 
 
         elif (dateTime == 'manual') and numImagenes != 0:
@@ -625,14 +625,14 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             # GENERA CENTROIDES CONJUNTO
             if regionMosaicoTC == 'TC_2' or regionMosaicoSar == 'sargazo_2':
                 # Centroides
-                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s2/',pathOutputPeta,pathOutputWeb)
+                processing_sentinel2.uneVectorial(4326,'sargazo_centroides',pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s2/',pathOutputPeta,pathOutputWeb)
                 # Segmentados
-                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s2/',pathOutputPeta,pathOutputWeb)
+                processing_sentinel2.uneVectorial(4326,'sargazo_segmentados',pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s2/',pathOutputPeta,pathOutputWeb)
             else:
                 #Centroides
-                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
+                processing_sentinel2.uneVectorial(4326,'sargazo_centroides',pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
                 #Segementados
-                processing_sentinel2.uneVectorial(4326,pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s1/',pathOutputPeta,pathOutputWeb)
+                processing_sentinel2.uneVectorial(4326,'sargazo_segmentados',pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s1/',pathOutputPeta,pathOutputWeb)
             
         print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
 

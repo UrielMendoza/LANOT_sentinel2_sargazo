@@ -399,7 +399,7 @@ def obtieneSegmentado(pathInput,pathOutput,pathOutputPeta,pathOutputWeb,pathLM):
     # MANDA A WEB
     os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_segmentados/')
 
-def uneVectorial(crs,pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWeb):
+def uneVectorial(crs,tipo,pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWeb):
     archivos = glob(pathInput+'*'+fecha+'*')
     archivos.sort()
 
@@ -421,12 +421,13 @@ def uneVectorial(crs,pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWeb):
     df_b.to_file(nombre,driver='GeoJSON')
 
     # MANDA A PETA
-    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_centroides/s1/')
+    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/'+tipo+'/s1/')
     # MANDA A KAWAK
-    os.system('scp '+nombre+' lanotadm@kawak:'+'/data/output/sentinel2/l2/geojson/sargazo_centroides/s1/')
+    os.system('scp '+nombre+' lanotadm@kawak:'+'/data/output/sentinel2/l2/geojson/'+tipo+'/s1/')
     # MANDA A WEB
-    os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_centroides/s1/')
-    
+    os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/'+tipo+'/s1/')
+
+
 
 def detfooMascaraVectorial(pathTmp):
     detfoo = 'MSK_DETFOO_B8A.json'
