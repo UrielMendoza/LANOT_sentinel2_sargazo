@@ -35,10 +35,10 @@ if __name__ == "__main__":
         #createMosaicFecha(fecha,'sargazo','sargazo',pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
         # Vistas
         #sargazo_vistas.vistasSargazo(fecha, region, pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
-        #os.system('python3 sargazo_vistas_vertices.py '+fecha+' s1')
-        #os.system('python3 sargazo_vistas_vertices.py '+fecha+' s2')
+        os.system('python3 sargazo_vistas_vertices.py '+fecha+' s1')
+        os.system('python3 sargazo_vistas_vertices.py '+fecha+' s2')
         #uneCentroides(pathVertices+'sargazo_centroides/',fecha,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
-        uneVectorial(4326,'sargazo_segmentados',pathVertices+'sargazo_segmentados/',fecha,pathVertices+'sargazo_segmentados/s1/',pathOutputPeta,pathOutputWeb)
+        #uneVectorial(4326,'sargazo_segmentados',pathVertices+'sargazo_segmentados/',fecha,pathVertices+'sargazo_segmentados/s1/',pathOutputPeta,pathOutputWeb)
 
         # Borra Tmp
         os.system('rm -r '+pathTmp+'*.tif')
