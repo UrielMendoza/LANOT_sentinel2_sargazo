@@ -3,7 +3,7 @@ import os
 import sargazo_vistas
 import sargazo_vistas_vertices
 from glob import glob
-from processing_sentinel2 import obtieneFechaVertice, createMosaicFecha, createMosaicLatest, uneCentroides, uneVectorial
+from processing_sentinel2 import obtieneFechaVertice, createMosaicFecha, createMosaicLatest, uneVectorial
 import PIL
 
 if __name__ == "__main__":
