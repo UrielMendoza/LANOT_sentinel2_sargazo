@@ -378,6 +378,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                         archivol2 = pathInput+tile+'/'+dirI.split('.')[0]+'.zip'
                         # MANDA A PETA
                         os.system('scp '+pathTmp+dirI.split('.')[0]+'.zip lanotadm@stratus:'+pathOutputPeta+'L2A/'+tile+'/')
+                        # MANDA A KAWAK
+                        os.system('scp '+pathTmp+dirI.split('.')[0]+'.zip lanotadm@kawak:/data/output/sentinel2/L2A/'+tile+'/')
                         #print(fecha)
                         #print(dirI)
                 except Exception as e:
