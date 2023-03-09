@@ -420,6 +420,13 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                         fechaLog = processing_sentinel2.obtieneFechaLog()
                         banderaSar_log = 'no_p'
                         totalSar = '0'
+                        print('5.3 Generando mascara de nubes...')
+                        ref = processing_sentinel2.aperturaDS(pathTmp+bandas20m[-2]+'.tif')
+                        scl = processing_sentinel2.aperturaDS(pathTmp+bandas20m[-1]+'.tif')
+                        cuadrante = processing_sentinel2.obtieneCuadrante(ref)
+                        banderaNub,porcNubeOceano = processing_sentinel2.nubesMascaraSinBuffer(cuadrante,pathTmp+bandas20m[-1]+'.tif',pathLM,pathTmp)
+                        print('5.4 Guardando mascara de nubes...')
+                        processing_sentinel2.guardaMascaraNube(tile,fecha,fechaImaProc,pathTmp,pathOutputPeta,pathVertices+'mascara_nubes/')
                         print('6. Añadiendo a la base de datos log...')
                         tproc = round((time.time()-iniTProc)/60,2)
                         processing_sentinel2.agregaNoSargazoDB(archivol2,archivoProc,fecha,tile,banderaSar_log,totalSar,str(porcNube),str(porcNube),str(tproc))
