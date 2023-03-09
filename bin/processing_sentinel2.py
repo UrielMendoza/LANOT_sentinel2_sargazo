@@ -333,7 +333,7 @@ def obtieneVertices(pathInput,pathOutput,pathOutputPeta,pathOutputWeb):
     # MANDA A KAWAK
     os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geojson/sargazo_vertices/')
     # MANDA A WEB
-    os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_vertices/')
+    #os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_vertices/')
 
 def obtieneCentroides(pathInput,pathOutput,pathOutputPeta,pathOutputWeb,pathLM):
     df = gpd.read_file(pathInput)
@@ -352,7 +352,7 @@ def obtieneCentroides(pathInput,pathOutput,pathOutputPeta,pathOutputWeb,pathLM):
     # MANDA A KAWAK
     os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geojson/sargazo_centroides/')
     # MANDA A WEB
-    os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_centroides/')
+    #os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_centroides/')
 
 def obtieneSegmentado(pathInput,pathOutput,pathOutputPeta,pathOutputWeb,pathLM):
 
@@ -397,7 +397,7 @@ def obtieneSegmentado(pathInput,pathOutput,pathOutputPeta,pathOutputWeb,pathLM):
     # MANDA A KAWAK
     os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geojson/sargazo_segmentados/')
     # MANDA A WEB
-    os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_segmentados/')
+    #os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/sargazo_segmentados/')
 
 def uneVectorial(crs,tipo,pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWeb):
     archivos = glob(pathInput+'*'+fecha+'*')
@@ -425,7 +425,7 @@ def uneVectorial(crs,tipo,pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWe
     # MANDA A KAWAK
     os.system('scp '+nombre+' lanotadm@kawak:'+'/data/output/sentinel2/l2/geojson/'+tipo+'/s1/')
     # MANDA A WEB
-    os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/'+tipo+'/s1/')
+    #os.system('scp '+nombre+' sargazo@cumulus:'+pathOutputWeb+'l2/geojson/'+tipo+'/s1/')
 
 
 
