@@ -497,6 +497,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     nuMask = processing_sentinel2.filtroPixel(ref,dsSar,nubesBajas,entropia,scl,SNbuffer,pathTmp,pathLM)
                     processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')
                     del nuMask 
+                    print('5.8 Guardando mascara de nubes...')
+                    processing_sentinel2.guardaMascaraNube(tile,fecha,fechaImaProc,pathTmp,pathOutputPeta,pathVertices+'mascara_nubes/')
                     print("Tiempo de procesamiento 7: ",round((time.time()-iniTotal)/60,2))
 
                     # POLIGONIZACION
@@ -601,17 +603,21 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')
-            # GENERA CENTROIDES CONJUNTO
+            # GENERA CENTROIDES y MASCARA CONJUNTO
             if regionMosaicoTC == 'TC_2' or regionMosaicoSar == 'sargazo_2':
                 # Centroides
                 processing_sentinel2.uneVectorial(4326,'sargazo_centroides',pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s2/',pathOutputPeta,pathOutputWeb)
                 # Segmentados
                 processing_sentinel2.uneVectorial(4326,'sargazo_segmentados',pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s2/',pathOutputPeta,pathOutputWeb)
+                # Mascara Nubes
+                processing_sentinel2.uneVectorial(4326,'mascara_nubes',pathVertices+'mascara_nubes/',fechaDia,pathVertices+'mascara_nubes/s2/',pathOutputPeta,pathOutputWeb)
             else:
                 #Centroides
                 processing_sentinel2.uneVectorial(4326,'sargazo_centroides',pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
                 #Segementados
                 processing_sentinel2.uneVectorial(4326,'sargazo_segmentados',pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s1/',pathOutputPeta,pathOutputWeb)
+                # Mascara Nubes
+                processing_sentinel2.uneVectorial(4326,'mascara_nubes',pathVertices+'mascara_nubes/',fechaDia,pathVertices+'mascara_nubes/s1/',pathOutputPeta,pathOutputWeb)
 
 
         elif (dateTime == 'manual') and numImagenes != 0:
@@ -624,17 +630,21 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
             os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')  
-            # GENERA CENTROIDES CONJUNTO
+            # GENERA CENTROIDES Y NUBES CONJUNTO
             if regionMosaicoTC == 'TC_2' or regionMosaicoSar == 'sargazo_2':
                 # Centroides
                 processing_sentinel2.uneVectorial(4326,'sargazo_centroides',pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s2/',pathOutputPeta,pathOutputWeb)
                 # Segmentados
                 processing_sentinel2.uneVectorial(4326,'sargazo_segmentados',pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s2/',pathOutputPeta,pathOutputWeb)
+                # Mascara Nubes
+                processing_sentinel2.uneVectorial(4326,'mascara_nubes',pathVertices+'mascara_nubes/',fechaDia,pathVertices+'mascara_nubes/s2/',pathOutputPeta,pathOutputWeb)
             else:
                 #Centroides
                 processing_sentinel2.uneVectorial(4326,'sargazo_centroides',pathVertices+'sargazo_centroides/',fechaDia,pathVertices+'sargazo_centroides/s1/',pathOutputPeta,pathOutputWeb)
                 #Segementados
                 processing_sentinel2.uneVectorial(4326,'sargazo_segmentados',pathVertices+'sargazo_segmentados/',fechaDia,pathVertices+'sargazo_segmentados/s1/',pathOutputPeta,pathOutputWeb)
+                # Mascara Nubes
+                processing_sentinel2.uneVectorial(4326,'mascara_nubes',pathVertices+'mascara_nubes/',fechaDia,pathVertices+'mascara_nubes/s1/',pathOutputPeta,pathOutputWeb)
             
         print("Tiempo de procesamiento total: ",round((time.time()-iniTotal)/60,2))
 

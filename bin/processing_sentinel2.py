@@ -463,6 +463,17 @@ def verificaLugar(df_sargazo,pathLM):
 
     return df_sargazo
 
+def guardaMascaraNube(tile,fecha,fechaProc,pathTmp,pathOutputPeta,pathOutput):
+    nombre = pathOutput+'S2_MSI_CLOUDMASK_'+tile+'_'+fecha+'_'+fechaProc+".json"
+
+    # MANDA A DATA
+    os.system('cp '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json '+nombre)
+    # MANDA A PETA
+    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/mascara_nubes/')
+    # MANDA A KAWAK
+    os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geojson/mascara_nubes/')
+
+
 def mascarasVectoriales(maskUTM,tile,anio,fecha,fechaProc,SNbuffer,pathLM,pathTmp,pathOutput,pathOutputEmpty,pathOutputPeta):
     # CON DETFOO BARRIENDO
     #df = gpd.read_file(pathTmp+'alg_mask_filter_tmp_sar_detfoo.json')
