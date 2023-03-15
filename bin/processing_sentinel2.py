@@ -465,7 +465,7 @@ def verificaLugar(df_sargazo,pathLM):
     return df_sargazo
 
 def guardaMascaraNube(tile,fecha,fechaProc,pathTmp,pathOutputPeta,pathOutput):
-    nombre = pathOutput+'S2_MSI_CLOUDMASK_'+tile+'_'+fecha+'_'+fechaProc+".json"
+    nombre = pathOutput+'S2_MSI_CLOUDMASK_'+tile+'_'+fecha+'_'+fechaProc+"_poligono.json"
 
     # MANDA A DATA
     os.system('cp '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json '+nombre)
