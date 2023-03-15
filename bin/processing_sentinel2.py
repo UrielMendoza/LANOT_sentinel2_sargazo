@@ -58,6 +58,7 @@ def obtieneArchivoZip(pathArchivo):
     return archivo
 
 def sen2cor(pathSen2Cor,pathCFG,pathInput,pathOutput,resolution):
+    print(pathSen2Cor+'L2A_Process --resolution '+resolution+' --GIP_L2A '+pathCFG+' --output_dir '+pathOutput+' '+pathInput)
     os.system(pathSen2Cor+'L2A_Process --resolution '+resolution+' --GIP_L2A '+pathCFG+' --output_dir '+pathOutput+' '+pathInput)
 
 def verificaLog(pathLog,archivo):
