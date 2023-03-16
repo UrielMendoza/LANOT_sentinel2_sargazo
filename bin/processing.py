@@ -501,7 +501,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     print("Tiempo de procesamiento 6: ",round((time.time()-iniTotal)/60,2))
                     #entropia = None
                     print('5.7 Procesando sargazo con filtro...')
-                    nuMask = processing_sentinel2.filtroPixel(ref,dsSar,nubesBajas,entropia,scl,SNbuffer,pathTmp,pathLM)
+                    nuMask = processing_sentinel2.filtroPixelChatGPT(ref,dsSar,nubesBajas,entropia,scl,SNbuffer,pathTmp,pathLM)
                     processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')
                     del nuMask 
                     print('5.8 Guardando mascara de nubes...')
