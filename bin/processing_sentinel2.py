@@ -930,7 +930,7 @@ def filtroPixelChatGPT(dsRef, dsSar, nubeBaja, entropia, dsSCL, SNbuffer, pathTm
     entropiaMin = 4.0
 
     # Filtrado con detfoo y entropia
-    x, y = np.meshgrid(np.arange(nuMask.shape[2]), np.arange(nuMask.shape[1]))
+    x, y = np.meshgrid(np.arange(nuMask.shape[1]), np.arange(nuMask.shape[0]))
     points = np.column_stack((x.ravel(), y.ravel()))
     sargazoPuntos = [Point((j * xres + xmin) + xres/2, (i * yres + ymax) + yres/2) for i, j in points[sar == 1]]
     mask_entropia = (entropia >= entropiaMin)
