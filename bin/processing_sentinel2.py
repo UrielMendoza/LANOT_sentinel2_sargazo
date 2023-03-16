@@ -907,7 +907,8 @@ def filtroPixelChatGPT(dsRef, dsSar, nubeBaja, entropia, dsSCL, SNbuffer, pathTm
 
     # Nube baja con B12
     nuMask = dsRef.ReadAsArray()
-    b12 = (nuMask[3,:,:] - 1000) * 0.0001
+    b12 = dsRef.ReadAsArray().astype(np.int16)
+    b12 = (b12 - 1000) * 0.0001
     sar = dsSar.ReadAsArray()
     scl = dsSCL.ReadAsArray()
     df_detfoo = gpd.read_file(pathLM+'MSK_DETFOO_B8A_b1500.geojson')
