@@ -58,7 +58,6 @@ def obtieneArchivoZip(pathArchivo):
     return archivo
 
 def sen2cor(pathSen2Cor,pathCFG,pathInput,pathOutput,resolution):
-    print(pathSen2Cor+'L2A_Process --resolution '+resolution+' --GIP_L2A '+pathCFG+' --output_dir '+pathOutput+' '+pathInput)
     os.system(pathSen2Cor+'L2A_Process --resolution '+resolution+' --GIP_L2A '+pathCFG+' --output_dir '+pathOutput+' '+pathInput)
 
 def verificaLog(pathLog,archivo):
@@ -904,8 +903,79 @@ def entropiaNumpy(pathInput):
 
 	return nuMask """
 
-def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
+def filtroPixelChatGPT(dsRef, dsSar, nubeBaja, entropia, dsSCL, SNbuffer, pathTmp, pathLM):
 
+    # Nube baja con B12
+    nuMask = dsRef.ReadAsArray()
+    b12 = (nuMask[3,:,:] - 1000) * 0.0001
+    sar = dsSar.ReadAsArray()
+    scl = dsSCL.ReadAsArray()
+    df_detfoo = gpd.read_file(pathLM+'MSK_DETFOO_B8A_b1500.geojson')
+    nx, ny, xmin, ymax, xres, yres, xmax, ymin = obtieneParametrosGeoTrasform(dsRef)
+
+    # Sin buffer de nubes
+    if not SNbuffer:
+        nubes = gdal.Open(pathTmp+'cloudMaskShadow_bin_tmp.tif').ReadAsArray()
+
+    print('=============================================')
+    print('Detección de sargazo algoritmo: ', len(sar[sar == 1]), ' elementos')
+    print('=============================================')
+
+    listaBanderas = []
+
+    # Sombra de nube
+    sombraNube = 0.001
+    # Entropia
+    entropiaMin = 4.0
+
+    # Filtrado con detfoo y entropia
+    x, y = np.meshgrid(np.arange(nuMask.shape[2]), np.arange(nuMask.shape[1]))
+    points = np.column_stack((x.ravel(), y.ravel()))
+    sargazoPuntos = [Point((j * xres + xmin) + xres/2, (i * yres + ymax) + yres/2) for i, j in points[sar == 1]]
+    mask_entropia = (entropia >= entropiaMin)
+    mask_detfoo = df_detfoo.geometry.contains(gpd.GeoSeries(sargazoPuntos)).values
+    mask_entropia_detfoo = np.logical_and(mask_entropia, mask_detfoo)
+    nuMask[mask_entropia_detfoo] = 0
+    listaBanderas.append('Entropia y Detfoo')
+
+    # Filtrado con nube baja B12
+    mask_nube_baja = (b12 >= nubeBaja)
+    nuMask[mask_nube_baja] = 0
+    listaBanderas.append('Nube baja')
+
+    # Filtrado con sombra de nube
+    mask_sombra_nube = (b12 <= sombraNube)
+    nuMask[mask_sombra_nube] = 0
+    listaBanderas.append('Sombra nube')
+
+    # Filtrado con SCL
+    mask_scl = np.isin(scl, [3, 8, 9, 10, 11])
+    nuMask[mask_scl] = 0
+    listaBanderas.append('SCL')
+
+    # Sin buffer de nubes
+    if not SNbuffer:
+        mask_nubes = (nubes == 0) & sar
+        nuMask[mask_nubes] = 0
+        listaBanderas.append('Nubes')
+
+    print(set(listaBanderas))
+    print('Filtrados Nube Baja: ',mask_nube_baja.sum())
+    print('Filtrados Sombra nube: ',mask_sombra_nube.sum())
+    print('Filtrados Entropia y Detfoo: ',mask_entropia_detfoo.sum())
+    print('Filtrados SCL: ',mask_scl.sum())
+    # Sin buffer de nubes
+    print('Filtrados Nubes: ',mask_nubes.sum())
+    #print('=============================================')
+    #print('Detección de sargazo algoritmo con filtro de pixel: ',len(nuMask[nuMask == 1]),' elementos')
+    #print('=============================================')
+
+    
+    return nuMask
+
+
+def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
+    
     # Nube baja con B12
     nuMask = dsRef.ReadAsArray()
     b12 = dsRef.ReadAsArray().astype(np.int16)
@@ -937,6 +1007,7 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
     #Entropia
     entropiaMin = 4.0
     #entropiaMin = 1000
+
 
     for i in range(nuMask.shape[0]):
         for j in range(nuMask.shape[1]):
@@ -1002,6 +1073,7 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
     #print('Detección de sargazo algoritmo con filtro de pixel: ',len(nuMask[nuMask == 1]),' elementos')
     #print('=============================================')
 
+    
     return nuMask
 
 """ def pixelNubesBajasN(dsRef,dsSar,nubesBajas,entropia,entropiaMin):
