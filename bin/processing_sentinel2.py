@@ -571,6 +571,12 @@ def nubesMascara(cuadrante,bufferNubes,pathSCL,pathLM,pathTmp):
 
     os.system('gdal_polygonize.py '+pathTmp+'cloudMaskShadow_bin_tmp.tif -f "GeoJSON" '+pathTmp+'SCL_tmp.json')
     df = gpd.read_file(pathTmp+'SCL_tmp.json')
+    # Verifica la validez de la geometria
+    is_valid = df.geometry.is_valid
+    invalid_geoms = df[~is_valid].index.tolist()
+    # Corrige la geometria
+    for idx in invalid_geoms:
+        df.geometry[idx] = Polygon(df.geometry[idx].exterior)
     df = df[df['DN'] == 1]
     # Porcentaje nubosidad oceano
     porcNubeOceano = porcNubosidadOceano(df, pathLM)
