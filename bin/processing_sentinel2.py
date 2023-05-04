@@ -576,7 +576,9 @@ def nubesMascara(cuadrante,bufferNubes,pathSCL,pathLM,pathTmp):
     invalid_geoms = df[~is_valid].index.tolist()
     # Corrige la geometria
     for idx in invalid_geoms:
-        df.geometry[idx] = Polygon(df.geometry[idx].exterior)
+        geom_ext = df.geometry[idx].exterior
+        new_poly = Polygon(geom_ext.coords)
+        df.geometry[idx] = new_poly
     df = df[df['DN'] == 1]
     # Porcentaje nubosidad oceano
     porcNubeOceano = porcNubosidadOceano(df, pathLM)
