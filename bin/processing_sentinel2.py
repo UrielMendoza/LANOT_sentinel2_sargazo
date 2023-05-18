@@ -455,7 +455,7 @@ def verificaLugar(df_sargazo,pathLM):
                 continue
         for j in range(len(df_cuerposA)):
             if df_sargazo.iloc[k].geometry.intersects(df_cuerposA.iloc[j].geometry) == True:
-                playero[k] = 'otra_alga'
+                playero[k] = 'c_aguacont'
                 continue
 
     df_sargazo['lugar'] = playero
