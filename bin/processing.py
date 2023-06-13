@@ -608,8 +608,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             processing_sentinel2.createMosaicFecha(fecha,'sargazo',regionMosaicoSar,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
             # GENERA VISTA
             #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
-            os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
-            os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')
+            os.system('python3 /home/sargazo/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
+            os.system('python3 /home/sargazo/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')
             # GENERA CENTROIDES y MASCARA CONJUNTO
             if regionMosaicoTC == 'TC_2' or regionMosaicoSar == 'sargazo_2':
                 # Centroides
@@ -635,8 +635,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             processing_sentinel2.createMosaicFecha(fecha,'sargazo',regionMosaicoSar,pathOutputGeoTiff,pathOutputPeta,pathOutputWeb,pathTmp)
             # GENERA VISTA
             #sargazo_vistas.vistasSargazo(fecha, 's1', pathTmp, pathOutputGeoTiff, pathVertices, pathOutputVistas, pathLanot, pathOutputPeta, pathOutputWeb)
-            os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
-            os.system('python3 /home/lanotadm/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')  
+            os.system('python3 /home/sargazo/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s1')
+            os.system('python3 /home/sargazo/LANOT_sentinel2_sargazo/bin/sargazo_vistas_vertices.py '+fecha+' s2')  
             # GENERA CENTROIDES Y NUBES CONJUNTO
             if regionMosaicoTC == 'TC_2' or regionMosaicoSar == 'sargazo_2':
                 # Centroides
