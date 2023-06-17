@@ -18,7 +18,7 @@ if __name__ == "__main__":
     pathOutput = '/data/output/sentinel2/l2/geojson/sargazo/'
     pathOutputEmpty = '/data/output/sentinel2/l2/geojson/sargazo/'
     pathOutputGeoTiff = '/data/output/sentinel2/l2/geotiff/'
-    pathOutputWeb = '/home/sargazo/data/'
+    pathOutputWeb = '/data/sargazo/data/'
     pathOutputPeta = '/depot/sentinel2/output/'
     pathInputPeta = '/depot/sentinel2/input/L1C/'
     pathVertices = '/data/output/sentinel2/l2/geojson/'
