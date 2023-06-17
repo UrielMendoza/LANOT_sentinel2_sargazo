@@ -29,7 +29,7 @@ import pandas as pd
 
 pathOutputVistas = '/data/output/sentinel2/vistas/sargazo/sargazo_TC/'
 pathOutputGeoTiff = '/data/output/sentinel2/l2/geotiff/TC/'
-pathOutputWeb = '/home/sargazo/data/'
+pathOutputWeb = '/data/sargazo/data/'
 pathOutputPeta = '/depot/sentinel2/output/'
 pathVertices = '/data/output/sentinel2/l2/geojson/sargazo_vertices/'
 pathSargazo = '/data/output/sentinel2/l2/geojson/sargazo/'
