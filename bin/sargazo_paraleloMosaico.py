@@ -12,7 +12,7 @@ from processing_imagen import mosaicoL2A, descargaImagenes
 # DIRECTORIOS
 pathInputL1C = '/data/input/sentinel2/L1C/'
 pathOutputGeoTiff = '/data/output/sentinel2/l2/geotiff/'
-pathOutputWeb = '/home/sargazo/data/'
+pathOutputWeb = '/data/sargazo/data/'
 pathOutputPeta = '/depot/sentinel2/output/'
 pathTmp = '/data/input/sentinel2/tmp/automatico/'
 

@@ -11,7 +11,7 @@ if __name__ == "__main__":
     # DIRECTORIOS
     pathOutputVistas = '/data/output/sentinel2/vistas/sargazo/sargazo_TC/'
     pathOutputGeoTiff = '/data/output/sentinel2/l2/geotiff/'
-    pathOutputWeb = '/home/sargazo/data/'
+    pathOutputWeb = '/data/sargazo/data/'
     pathOutputPeta = '/depot/sentinel2/output/'
     pathVertices = '/data/output/sentinel2/l2/geojson/'
     pathTmp = '/data/input/sentinel2/tmp/manual/'
