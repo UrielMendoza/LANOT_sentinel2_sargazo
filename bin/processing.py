@@ -441,12 +441,12 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                         #nubesBajas = 900
                         nubesBajas = 0.02
                         # antes 200
-                        bufferNubes = 200
+                        bufferNubes = 300
                     else:
                         #nubesBajas = 2500
                         nubesBajas = 0.04
                         # antes 400
-                        bufferNubes = 400
+                        bufferNubes = 500
                     print('Valor de temperatura para filtro nubes bajas: ',nubesBajas)
                     print('Valor de buffer para nubes: ',bufferNubes)      
 
