@@ -321,7 +321,7 @@ if __name__ == '__main__':
         
 
         # MANDA A PETA
-        os.system('scp '+outfile+' lanotadm@stratus:'+pathOutputPeta+'vistas/sargazo_TC/')
+        #os.system('scp '+outfile+' lanotadm@stratus:'+pathOutputPeta+'vistas/sargazo_TC/')
         # MANDA A WEB
         os.system('scp '+outfile+' sargazo@cumulus:'+pathOutputWeb+'vistas/sargazo_TC/')
     finally:
