@@ -39,6 +39,9 @@ aoi = "POLYGON((4.220581 50.958859,4.521264 50.953236,4.545977 50.906064,4.54185
 json = requests.get(f"https://catalogue.dataspace.copernicus.eu/odata/v1/Products?$filter=Collection/Name eq '{data_collection}' and OData.CSC.Intersects(area=geography'SRID=4326;{aoi}) and ContentDate/Start gt {start_date}T00:00:00.000Z and ContentDate/Start lt {end_date}T00:00:00.000Z").json()
 print(pd.DataFrame.from_dict(json['value']).head(5))
 
+# Import credentials
+# from creds import *
+
 def get_keycloak(username: str, password: str) -> str:
     data = {
         "client_id": "cdse-public",
