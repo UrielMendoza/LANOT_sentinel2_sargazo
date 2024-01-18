@@ -15,6 +15,7 @@ import traceback
 
 import processing_sentinel2
 import download_datasets
+import download_datasets_ds
 import base
 import sargazo_vistas
 
@@ -49,7 +50,7 @@ def automaticoTile():
 
 def automatico():
     # Se le resta un dia, porque el servidor en UTC
-    daysDelta = 1
+    daysDelta = 2
     start_date = datetime.datetime.now() - datetime.timedelta(days=daysDelta)
     end_date = datetime.datetime.now()  - datetime.timedelta(days=daysDelta)
     region = "sargazo_3"
@@ -240,7 +241,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
             # DESCARGA
             print('1. Descargando...')
             print('Sentinel-2\nInicio:',start_date,'\nTermino:',end_date)
-            download_datasets.search_and_download_datasets(tiles, start_date, end_date, pathTmpOr, unzip=False)
+            download_datasets_ds.search_and_download_datasets(tiles, start_date, end_date, pathTmpOr, unzip=False)
 
             # Reste dias para prueba
             #print('Sentinel-2\nInicio:',start_date-datetime.timedelta(days=2),'\nTermino:',end_date-datetime.timedelta(days=2))

@@ -5,8 +5,12 @@
 
 # Copernicus API access credentials
 # Insert your api credencials
+# From SciHub
 Copernicus_username = "lanot_2020"
 Copernicus_password = "lanot_2020"
+# From DataSpace
+Dataspace_username = 'lanot@geografia.unam.mx'
+Dataspace_password = 'Lanot_sargazo_#2023'
 
 # ------------------------------------------------------------------------------
 
@@ -84,6 +88,6 @@ tiles['mascara_tierra'] = [
 ]
 
 tiles["prueba"] = [
-"16QDE"
+"16QEJ", "16QDH"
 ]
 # ------------------------------------------------------------------------------
