@@ -140,11 +140,11 @@ def download_products(products, datadir, unzip=False, max_retries=5, verbose=Tru
     response = session.get(url, headers=headers, stream=True)
 
     # Create dir with the tile name
-    if not os.path.exists(f"{datadir}{tile}"):
-      os.makedirs(f"{datadir}{tile}") 
+    if not os.path.exists(f"{datadir}T{tile}"):
+      os.makedirs(f"{datadir}T{tile}") 
 
     if unzip:
-      with open(f"{datadir}{tile}/{name}.zip", 'wb') as file:
+      with open(f"{datadir}T{tile}/{name}.zip", 'wb') as file:
           print(f'Downloading {tile} {origin_date} {id}...')
           for chunk in response.iter_content(chunk_size=8192):
               if chunk:
