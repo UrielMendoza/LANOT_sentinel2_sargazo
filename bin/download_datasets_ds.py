@@ -14,6 +14,7 @@ import pandas as pd
 import requests
 import json
 from creds import * 
+import time
 
 import base
 
@@ -149,6 +150,8 @@ def download_products(products, datadir, unzip=False, max_retries=5, verbose=Tru
           for chunk in response.iter_content(chunk_size=8192):
               if chunk:
                   file.write(chunk)
+    # Wait to download the file
+    time.sleep(30)
 
 # ------------------------------------------------------------------------------
 
@@ -183,7 +186,7 @@ def search_and_download_datasets(tiles, start_date, end_date, datadir, unzip=Fal
 # ==============================================================================
 
 
-""" if __name__ == "__main__":
+if __name__ == "__main__":
   # Download the specified tiles in the given range of dates from Copernicus DataSpace
   tiles = base.tiles["prueba"]
   datadir ='../'
@@ -195,5 +198,5 @@ def search_and_download_datasets(tiles, start_date, end_date, datadir, unzip=Fal
   print('Sentinel-2\nInicio:',end_date,'\nTermino:',start_date)
 
   # ------------------------------------------------------------------------------
-  search_and_download_datasets(tiles, start_date, end_date, datadir, unzip=True) """
+  search_and_download_datasets(tiles, start_date, end_date, datadir, unzip=True)
 
