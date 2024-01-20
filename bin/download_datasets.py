@@ -237,8 +237,8 @@ def search_and_download_datasets(tiles, start_date, end_date, datadir, unzip=Fal
 # ==============================================================================
 
 # Downlod the specified tiles in the given range of dates
-'''
-if __name__ == "__main__":
+
+""" if __name__ == "__main__":
 
   tiles = base.tiles["Cancun"]
   datadir ='./data/or/'
@@ -251,6 +251,6 @@ if __name__ == "__main__":
 
   # -------------------------------------
 
-  search_and_download_datasets(tiles, start_date, end_date, datadir, unzip=True)
+  search_and_download_datasets(tiles, start_date, end_date, datadir, unzip=True) """
 
-'''
+
