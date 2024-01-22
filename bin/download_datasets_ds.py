@@ -147,7 +147,7 @@ def download_products(products, datadir, unzip=False, max_retries=5, verbose=Tru
   if not os.path.exists(f"{datadir}T{tile}"):
     os.makedirs(f"{datadir}T{tile}") 
 
-  if unzip:
+  if unzip == False:
     with open(f"{datadir}T{tile}/{name}.zip", 'wb') as file:
         print(f'Downloading {tile} {origin_date} {id}...')
         for chunk in response.iter_content(chunk_size=8192):
@@ -202,5 +202,5 @@ if __name__ == "__main__":
   print('Sentinel-2\nInicio:',end_date,'\nTermino:',start_date)
 
   # ------------------------------------------------------------------------------
-  search_and_download_datasets(tiles, start_date, end_date, datadir, unzip=True)
+  search_and_download_datasets(tiles, start_date, end_date, datadir, unzip=False)
 
