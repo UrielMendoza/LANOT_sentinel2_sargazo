@@ -21,7 +21,7 @@ import base
 
 # ==============================================================================
 
-def search_products(tiles=None, date=None, search_string=None, product_type="L1C", satellite=None, query_args=None) -> dict: 
+def search_products(tile=None, date=None, search_string=None, product_type="L1C", satellite=None, query_args=None) -> dict: 
   '''
   Searches Copernicus DataSpace for Sentinel-2 datasets (products) for a given
   tile and date. Alternatively, if search_string is given pass that directly
@@ -41,39 +41,37 @@ def search_products(tiles=None, date=None, search_string=None, product_type="L1C
   date = f"{level}_{date}"
 
   products = {}
-  ids_ds = []
-  names = []
-  origin_dates = []
+  #ids_ds = []
+  #names = []
+  #origin_dates = []
 
-  for tile in tiles:
+  # Build the URL with the search parameters
+  url = f"https://catalogue.dataspace.copernicus.eu/odata/v1/Products?$filter=contains(Name, '{date}') and contains(Name, '{tile}')"
 
-    # Build the URL with the search parameters
-    url = f"https://catalogue.dataspace.copernicus.eu/odata/v1/Products?$filter=contains(Name, '{date}') and contains(Name, '{tile}')"
+  # Set the pettion to DataSpace and obtain the JSON response
+  json_response = requests.get(url).json()
 
-    # Set the pettion to DataSpace and obtain the JSON response
-    json_response = requests.get(url).json()
+  # Create a DataFrame from the JSON response
+  df = pd.DataFrame.from_dict(json_response["value"]).iloc[0]
 
-    # Create a DataFrame from the JSON response
-    df = pd.DataFrame.from_dict(json_response["value"]).iloc[0]
+  # Print the DataFrame
+  #print(df)
 
-    # Print the DataFrame
-    #print(df)
+  # Save the parameters of the response
+  id_ds = df['Id']
+  name = df['Name']
+  origin_date = df['OriginDate']
+  print(id)
+  print(name)
+  #ids_ds.append(id_ds)
+  #names.append(name)
 
-    # Save the parameters of the response
-    id_ds = df['Id']
-    name = df['Name']
-    origin_date = df['OriginDate']
-    print(id)
-    print(name)
-    ids_ds.append(id_ds)
-    names.append(name)
-
-    origin_dates.append(origin_date)
+  #origin_dates.append(origin_date)
   
-  products['ids'] = ids_ds
-  products['names'] = names
-  products['tiles'] = tiles
-  products['origin_dates'] = origin_dates
+  products['ids'] = id_ds
+  products['names'] = name
+  products['tiles'] = tile
+  products['origin_dates'] = origin_date
 
   return products
 
@@ -132,26 +130,31 @@ def download_products(products, datadir, unzip=False, max_retries=5, verbose=Tru
   # Using the product ID and access token, you can download the product
   #url = f"https://zipper.dataspace.copernicus.eu/odata/v1/Products(22018785-4dca-4e29-b40f-926dd0c1aa99)/$value"
 
-  for id, name, tile, origin_date in zip(products['ids'], products['names'], products['tiles'], products['origin_dates']):
-    url = f"https://zipper.dataspace.copernicus.eu/odata/v1/Products({id})/$value"
-    headers = {"Authorization": f"Bearer {access_token}"}
+  #for id, name, tile, origin_date in zip(products['ids'], products['names'], products['tiles'], products['origin_dates']):  
+  id = products['ids']
+  name = products['names']
+  tile = products['tiles']
+  origin_date = products['origin_dates']
 
-    session = requests.Session()
-    session.headers.update(headers)
-    response = session.get(url, headers=headers, stream=True)
+  url = f"https://zipper.dataspace.copernicus.eu/odata/v1/Products({id})/$value"
+  headers = {"Authorization": f"Bearer {access_token}"}
 
-    # Create dir with the tile name
-    if not os.path.exists(f"{datadir}T{tile}"):
-      os.makedirs(f"{datadir}T{tile}") 
+  session = requests.Session()
+  session.headers.update(headers)
+  response = session.get(url, headers=headers, stream=True)
 
-    if unzip:
-      with open(f"{datadir}T{tile}/{name}.zip", 'wb') as file:
-          print(f'Downloading {tile} {origin_date} {id}...')
-          for chunk in response.iter_content(chunk_size=8192):
-              if chunk:
-                  file.write(chunk)
-    # Wait to download the file
-    time.sleep(30)
+  # Create dir with the tile name
+  if not os.path.exists(f"{datadir}T{tile}"):
+    os.makedirs(f"{datadir}T{tile}") 
+
+  if unzip:
+    with open(f"{datadir}T{tile}/{name}.zip", 'wb') as file:
+        print(f'Downloading {tile} {origin_date} {id}...')
+        for chunk in response.iter_content(chunk_size=8192):
+            if chunk:
+                file.write(chunk)
+  # Wait to download the file
+  #time.sleep(30)
 
 # ------------------------------------------------------------------------------
 
@@ -175,12 +178,13 @@ def search_and_download_datasets(tiles, start_date, end_date, datadir, unzip=Fal
       query_args : dictionary (default: None)
         Additional query arguments to be passed directly to SentinelAPI.query().
   '''
-    
-  # Find products
-  products = search_products(tiles, start_date, end_date, query_args=query_args)
-
-  # Download products
-  download_products(products, datadir, unzip=unzip, max_retries=max_retries, verbose=verbose)
+  for tile in tiles:
+    # Find products
+    products = search_products(tile, start_date, end_date, query_args=query_args)
+    # Download products
+    download_products(products, datadir, unzip=unzip, max_retries=max_retries, verbose=verbose)
+    # Empty the products dictionary
+    products = None
 
 
 # ==============================================================================
