@@ -41,9 +41,6 @@ def search_products(tile=None, date=None, search_string=None, product_type="L1C"
   date = f"{level}_{date}"
 
   products = {}
-  #ids_ds = []
-  #names = []
-  #origin_dates = []
 
   # Build the URL with the search parameters
   url = f"https://catalogue.dataspace.copernicus.eu/odata/v1/Products?$filter=contains(Name, '{date}') and contains(Name, '{tile}')"
@@ -63,10 +60,6 @@ def search_products(tile=None, date=None, search_string=None, product_type="L1C"
   origin_date = df['OriginDate']
   print(id)
   print(name)
-  #ids_ds.append(id_ds)
-  #names.append(name)
-
-  #origin_dates.append(origin_date)
   
   products['ids'] = id_ds
   products['names'] = name
@@ -130,7 +123,6 @@ def download_products(products, datadir, unzip=False, max_retries=5, verbose=Tru
   # Using the product ID and access token, you can download the product
   #url = f"https://zipper.dataspace.copernicus.eu/odata/v1/Products(22018785-4dca-4e29-b40f-926dd0c1aa99)/$value"
 
-  #for id, name, tile, origin_date in zip(products['ids'], products['names'], products['tiles'], products['origin_dates']):  
   id = products['ids']
   name = products['names']
   tile = products['tiles']
