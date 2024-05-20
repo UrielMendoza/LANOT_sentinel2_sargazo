@@ -36,6 +36,8 @@ def search_products(tile=None, date=None, search_string=None, product_type="L1C"
   # Level of the product
   if product_type == "L1C":
     level = "MSIL1C"
+  elif product_type == "L2A":
+    level = "MSIL2A"
   
   # Join the level and date
   date = f"{level}_{date}"
@@ -171,12 +173,16 @@ def search_and_download_datasets(tiles, start_date, end_date, datadir, unzip=Fal
         Additional query arguments to be passed directly to SentinelAPI.query().
   '''
   for tile in tiles:
-    # Find products
-    products = search_products(tile, start_date, end_date, query_args=query_args)
-    # Download products
-    download_products(products, datadir, unzip=unzip, max_retries=max_retries, verbose=verbose)
-    # Empty the products dictionary
-    products = None
+    try:
+      # Find products
+      products = search_products(tile, start_date, end_date, query_args=query_args)
+      # Download products
+      download_products(products, datadir, unzip=unzip, max_retries=max_retries, verbose=verbose)
+      # Empty the products dictionary
+      products = None
+    except IndexError or KeyError as e:
+       # Continue to the next tile
+      continue
 
 
 # ==============================================================================
@@ -187,8 +193,8 @@ if __name__ == "__main__":
   tiles = base.tiles["prueba"]
   datadir ='../'
 
-  start_date = datetime.date(2024, 1, 16)
-  end_date = datetime.date(2024, 1, 16)
+  start_date = datetime.date(2017, 9, 27)
+  end_date = datetime.date(2017, 9, 27)
   step = datetime.timedelta(days=1)
 
   print('Sentinel-2\nInicio:',end_date,'\nTermino:',start_date)
