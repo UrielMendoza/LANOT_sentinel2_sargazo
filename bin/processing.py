@@ -361,8 +361,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     else:
                         # SEN2COR 
                         print('No ha sido corregido atmosfericamente, porcesando con Se2Cor...')
-                        pathSen2corBin = pathSen2cor + 'LANOT_sentinel2_sargazo/Sen2Cor-02.11.00-Linux64/bin/'
-                        pathCFG = pathSen2cor + 'sen2cor/2.11/cfg/L2A_GIPP.xml'
+                        pathSen2corBin = pathSen2cor + 'LANOT_sentinel2_sargazo/Sen2Cor-02.12.03-Linux64/bin/'
+                        pathCFG = pathSen2cor + 'sen2cor/2.12/cfg/L2A_GIPP.xml'
                         processing_sentinel2.sen2cor(pathSen2corBin,pathCFG,pathTmp+dirI,pathTmp,'10')
                         # COMPRIME Y MUEVE EL L2 CORREGIDO
                         print('3.1 Moviendo L2A a data y peta...')
