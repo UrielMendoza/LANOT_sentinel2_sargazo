@@ -810,6 +810,43 @@ def sargazoBinNumpy(pathInput):
     # MASCARA DE NUBES Y SOMBRA B12
     #os.system('gdal_calc.py -A '+pathInput+'alg_tmp_numpy.tif -B '+pathInput+'cloudMaskShadow_b250_bin_rec_tmp.tif --outfile='+pathInput+'alg_mask_tmp_numpy.tif --calc="A*B"')
 
+def afaiBinNumpy(pathInput):
+    """
+    Calcula el índice AFAI a partir de los archivos TIFF de entrada,
+    genera un resultado binario según el rango umbralizado,
+    y crea los archivos TIFF necesarios para procesos posteriores.
+    """
+    # Leer las bandas
+    b11 = aperturaDS(pathInput + 'B11.tif').ReadAsArray().astype(np.int16)
+    b08 = aperturaDS(pathInput + 'B08_20.tif').ReadAsArray().astype(np.int16)
+    b04 = aperturaDS(pathInput + 'B04.tif').ReadAsArray().astype(np.int16)
+    
+    # Escalar valores
+    b11 = (b11 - 1000) * 0.0001
+    b08 = (b08 - 1000) * 0.0001
+    b04 = (b04 - 1000) * 0.0001
+    
+    # Calcular el índice AFAI
+    afai = b08 - (b04 + (b11 - b04) * 0.5)
+    
+    # Umbralizar el índice AFAI
+    # Asigna 1 a valores mayores a 0.06 y dentro del rango >= 0.025
+    sargazoBin = np.where((afai > 0.06) & (afai >= 0.025), 1, 0)
+    
+    # Crear el archivo GeoTIFF de referencia
+    ref = aperturaDS(pathInput + 'B04.tif')
+    
+    # Crear archivos GeoTIFF adicionales
+    creaTif(ref, b11, pathInput + 'B11_mult.tif')
+    creaTif(ref, b08, pathInput + 'B08_20_mult.tif')
+    creaTif(ref, b04, pathInput + 'B04_mult.tif')
+    
+    # Crear el archivo GeoTIFF del índice AFAI y el binario
+    creaTif(ref, afai, pathInput + 'alg_tmp_numpy.tif')
+    creaTif(ref, sargazoBin, pathInput + 'alg_tmp_numpy_bin.tif')
+
+
+
 def entropiaNumpy(pathInput):
     ds = gdal.Open(pathInput+'B12.tif')
     b12 = ds.ReadAsArray()
