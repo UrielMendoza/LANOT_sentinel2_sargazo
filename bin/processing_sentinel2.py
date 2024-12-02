@@ -831,7 +831,12 @@ def afaiBinNumpy(pathInput):
     
     # Umbralizar el índice AFAI
     # Asigna 1 a valores mayores a 0.06 y dentro del rango >= 0.025
-    sargazoBin = np.where((afai > 0.06) & (afai >= 0.025), 1, 0)
+    sargazoBin = np.where(afai >= 0.06, 1, 0)
+
+    # Imprime los datos necesarios para la detección de sargazo
+    print('AFAI:', afai.min(), afai.max(), afai.mean())
+    print('Sargazo:', sargazoBin.sum())
+
     
     # Crear el archivo GeoTIFF de referencia
     ref = aperturaDS(pathInput + 'B04.tif')

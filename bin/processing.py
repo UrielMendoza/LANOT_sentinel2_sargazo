@@ -494,8 +494,10 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     print("Tiempo de procesamiento 4: ",round((time.time()-iniTotal)/60,2))
                     print('5.5 Procesando sargazo sin filtro...')
                     #processing_sentinel2.sargazoBin(banderaNub,'L2A',pathTmp,pathTmp)
-                    #processing_sentinel2.sargazoBinNumpy(pathTmp)
-                    processing_sentinel2.afaiBinNumpy(pathTmp)
+                    if dateTime == 'automatico' or dateTime == 'automaticoTile':
+                        processing_sentinel2.sargazoBinNumpy(pathTmp)
+                    elif dateTime == 'semiManual' or dateTime == 'semiManualTile':
+                        processing_sentinel2.afaiBinNumpy(pathTmp)
                     dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_tmp_numpy.tif')
                     print("Tiempo de procesamiento 5: ",round((time.time()-iniTotal)/60,2))
                     print('5.6 Obteniendo entropia...')
