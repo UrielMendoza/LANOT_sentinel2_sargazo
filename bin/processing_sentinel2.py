@@ -849,8 +849,8 @@ def afaiBinNumpy(pathInput):
     creaTif(ref, b04, pathInput + 'B04_mult.tif')
     
     # Crear el archivo GeoTIFF del índice AFAI y el binario
-    creaTif(ref, afai, pathInput + 'alg_tmp_numpy.tif')
-    creaTif(ref, sargazoBin, pathInput + 'alg_tmp_numpy_bin.tif')
+    #creaTif(ref, afai, pathInput + 'alg_tmp_numpy.tif')
+    creaTif(ref, sargazoBin, pathInput + 'alg_tmp_numpy.tif')
 
 
 

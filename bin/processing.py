@@ -496,7 +496,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     #processing_sentinel2.sargazoBin(banderaNub,'L2A',pathTmp,pathTmp)
                     if dateTime == 'automatico' or dateTime == 'automaticoTile':
                         processing_sentinel2.sargazoBinNumpy(pathTmp)
-                    elif dateTime == 'semiManual' or dateTime == 'semiManualTile':
+                    elif dateTime == 'manual':
                         processing_sentinel2.afaiBinNumpy(pathTmp)
                     dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_tmp_numpy.tif')
                     print("Tiempo de procesamiento 5: ",round((time.time()-iniTotal)/60,2))
