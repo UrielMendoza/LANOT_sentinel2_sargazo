@@ -831,9 +831,7 @@ def afaiBinNumpy(pathInput):
     
     # Umbralizar el índice AFAI
     # Asigna 1 a valores mayores a 0.06 y dentro del rango >= 0.025
-    sargazoBin = np.where(afai >= 0.005, 1, 0)
-
-    print('AFAI:', afai.min(), afai.max(), afai.mean())
+    sargazoBin = np.where(afai >= 0.015, 1, 0)
 
     # Imprime los datos necesarios para la detección de sargazo
     print('AFAI:', afai.min(), afai.max(), afai.mean())
