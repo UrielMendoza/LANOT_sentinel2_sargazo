@@ -498,7 +498,8 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                         processing_sentinel2.sargazoBinNumpy(pathTmp)
                     elif dateTime == 'manual':
                         print('Procesando algoritmo AFAI...')
-                        processing_sentinel2.afaiBinNumpy(pathTmp)
+                        #processing_sentinel2.afaiBinNumpy(pathTmp)
+                        processing_sentinel2.sargazoBinNumpy(pathTmp)
                     dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_tmp_numpy.tif')
                     print("Tiempo de procesamiento 5: ",round((time.time()-iniTotal)/60,2))
                     print('5.6 Obteniendo entropia...')
