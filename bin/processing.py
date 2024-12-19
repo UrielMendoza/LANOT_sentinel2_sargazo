@@ -497,7 +497,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     if dateTime == 'automatico' or dateTime == 'automaticoTile':
                         processing_sentinel2.sargazoBinNumpy(pathTmp)
                     elif dateTime == 'manual':
-                        print('Procesando algoritmo AFAI...')
+                        #print('Procesando algoritmo AFAI...')
                         #processing_sentinel2.afaiBinNumpy(pathTmp)
                         processing_sentinel2.sargazoBinNumpy(pathTmp)
                     dsSar = processing_sentinel2.aperturaDS(pathTmp+'alg_tmp_numpy.tif')

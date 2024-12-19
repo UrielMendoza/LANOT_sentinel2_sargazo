@@ -243,7 +243,7 @@ def RGB(r,g,b,tile,anio,fecha,fechaProc,pathOutputGeoTiff,pathOutputPeta,pathTmp
     #os.system('gdal_translate -CO "TILED=YES" -CO "BLOCKXSIZE=512" -CO "BLOCKYSIZE=512" '+pathTmp+'RGB.tif '+nombre)
     #os.system('gdaladdo -r average '+nombre+' 2 4 8 16 32')
     # MANDA A PETA
-    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/sargazo/'+tile+'/')
+    #os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/sargazo/'+tile+'/')
     # MANDA A KAWAK
     os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geotiff/sargazo/'+tile+'/')
 
@@ -256,7 +256,7 @@ def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTif
     #os.system('gdal_translate -CO "TILED=YES" -CO "BLOCKXSIZE=512" -CO "BLOCKYSIZE=512" '+pathTmp+'TC.tif '+nombre)
     #os.system('gdaladdo -r average '+nombre+' 2 4 8 16 32')
     # MANDA A PETA
-    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/TC/'+tile+'/')
+    #os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/TC/'+tile+'/')
     # MANDA A KAWAK
     os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geotiff/TC/'+tile+'/')
 
@@ -329,7 +329,7 @@ def obtieneVertices(pathInput,pathOutput,pathOutputPeta,pathOutputWeb):
     nombre = pathOutput+pathInput.split('/')[-1].split('.')[0]+'_vertices.json'
     points.to_file(nombre,driver='GeoJSON')
     # MANDA A PETA
-    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_vertices/')
+    #os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_vertices/')
     # MANDA A KAWAK
     os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geojson/sargazo_vertices/')
     # MANDA A WEB
@@ -348,7 +348,7 @@ def obtieneCentroides(pathInput,pathOutput,pathOutputPeta,pathOutputWeb,pathLM):
     # Geojson 
     res_difference.to_file(nombre,driver='GeoJSON')
     # MANDA A PETA
-    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_centroides/')
+    #os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_centroides/')
     # MANDA A KAWAK
     os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geojson/sargazo_centroides/')
     # MANDA A WEB
@@ -393,7 +393,7 @@ def obtieneSegmentado(pathInput,pathOutput,pathOutputPeta,pathOutputWeb,pathLM):
     # Geojson 
     res_difference.to_file(nombre,driver='GeoJSON')
     # MANDA A PETA
-    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_segmentados/')
+    #os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo_segmentados/')
     # MANDA A KAWAK
     os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geojson/sargazo_segmentados/')
     # MANDA A WEB
@@ -469,7 +469,7 @@ def guardaMascaraNube(tile,fecha,fechaProc,pathTmp,pathOutputPeta,pathOutput):
     # MANDA A DATA
     os.system('cp '+pathTmp+'cloudMaskShadow_b250_bin_rec_tmp.json '+nombre)
     # MANDA A PETA
-    os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/mascara_nubes/')
+    #os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/mascara_nubes/')
     # MANDA A KAWAK
     os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geojson/mascara_nubes/')
 
@@ -532,7 +532,7 @@ def mascarasVectoriales(maskUTM,tile,anio,fecha,fechaProc,SNbuffer,pathLM,pathTm
         # MANDA A DATA
         df_sargazo.to_file(nombre, driver="GeoJSON")
         # MANDA A PETA
-        os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo/'+tile+'/')
+        #os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geojson/sargazo/'+tile+'/')
         # MANDA A KAWAK
         os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geojson/sargazo/'+tile+'/')
 
@@ -1437,7 +1437,7 @@ def createMosaicLatest(fecha,compuesto,pathInput,pathOutputPeta,pathOutputWeb):
     # Fecha log
     fechaLog(pathInput+compuesto+'/mosaicos/', fecha)
     # MANDA A PETA
-    os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')   
+    #os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')   
     # MANDA A KAWAK
     os.system('scp '+pathInput+compuesto+'/mosaicos/latest_'+compuesto+'.tif'+' lanotadm@kawak:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/')  
     # MANDA A WEB
