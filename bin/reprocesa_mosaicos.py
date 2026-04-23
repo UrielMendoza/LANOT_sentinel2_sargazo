@@ -7,11 +7,11 @@ sin ejecutar todo el pipeline de detección de sargazo.
 Extraído de sargazoL2A() - solo la parte final de mosaicos.
 
 Uso:
-    python3 generar_mosaicos.py <fecha> <region>
+    python3 generar_mosaicos.py <fecha YYYYMMDD> <region>
 
 Ejemplos:
-    python3 generar_mosaicos.py 20240815T160911 sargazo_1
-    python3 generar_mosaicos.py 20240815T160911 sargazo_6
+    python3 generar_mosaicos.py 20240815 sargazo_1
+    python3 generar_mosaicos.py 20240815 sargazo_6
 
 @author: urielm
 """
@@ -57,25 +57,79 @@ def determinaRegionMosaico(region):
     return regionMosaicoTC, regionMosaicoSar
 
 
-def generaMosaicos(fecha, region):
+def obtieneFechaCompleta(fechaDia, compuesto, pathInput):
     """
-    Genera los mosaicos TC y sargazo para una fecha y región dadas.
-    Replica EXACTAMENTE la lógica del bloque final de sargazoL2A().
+    A partir de una fecha YYYYMMDD, busca el timestamp completo
+    (YYYYMMDDTHHMMSS) de los tiles ya procesados para esa fecha.
+
+    Busca dentro de pathInput/<compuesto>/<tile>/*YYYYMMDD*.tif
+    y extrae el timestamp del primer archivo encontrado.
+
+    Lanza FileNotFoundError si no encuentra nada.
+    """
+    # Busca recursivamente cualquier .tif que contenga la fecha en su nombre
+    patron = os.path.join(pathInput, compuesto, '**', f'*{fechaDia}*.tif')
+    archivos = glob(patron, recursive=True)
+
+    if not archivos:
+        raise FileNotFoundError(
+            f"No se encontraron tiles procesados para {fechaDia} "
+            f"en {pathInput}{compuesto}/"
+        )
+
+    # El nombre de archivo tiene formato:
+    # S2_MSI_SAR_T16QEJ_20240815T160911_20240815T212806.tif
+    # Extraemos el 5º elemento (índice 4) = fecha de adquisición completa
+    nombre = os.path.basename(archivos[0])
+    partes = nombre.split('_')
+    fechaCompleta = partes[4]  # YYYYMMDDTHHMMSS
+
+    # Verifica que coincida con el día solicitado
+    if not fechaCompleta.startswith(fechaDia):
+        raise ValueError(
+            f"El archivo encontrado ({nombre}) no corresponde a {fechaDia}"
+        )
+
+    print(f'Fecha completa detectada: {fechaCompleta} '
+          f'(de {len(archivos)} archivo(s) encontrado(s))')
+    return fechaCompleta
+
+
+def generaMosaicos(fechaDia, region):
+    """
+    Genera los mosaicos TC y sargazo para una fecha (YYYYMMDD) y región dadas.
+    Resuelve internamente el timestamp completo buscando los tiles ya procesados.
     """
     iniTotal = time.time()
 
-    # fechaDia en formato 'YYYY-MM-DD' para uneVectorial
-    fechaDt  = datetime.datetime.strptime(fecha, '%Y%m%dT%H%M%S')
-    fechaDia = fechaDt.strftime('%Y-%m-%d')
+    # Valida el formato de la fecha
+    try:
+        fechaDt = datetime.datetime.strptime(fechaDia, '%Y%m%d')
+    except ValueError:
+        raise ValueError(
+            f"Formato de fecha inválido: '{fechaDia}'. Use YYYYMMDD (ej: 20240815)"
+        )
+
+    fechaDiaGuion = fechaDt.strftime('%Y-%m-%d')
 
     regionMosaicoTC, regionMosaicoSar = determinaRegionMosaico(region)
 
     print('=============================================')
-    print(f'Procesando mosaicos para fecha: {fecha}')
+    print(f'Procesando mosaicos para el dia: {fechaDia}')
     print(f'Region: {region}')
     print(f'Mosaico TC: {regionMosaicoTC}')
     print(f'Mosaico Sargazo: {regionMosaicoSar}')
     print('=============================================')
+
+    # Resuelve el timestamp completo a partir de los tiles existentes.
+    # Se busca en la carpeta de sargazo porque createMosaicFecha usa el mismo
+    # fecha para ambos compuestos.
+    try:
+        fecha = obtieneFechaCompleta(fechaDia, 'sargazo', pathOutputGeoTiff)
+    except FileNotFoundError:
+        # Si no hay sargazo, intenta con TC
+        print('No se encontraron tiles en sargazo/, buscando en TC/...')
+        fecha = obtieneFechaCompleta(fechaDia, 'TC', pathOutputGeoTiff)
 
     try:
         # ---- MOSAICO TC ----
@@ -102,7 +156,7 @@ def generaMosaicos(fecha, region):
             pathTmp
         )
 
-        # ---- VISTAS (opcional, comenta si NO quieres regenerar vistas) ----
+        # ---- VISTAS ----
         print('3. Generando vistas...')
         os.system(
             'python3 /home/sargazo/LANOT_sentinel2_sargazo/bin/'
@@ -124,7 +178,7 @@ def generaMosaicos(fecha, region):
         processing_sentinel2.uneVectorial(
             4326, 'sargazo_centroides',
             pathVertices + 'sargazo_centroides/',
-            fechaDia,
+            fechaDiaGuion,
             pathVertices + f'sargazo_centroides/{subdir}/',
             pathOutputPeta, pathOutputWeb
         )
@@ -132,7 +186,7 @@ def generaMosaicos(fecha, region):
         processing_sentinel2.uneVectorial(
             4326, 'sargazo_segmentados',
             pathVertices + 'sargazo_segmentados/',
-            fechaDia,
+            fechaDiaGuion,
             pathVertices + f'sargazo_segmentados/{subdir}/',
             pathOutputPeta, pathOutputWeb
         )
@@ -140,7 +194,7 @@ def generaMosaicos(fecha, region):
         processing_sentinel2.uneVectorial(
             4326, 'mascara_nubes',
             pathVertices + 'mascara_nubes/',
-            fechaDia,
+            fechaDiaGuion,
             pathVertices + f'mascara_nubes/{subdir}/',
             pathOutputPeta, pathOutputWeb
         )
@@ -165,15 +219,15 @@ def generaMosaicos(fecha, region):
 
 def main():
     if len(sys.argv) < 3:
-        print("Uso: python3 generar_mosaicos.py <fecha YYYYMMDDTHHMMSS> <region>")
-        print("Ejemplo: python3 generar_mosaicos.py 20240815T160911 sargazo_1")
+        print("Uso: python3 generar_mosaicos.py <fecha YYYYMMDD> <region>")
+        print("Ejemplo: python3 generar_mosaicos.py 20240815 sargazo_1")
         print("Regiones: sargazo_1, sargazo_2, sargazo_3, sargazo_4, sargazo_5, sargazo_6")
         sys.exit(1)
 
-    fecha  = sys.argv[1]
-    region = sys.argv[2]
+    fechaDia = sys.argv[1]
+    region   = sys.argv[2]
 
-    generaMosaicos(fecha, region)
+    generaMosaicos(fechaDia, region)
 
 
 if __name__ == '__main__':
