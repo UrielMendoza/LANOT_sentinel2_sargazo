@@ -223,11 +223,13 @@ if __name__ == '__main__':
                                 pathTmp + dirI, 'L2A', 'R20m', banda20)
                             dsB20  = processing_sentinel2.aperturaDS(dirB20)
                             processing_sentinel2.imgToGeoTIF(dsB20, banda20, pathTmp)
+                        os.makedirs(pathOutputGeoTiff + 'sargazo/' + tile + '/', exist_ok=True)
                         processing_sentinel2.RGB(
                             pathTmp+bandas20m[4]+'.tif', pathTmp+bandas20m[3]+'.tif',
                             pathTmp+bandas20m[2]+'.tif',
                             tile, anio, fecha, fechaImaProc,
                             pathOutputGeoTiff, pathOutputPeta, pathTmp)
+                        os.makedirs(pathOutputGeoTiff + 'TC/' + tile + '/', exist_ok=True)
                         processing_sentinel2.RGB_TC(
                             tile, anio, fecha, fechaImaProc, 'L2A', 'R10m',
                             pathTmp + dirI, pathOutputGeoTiff, pathOutputPeta, pathTmp)
@@ -325,12 +327,14 @@ if __name__ == '__main__':
 
                     # RGB
                     print('7. Compuesto RGB FC...')
+                    os.makedirs(pathOutputGeoTiff + 'sargazo/' + tile + '/', exist_ok=True)
                     processing_sentinel2.RGB(
                         pathTmp+bandas20m[4]+'.tif', pathTmp+bandas20m[3]+'.tif',
                         pathTmp+bandas20m[2]+'.tif',
                         tile, anio, fecha, fechaImaProc,
                         pathOutputGeoTiff, pathOutputPeta, pathTmp)
                     print('7.2 Compuesto RGB TC...')
+                    os.makedirs(pathOutputGeoTiff + 'TC/' + tile + '/', exist_ok=True)
                     processing_sentinel2.RGB_TC(
                         tile, anio, fecha, fechaImaProc, 'L2A', 'R10m',
                         pathTmp + dirI, pathOutputGeoTiff, pathOutputPeta, pathTmp)
