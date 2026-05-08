@@ -51,8 +51,8 @@ pathInputPeta     = os.path.join(BASE_DIR, 'test', 'peta', 'L1C')       + os.sep
 pathVertices      = os.path.join(BASE_DIR, 'test', 'geojson')           + os.sep
 pathLM            = os.path.join(BASE_DIR, 'data', 'masks')             + os.sep
 
-# Sen2Cor instalado por install.sh en el home del usuario
-pathSen2corBin = os.path.join(HOME_DIR, 'Sen2Cor-02.12.03-Linux64', 'bin') + os.sep
+# Sen2Cor instalado por install.sh en la raiz del repo
+pathSen2corBin = os.path.join(BASE_DIR, 'Sen2Cor-02.12.03-Linux64', 'bin') + os.sep
 pathCFG        = os.path.join(HOME_DIR, 'sen2cor', '2.12', 'cfg', 'L2A_GIPP.xml')
 
 # ---------------------------------------------------------------
@@ -378,19 +378,8 @@ if __name__ == '__main__':
             else:
                 print(f'Archivo {archivo} ya fue procesado, omitiendo.')
 
-    # MOSAICO
-    try:
-        if numImagenes != 0 and fecha:
-            print('\n9. Procesando mosaico...')
-            processing_sentinel2.createMosaicFecha(
-                fecha, 'TC', regionMosaicoTC,
-                pathOutputGeoTiff, pathOutputPeta, pathOutputWeb, pathTmp)
-            processing_sentinel2.createMosaicFecha(
-                fecha, 'sargazo', regionMosaicoSar,
-                pathOutputGeoTiff, pathOutputPeta, pathOutputWeb, pathTmp)
-    except Exception:
-        print('***Error en el mosaico***')
-        print(traceback.format_exc())
+    # MOSAICO omitido en test: createMosaicFecha usa DB y SCP internamente
+    print('\n9. Mosaico omitido en modo test.')
 
     print(f'\nTiempo total: {round((time.time()-iniTotal)/60, 2)} min')
     print('====================================================')
