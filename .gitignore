@@ -123,3 +123,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Credentials — copy base_example.py to base.py and fill in your values
+bin/base.py

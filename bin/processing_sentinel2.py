@@ -30,6 +30,7 @@ from email.mime.text import MIMEText
 import ssl
 import traceback
 from pathlib import Path
+import base
 
 def verificadorDia():
     d1 = datetime.datetime.strptime('2016-05-22','%Y-%m-%d')
@@ -1223,11 +1224,11 @@ def creaCSV_catalogo(pathInput,pathOutput):
 
 def conexionDB():
     conect = psycopg2.connect(
-            host = "132.247.103.145",
-            database = "sargazo",
-            user = "sargazo",
-            password = "iTh1Mou*",
-            port = 5433
+            host = base.DB_host,
+            database = base.DB_name,
+            user = base.DB_user,
+            password = base.DB_password,
+            port = base.DB_port
             )
     cur = conect.cursor()
     return conect,cur
@@ -1385,11 +1386,9 @@ def enviaMail(fecha,tile,error):
     \nTile: '''+tile+'''
     \nError: '''+error
 
-    #The mail addresses and password
-    sender_address = 'alertaslanot@gmail.com'
-    #sender_pass = 'aet9iMei'
-    sender_pass = 'cxwlhpdtwtctvjfu'
-    receiver_address = 'urielmendozacastillo@gmail.com'
+    sender_address = base.Email_sender
+    sender_pass = base.Email_password
+    receiver_address = base.Email_receiver
     #Setup the MIME
     message = MIMEMultipart()
     message['From'] = sender_address

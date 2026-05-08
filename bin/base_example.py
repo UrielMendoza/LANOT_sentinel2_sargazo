@@ -1,16 +1,31 @@
 # General definitions and configuration
 # Set the Copernicus access credentials here
+# Copy this file to base.py and fill in your credentials (base.py is in .gitignore)
 
 # ------------------------------------------------------------------------------
 
 # Copernicus API access credentials
 # Insert your api credencials
 # From SciHub
-Copernicus_username = "lanot_2020"
-Copernicus_password = "lanot_2020"
+Copernicus_username = "your_scihub_username"
+Copernicus_password = "your_scihub_password"
 # From DataSpace
-Dataspace_username = 'lanot@geografia.unam.mx'
-Dataspace_password = 'Lanot_sargazo_#2023'
+Dataspace_username = 'your_email@example.com'
+Dataspace_password = 'your_dataspace_password'
+
+# ------------------------------------------------------------------------------
+
+# PostgreSQL database credentials
+DB_host = "your_db_host"
+DB_name = "your_db_name"
+DB_user = "your_db_user"
+DB_password = "your_db_password"
+DB_port = 5433
+
+# Email notification credentials
+Email_sender = 'your_sender@gmail.com'
+Email_password = 'your_gmail_app_password'
+Email_receiver = 'your_receiver@example.com'
 
 # ------------------------------------------------------------------------------
 
