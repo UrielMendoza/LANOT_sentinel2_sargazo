@@ -13,7 +13,6 @@ import zipfile
 import pandas as pd
 import requests
 import json
-from creds import * 
 import time
 
 import base
