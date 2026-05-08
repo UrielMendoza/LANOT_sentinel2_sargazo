@@ -17,9 +17,16 @@
  * Poligonización de los datos binarios.
 
 ## Instalación
- 
- Para crear los directorios de prueba, descarga e instalación de sen2core y descarga de mascaras ejecute:
- 
+
+ Crear el entorno conda con todas las dependencias:
+
+ ```bash
+ conda env create -f environment.yml
+ conda activate sargazo
+ ```
+
+ Para crear los directorios de prueba, instalación de Sen2Cor y descarga de máscaras:
+
  `sh install.sh`
 
 ## Configuración de credenciales

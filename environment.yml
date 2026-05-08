@@ -1,0 +1,21 @@
+name: sargazo
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - gdal
+  - numpy
+  - pandas
+  - geopandas
+  - shapely
+  - pyproj
+  - matplotlib
+  - scikit-image
+  - psycopg2
+  - requests
+  - pillow
+  - sentinelsat
+  - pip
+  - pip:
+    - aggdraw
