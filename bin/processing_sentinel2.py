@@ -1500,7 +1500,7 @@ def createMosaicFecha(fecha,compuesto,mosaico,pathInput,pathOutputPeta,pathOutpu
     # MANDA A PETA    
     #os.system('scp '+nomMosaicTif+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+mosaico+'/')
     # MANDA A KAWAK
-    os.system('scp '+nomMosaicTif+' lanotadm@kawak:/data/output/sentinel2/l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+mosaico+'/')
+    #os.system('scp '+nomMosaicTif+' lanotadm@kawak:/data/output/sentinel2/l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+mosaico+'/')
     # MANDA A WEB    
     os.system('scp '+nomMosaicTif+' sargazo@cumulus:'+pathOutputWeb+'l2/geotiff/'+compuesto+'/mosaicos/catalogo_'+mosaico+'/')
     # Agrega al catalogo
