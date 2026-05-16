@@ -246,7 +246,7 @@ def RGB(r,g,b,tile,anio,fecha,fechaProc,pathOutputGeoTiff,pathOutputPeta,pathTmp
     # MANDA A PETA
     #os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/sargazo/'+tile+'/')
     # MANDA A KAWAK
-    os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geotiff/sargazo/'+tile+'/')
+    #os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geotiff/sargazo/'+tile+'/')
 
 def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTiff,pathOutputPeta,pathTmp):
     dirTC = listaBandas(pathInput,nivel,resolucion,'TCI')
@@ -259,7 +259,7 @@ def RGB_TC(tile,anio,fecha,fechaProc,nivel,resolucion,pathInput,pathOutputGeoTif
     # MANDA A PETA
     #os.system('scp '+nombre+' lanotadm@stratus:'+pathOutputPeta+'l2/geotiff/TC/'+tile+'/')
     # MANDA A KAWAK
-    os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geotiff/TC/'+tile+'/')
+    #os.system('scp '+nombre+' lanotadm@kawak:/data/output/sentinel2/l2/geotiff/TC/'+tile+'/')
 
 def porcNubosidadOceano(df,pathLM):
     # Porcentaje de nubosidad solo en el mar
