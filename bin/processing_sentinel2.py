@@ -410,7 +410,7 @@ def uneVectorial(crs,tipo,pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWe
 
     for i in archivos[1:]:
         df_t = gpd.read_file(i)
-        df_b = df_b.append(df_t)
+        df_b = pd.concat([df_b, df_t], ignore_index=True)
 
     del nombreB[3]
     del nombreB[4]
@@ -418,7 +418,7 @@ def uneVectorial(crs,tipo,pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWe
     nombreB = "_".join(nombreB)
     nombre = pathOutput+nombreB
     
-    df_b  = df_b.to_crs({'init': 'epsg:'+str(crs)})
+    df_b  = df_b.to_crs(epsg=crs)
     df_b.to_file(nombre,driver='GeoJSON')
 
     # MANDA A PETA
