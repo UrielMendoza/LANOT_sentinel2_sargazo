@@ -228,11 +228,38 @@ def exporta_bandas(costa_geom, tierra_geom, salida, anio, utm_epsg):
     print("  bandas (anillos) exportadas: {}".format(ruta))
 
 
+def _escribe_serie_diaria(gdf_utm, salida, anio, sufijo):
+    """Serie diaria (area y nº de poligonos) de un GeoDataFrame; escribe CSV y
+    devuelve el dia de mayor arribazon. No aplica ningun recorte."""
+    sub = gdf_utm.copy()
+    sub["fechadia"] = pd.to_datetime(sub["fechadia"], errors="coerce")
+    sub["dia"] = sub["fechadia"].dt.date.astype(str)
+    serie = (sub.groupby("dia", as_index=False)
+             .agg(n_poligonos=("area_km2", "size"),
+                  area_km2=("area_km2", "sum"))
+             .sort_values("area_km2", ascending=False))
+    serie["area_km2"] = serie["area_km2"].round(4)
+    ruta = os.path.join(salida, "sargazo_{}_serie_diaria_{}.csv".format(sufijo, anio))
+    serie.sort_values("dia").to_csv(ruta, index=False)
+    return ruta, serie.iloc[0]
+
+
+def serie_diaria_region_total(gdf_utm, salida, anio):
+    """Serie diaria de TODA la region monitoreada (toda la tabla del anio, sin
+    recorte espacial). Reproduce un 'SUM(area_km2) GROUP BY fechadia'."""
+    print("Calculando serie diaria de toda la region monitoreada (sin recorte)...")
+    ruta, top = _escribe_serie_diaria(gdf_utm, salida, anio, "total")
+    print("  poligonos: {:,} | serie exportada: {}".format(len(gdf_utm), ruta))
+    print("  DIA DE MAYOR ARRIBAZON (toda la region): {} -> {:.3f} km2 ({:,} poligonos)".format(
+        top["dia"], top["area_km2"], int(top["n_poligonos"])))
+    return ruta
+
+
 def serie_diaria_zee(gdf_utm, zee_path, utm_epsg, salida, anio):
-    """Serie diaria de sargazo dentro de TODA la ZEE (Caribe), sin filtro municipal.
-    Escribe un CSV y devuelve el dia de mayor arribazon. Asi se captura tambien el
-    sargazo de mar abierto que el analisis por municipio (umbral 50 km) descarta."""
-    print("Calculando serie diaria de toda la ZEE...")
+    """Serie diaria de sargazo dentro de la ZEE mexicana (Caribe), sin filtro
+    municipal. Captura el sargazo de mar abierto que el analisis por municipio
+    (umbral 50 km) descarta, pero solo lo que cae dentro de aguas mexicanas."""
+    print("Calculando serie diaria recortada a la ZEE mexicana...")
     zee = gpd.read_file(zee_path).to_crs(epsg=utm_epsg)
     zee_geom = _union(zee.geometry)
     reps = gdf_utm.geometry.representative_point()
@@ -241,18 +268,9 @@ def serie_diaria_zee(gdf_utm, zee_path, utm_epsg, salida, anio):
     print("  poligonos dentro de la ZEE: {:,} de {:,}".format(len(sub), len(gdf_utm)))
     if sub.empty:
         return None
-    sub["fechadia"] = pd.to_datetime(sub["fechadia"], errors="coerce")
-    sub["dia"] = sub["fechadia"].dt.date.astype(str)
-    serie = (sub.groupby("dia", as_index=False)
-             .agg(n_poligonos=("area_km2", "size"),
-                  area_km2=("area_km2", "sum"))
-             .sort_values("area_km2", ascending=False))
-    serie["area_km2"] = serie["area_km2"].round(4)
-    ruta = os.path.join(salida, "sargazo_zee_serie_diaria_{}.csv".format(anio))
-    serie.sort_values("dia").to_csv(ruta, index=False)
-    top = serie.iloc[0]
+    ruta, top = _escribe_serie_diaria(sub, salida, anio, "zee")
     print("  serie diaria ZEE exportada: {}".format(ruta))
-    print("  DIA DE MAYOR ARRIBAZON (toda la ZEE): {} -> {:.3f} km2 ({:,} poligonos)".format(
+    print("  DIA DE MAYOR ARRIBAZON (ZEE mexicana): {} -> {:.3f} km2 ({:,} poligonos)".format(
         top["dia"], top["area_km2"], int(top["n_poligonos"])))
     return ruta
 
@@ -281,8 +299,10 @@ def main():
 
     gdf_utm = gdf.to_crs(epsg=args.utm_epsg)
 
-    # Serie diaria de toda la ZEE (sobre el universo completo, antes del filtro
-    # municipal de 50 km) para capturar tambien el sargazo de mar abierto.
+    # Series diarias sobre el universo completo (antes del filtro municipal):
+    #  1) toda la region monitoreada (sin recorte; = SUM(area) GROUP BY fechadia)
+    #  2) recortada a la ZEE mexicana (solo aguas de Mexico), si se da --zee
+    serie_diaria_region_total(gdf_utm, args.salida, args.anio)
     if args.zee:
         serie_diaria_zee(gdf_utm, args.zee, args.utm_epsg, args.salida, args.anio)
 

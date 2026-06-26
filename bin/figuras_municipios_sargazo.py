@@ -148,40 +148,59 @@ def fig_serie_diaria(serie, resumen, anio, outdir):
 
 
 def fig_serie_diaria_zee(datadir, resumen, anio, outdir):
-    """Serie diaria de sargazo en TODA la ZEE Caribe, marcando el dia de mayor
-    arribazon. Si existe, superpone la serie costera (municipios) para comparar."""
-    zee_csv = os.path.join(datadir, "sargazo_zee_serie_diaria_{}.csv".format(anio))
-    if not os.path.isfile(zee_csv):
-        print("  [aviso] no hay serie diaria de la ZEE; omito figura ZEE")
-        return None
-    z = pd.read_csv(zee_csv)
-    z["dia_dt"] = pd.to_datetime(z["dia"], errors="coerce")
-    z = z.sort_values("dia_dt")
+    """Serie diaria de sargazo en tres universos: toda la region monitoreada,
+    la ZEE mexicana y el costero (municipios), marcando los dias de mayor
+    arribazon de region total y ZEE."""
+    capas = [
+        ("total", "Toda la región monitoreada", "#444444", "-", "o"),
+        ("zee", "ZEE mexicana (Caribe)", "#1f6f8b", "-", "o"),
+    ]
     fig, ax = plt.subplots(figsize=(12, 5.8))
-    ax.fill_between(z["dia_dt"], z["area_km2"], color="#1f6f8b", alpha=0.25)
-    ax.plot(z["dia_dt"], z["area_km2"], color="#1f6f8b", lw=1.8, marker="o", ms=3,
-            label="Toda la ZEE (Caribe)")
-    # Serie costera (municipios) para comparar.
+    dibujado = False
+    for suf, lbl, col, ls, mk in capas:
+        ruta = os.path.join(datadir, "sargazo_{}_serie_diaria_{}.csv".format(suf, anio))
+        if not os.path.isfile(ruta):
+            continue
+        d = pd.read_csv(ruta)
+        d["dia_dt"] = pd.to_datetime(d["dia"], errors="coerce")
+        d = d.sort_values("dia_dt")
+        if suf == "total":
+            ax.fill_between(d["dia_dt"], d["area_km2"], color=col, alpha=0.12)
+        ax.plot(d["dia_dt"], d["area_km2"], color=col, lw=1.8, ls=ls, marker=mk,
+                ms=3, label=lbl)
+        dibujado = True
+    # Serie costera (municipios).
     sc = os.path.join(datadir, "muni_sargazo_{}_serie_diaria_region.csv".format(anio))
     if os.path.isfile(sc):
         s = pd.read_csv(sc)
         s["dia_dt"] = pd.to_datetime(s["dia"], errors="coerce")
         s = s.sort_values("dia_dt")
-        ax.plot(s["dia_dt"], s["area_km2"], color=COL_AREA, lw=1.5, ls="--",
-                marker="s", ms=2.5, label="Costero (municipios)")
-    top = resumen["totales"].get("dia_mayor_arribazon_zee")
+        ax.plot(s["dia_dt"], s["area_km2"], color=COL_AREA, lw=1.4, ls="--",
+                marker="s", ms=2.5, label="Costero (municipios, ≤50 km)")
+        dibujado = True
+    if not dibujado:
+        print("  [aviso] no hay series diarias; omito figura 13")
+        plt.close(fig)
+        return None
+    # Marca los maximos (region total y ZEE).
+    for key, col in [("dia_mayor_arribazon_region_total", "#444444"),
+                     ("dia_mayor_arribazon_zee", COL_BIO)]:
+        top = resumen["totales"].get(key)
+        if top:
+            dpt = pd.to_datetime(top["dia"])
+            ax.axvline(dpt, color=col, ls=":", lw=1.5, alpha=0.8)
+    top = resumen["totales"].get("dia_mayor_arribazon_region_total")
     if top:
-        dpt = pd.to_datetime(top["dia"])
-        ax.axvline(dpt, color=COL_BIO, ls="--", lw=1.8)
-        ax.text(dpt, ax.get_ylim()[1] * 0.92,
-                "  máx ZEE: {} ({:.1f} km²)".format(top["dia"], top["area_km2"]),
-                color=COL_BIO, fontsize=9)
+        ax.text(pd.to_datetime(top["dia"]), ax.get_ylim()[1] * 0.95,
+                "  máx región: {} ({:.1f} km²)".format(top["dia"], top["area_km2"]),
+                color="#444444", fontsize=9, va="top")
     ax.set_ylabel("Área de sargazo (km$^2$)")
     ax.set_xlabel("Fecha")
-    ax.set_title("Serie diaria de sargazo en la ZEE del Caribe Mexicano ({})".format(anio))
-    ax.legend(loc="upper right", fontsize=9, framealpha=0.9)
+    ax.set_title("Serie diaria de sargazo por universo de análisis – {} ({})".format(
+        REGION, anio))
+    ax.legend(loc="upper right", fontsize=8.5, framealpha=0.9)
     fig.tight_layout()
-    return fa._guarda(fig, outdir, "13_serie_diaria_zee.png")
+    return fa._guarda(fig, outdir, "13_serie_diaria_universos.png")
 
 
 def fig_heatmap_mensual(mensual, anio, outdir, valor, titulo, etiqueta, nombre):
