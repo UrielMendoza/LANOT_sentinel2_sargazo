@@ -197,6 +197,25 @@ def main():
                       .sort_values("area_km2", ascending=False))
     dia_top_region = por_dia_region.iloc[0].to_dict()
 
+    # Dia de mayor arribazon a nivel de TODA la ZEE (Caribe), si el paso 1 genero
+    # la serie diaria de la ZEE (incluye el sargazo mar adentro fuera del filtro
+    # municipal de 50 km). Se le agrega la biomasa con los mismos FC y densidad.
+    zee_top = None
+    zee_csv = os.path.join(salida, "sargazo_zee_serie_diaria_{}.csv".format(anio))
+    if os.path.isfile(zee_csv):
+        zee = pd.read_csv(zee_csv)
+        zee["biomasa_ton"] = biomasa_ton(zee["area_km2"], args.fc, args.densidad).round(2)
+        zee = zee.sort_values("area_km2", ascending=False)
+        zee.sort_values("dia").to_csv(zee_csv, index=False)  # reescribe con biomasa
+        top = zee.iloc[0]
+        zee_top = {"dia": str(top["dia"]),
+                   "area_km2": round(float(top["area_km2"]), 4),
+                   "biomasa_ton": round(float(top["biomasa_ton"]), 2),
+                   "n_poligonos": int(top["n_poligonos"])}
+    else:
+        print("  [aviso] no se encontro {} (corre el paso 1 con --zee para el "
+              "maximo de toda la ZEE)".format(os.path.basename(zee_csv)))
+
     # --- Escritura CSV ---
     tot_muni.to_csv(pref + "_totales_municipio.csv", index=False)
     pico.to_csv(pref + "_dia_mayor_arribazon.csv", index=False)
@@ -222,6 +241,7 @@ def main():
                 "biomasa_ton": round(float(dia_top_region["biomasa_ton"]), 2),
                 "n_poligonos": int(dia_top_region["n_poligonos"]),
             },
+            "dia_mayor_arribazon_zee": zee_top,
         },
         "totales_municipio": tot_muni.to_dict(orient="records"),
         "dia_mayor_arribazon": pico.to_dict(orient="records"),
@@ -236,8 +256,11 @@ def main():
         json.dump(resumen, f, ensure_ascii=False, indent=2)
 
     # --- Consola ---
-    print("\nDia de mayor arribazon (region completa): {}  ->  {:.3f} km2 | {:,.0f} ton".format(
+    print("\nDia de mayor arribazon (municipios, costero): {}  ->  {:.3f} km2 | {:,.0f} ton".format(
         dia_top_region["dia"], dia_top_region["area_km2"], dia_top_region["biomasa_ton"]))
+    if zee_top:
+        print("Dia de mayor arribazon (TODA la ZEE Caribe): {}  ->  {:.3f} km2 | {:,.0f} ton".format(
+            zee_top["dia"], zee_top["area_km2"], zee_top["biomasa_ton"]))
     print("\nDia de mayor arribazon por municipio:")
     print(pico[["municipio", "dia_pico", "area_km2_pico", "biomasa_ton_pico"]]
           .to_string(index=False))
@@ -249,6 +272,8 @@ def main():
               "_dia_mayor_arribazon_por_banda", "_mensual_municipio",
               "_por_banda_municipio", "_serie_diaria_region", "_resumen.json"]:
         print("  - muni_sargazo_{}{}".format(anio, s if s.endswith("json") else s + ".csv"))
+    if zee_top:
+        print("  - sargazo_zee_serie_diaria_{}.csv (toda la ZEE Caribe)".format(anio))
 
 
 if __name__ == "__main__":

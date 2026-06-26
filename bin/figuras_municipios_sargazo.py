@@ -147,6 +147,43 @@ def fig_serie_diaria(serie, resumen, anio, outdir):
     return fa._guarda(fig, outdir, "03_serie_diaria_region.png")
 
 
+def fig_serie_diaria_zee(datadir, resumen, anio, outdir):
+    """Serie diaria de sargazo en TODA la ZEE Caribe, marcando el dia de mayor
+    arribazon. Si existe, superpone la serie costera (municipios) para comparar."""
+    zee_csv = os.path.join(datadir, "sargazo_zee_serie_diaria_{}.csv".format(anio))
+    if not os.path.isfile(zee_csv):
+        print("  [aviso] no hay serie diaria de la ZEE; omito figura ZEE")
+        return None
+    z = pd.read_csv(zee_csv)
+    z["dia_dt"] = pd.to_datetime(z["dia"], errors="coerce")
+    z = z.sort_values("dia_dt")
+    fig, ax = plt.subplots(figsize=(12, 5.8))
+    ax.fill_between(z["dia_dt"], z["area_km2"], color="#1f6f8b", alpha=0.25)
+    ax.plot(z["dia_dt"], z["area_km2"], color="#1f6f8b", lw=1.8, marker="o", ms=3,
+            label="Toda la ZEE (Caribe)")
+    # Serie costera (municipios) para comparar.
+    sc = os.path.join(datadir, "muni_sargazo_{}_serie_diaria_region.csv".format(anio))
+    if os.path.isfile(sc):
+        s = pd.read_csv(sc)
+        s["dia_dt"] = pd.to_datetime(s["dia"], errors="coerce")
+        s = s.sort_values("dia_dt")
+        ax.plot(s["dia_dt"], s["area_km2"], color=COL_AREA, lw=1.5, ls="--",
+                marker="s", ms=2.5, label="Costero (municipios)")
+    top = resumen["totales"].get("dia_mayor_arribazon_zee")
+    if top:
+        dpt = pd.to_datetime(top["dia"])
+        ax.axvline(dpt, color=COL_BIO, ls="--", lw=1.8)
+        ax.text(dpt, ax.get_ylim()[1] * 0.92,
+                "  máx ZEE: {} ({:.1f} km²)".format(top["dia"], top["area_km2"]),
+                color=COL_BIO, fontsize=9)
+    ax.set_ylabel("Área de sargazo (km$^2$)")
+    ax.set_xlabel("Fecha")
+    ax.set_title("Serie diaria de sargazo en la ZEE del Caribe Mexicano ({})".format(anio))
+    ax.legend(loc="upper right", fontsize=9, framealpha=0.9)
+    fig.tight_layout()
+    return fa._guarda(fig, outdir, "13_serie_diaria_zee.png")
+
+
 def fig_heatmap_mensual(mensual, anio, outdir, valor, titulo, etiqueta, nombre):
     df = mensual.copy()
     orden = _orden_muni(df, valor)
@@ -298,6 +335,7 @@ def main():
     fig_ranking_total(tot, args.anio, outdir)
     fig_dia_arribazon(pico, args.anio, outdir)
     fig_serie_diaria(serie, resumen, args.anio, outdir)
+    fig_serie_diaria_zee(datadir, resumen, args.anio, outdir)
     fig_heatmap_mensual(mensual, args.anio, outdir, "area_km2_total",
                         "Área mensual de sargazo por municipio – {} ({})",
                         "Área (km²)", "04_mensual_area_municipio.png")

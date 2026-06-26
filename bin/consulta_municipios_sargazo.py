@@ -76,6 +76,9 @@ def parse_args():
                    help="GeoJSON poligonal de tierra; su borde es la linea de costa.")
     p.add_argument("--linea-costa", default=None,
                    help="GeoJSON de LINEA de costa ya lista (alternativa a --mascara-tierra).")
+    p.add_argument("--zee", default=None,
+                   help="GeoJSON de la ZEE (Caribe). Si se da, calcula la serie diaria de "
+                        "TODA la ZEE (sin filtro municipal) y su dia de mayor arribazon.")
     p.add_argument("--salida", default=os.path.join(RAIZ, "data", "2026"),
                    help="Carpeta de salida.")
     p.add_argument("--max-dist-municipio-km", type=float, default=50.0,
@@ -225,6 +228,35 @@ def exporta_bandas(costa_geom, tierra_geom, salida, anio, utm_epsg):
     print("  bandas (anillos) exportadas: {}".format(ruta))
 
 
+def serie_diaria_zee(gdf_utm, zee_path, utm_epsg, salida, anio):
+    """Serie diaria de sargazo dentro de TODA la ZEE (Caribe), sin filtro municipal.
+    Escribe un CSV y devuelve el dia de mayor arribazon. Asi se captura tambien el
+    sargazo de mar abierto que el analisis por municipio (umbral 50 km) descarta."""
+    print("Calculando serie diaria de toda la ZEE...")
+    zee = gpd.read_file(zee_path).to_crs(epsg=utm_epsg)
+    zee_geom = _union(zee.geometry)
+    reps = gdf_utm.geometry.representative_point()
+    dentro = reps.within(zee_geom)
+    sub = gdf_utm.loc[dentro.values].copy()
+    print("  poligonos dentro de la ZEE: {:,} de {:,}".format(len(sub), len(gdf_utm)))
+    if sub.empty:
+        return None
+    sub["fechadia"] = pd.to_datetime(sub["fechadia"], errors="coerce")
+    sub["dia"] = sub["fechadia"].dt.date.astype(str)
+    serie = (sub.groupby("dia", as_index=False)
+             .agg(n_poligonos=("area_km2", "size"),
+                  area_km2=("area_km2", "sum"))
+             .sort_values("area_km2", ascending=False))
+    serie["area_km2"] = serie["area_km2"].round(4)
+    ruta = os.path.join(salida, "sargazo_zee_serie_diaria_{}.csv".format(anio))
+    serie.sort_values("dia").to_csv(ruta, index=False)
+    top = serie.iloc[0]
+    print("  serie diaria ZEE exportada: {}".format(ruta))
+    print("  DIA DE MAYOR ARRIBAZON (toda la ZEE): {} -> {:.3f} km2 ({:,} poligonos)".format(
+        top["dia"], top["area_km2"], int(top["n_poligonos"])))
+    return ruta
+
+
 def main():
     args = parse_args()
     tabla = TABLAS_REGION[args.region]
@@ -248,6 +280,12 @@ def main():
         tierra_geom = _union(gpd.read_file(args.mascara_tierra).to_crs(epsg=args.utm_epsg).geometry)
 
     gdf_utm = gdf.to_crs(epsg=args.utm_epsg)
+
+    # Serie diaria de toda la ZEE (sobre el universo completo, antes del filtro
+    # municipal de 50 km) para capturar tambien el sargazo de mar abierto.
+    if args.zee:
+        serie_diaria_zee(gdf_utm, args.zee, args.utm_epsg, args.salida, args.anio)
+
     gdf_utm = asigna_municipio(gdf_utm, municipios_utm, args.campo_municipio,
                                args.max_dist_municipio_km * 1000.0)
     costa = linea_costa(args, municipios_utm, args.utm_epsg)
