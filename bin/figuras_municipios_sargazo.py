@@ -137,14 +137,16 @@ def fig_serie_diaria(serie, resumen, anio, outdir):
     ax1.set_ylabel("Área de sargazo (km$^2$)", color=COL_AREA)
     ax1.tick_params(axis="y", labelcolor=COL_AREA)
     ax1.set_xlabel("Fecha")
-    # Marca el dia pico regional.
-    top = resumen["totales"]["dia_mayor_arribazon_region"]
-    dpt = pd.to_datetime(top["dia"])
-    ax1.axvline(dpt, color=COL_BIO, ls="--", lw=1.8)
-    ax1.text(dpt, ax1.get_ylim()[1] * 0.92,
-             "  máx: {} ({:.1f} km²)".format(top["dia"], top["area_km2"]),
-             color=COL_BIO, fontsize=9)
-    ax1.set_title("Serie diaria de sargazo – {} ({})".format(REGION, anio))
+    # Marca el dia pico costero (municipios).
+    top = (resumen["totales"].get("dia_mayor_arribazon_costero")
+           or resumen["totales"].get("dia_mayor_arribazon_region"))
+    if top:
+        dpt = pd.to_datetime(top["dia"])
+        ax1.axvline(dpt, color=COL_BIO, ls="--", lw=1.8)
+        ax1.text(dpt, ax1.get_ylim()[1] * 0.92,
+                 "  máx: {} ({:.1f} km²)".format(top["dia"], top["area_km2"]),
+                 color=COL_BIO, fontsize=9)
+    ax1.set_title("Serie diaria de sargazo costero (municipios) – {} ({})".format(REGION, anio))
     fig.tight_layout()
     return fa._guarda(fig, outdir, "03_serie_diaria_region.png")
 
