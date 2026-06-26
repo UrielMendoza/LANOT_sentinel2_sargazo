@@ -53,10 +53,13 @@ DEF_MUNICIPIOS = os.path.join(RAIZ, "data", "limites", "municipios_QR.geojson")
 CAMPO_MUNI_DEF = "NOMGEO"
 UTM_EPSG = 32616  # UTM 16N (Caribe mexicano)
 
-# Cortes de distancia a la costa en METROS y sus etiquetas.
-# El primer corte (0) corresponde a sargazo sobre/pegado a la costa (playa).
+# Banda especial para sargazo que cae SOBRE tierra/costa.
+ETIQ_PLAYA = "0 m (playa)"
+# Cortes de distancia (m) a la costa para el sargazo en el MAR (5 intervalos).
 CORTES_M = [0, 10, 100, 1000, 10000, np.inf]
-ETIQ_BANDA = ["0 m (playa)", "0-10 m", "10-100 m", "100 m-1 km", "1-10 km", ">10 km"]
+ETIQ_MAR = ["0-10 m", "10-100 m", "100 m-1 km", "1-10 km", ">10 km"]
+# Orden completo (playa + mar) para reportes posteriores.
+ETIQ_BANDA = [ETIQ_PLAYA] + ETIQ_MAR
 
 
 def parse_args():
@@ -182,19 +185,25 @@ def linea_costa(args, municipios_utm, utm_epsg):
 
 
 def clasifica_bandas(gdf_utm, costa_geom, tierra_geom=None):
-    """Distancia (m) a la costa y banda. Los poligonos sobre tierra -> 0 m (playa)."""
+    """Distancia (m) a la costa y banda.
+    - Sargazo SOBRE tierra/costa  -> banda '0 m (playa)' (dist 0).
+    - Sargazo en el MAR           -> 5 bandas por distancia a la costa.
+    """
     print("Calculando distancia a la costa y banda...")
     reps = gdf_utm.geometry.representative_point()
     dist = reps.distance(costa_geom)
-    # Los que estan sobre tierra/playa se fuerzan a 0 (banda playa).
-    if tierra_geom is not None:
-        sobre_tierra = reps.within(tierra_geom)
-        dist = dist.where(~sobre_tierra, 0.0)
+    sobre_tierra = reps.within(tierra_geom) if tierra_geom is not None \
+        else pd.Series(False, index=gdf_utm.index)
+    dist = dist.where(~sobre_tierra.values, 0.0)
+
+    # Bandas de mar (5 intervalos) con pd.cut; luego override de playa.
+    banda = pd.cut(dist, bins=CORTES_M, labels=ETIQ_MAR,
+                   right=False, include_lowest=True).astype("object")
+    banda = banda.where(~sobre_tierra.values, ETIQ_PLAYA)
+
     gdf_utm = gdf_utm.copy()
-    gdf_utm["dist_costa_m"] = dist.round(1).values
-    gdf_utm["banda_costa"] = pd.cut(gdf_utm["dist_costa_m"], bins=CORTES_M,
-                                    labels=ETIQ_BANDA, right=False,
-                                    include_lowest=True).astype(str)
+    gdf_utm["dist_costa_m"] = np.round(dist.values, 1)
+    gdf_utm["banda_costa"] = pd.Series(banda).fillna(ETIQ_MAR[-1]).values
     return gdf_utm
 
 
@@ -202,7 +211,7 @@ def exporta_bandas(costa_geom, tierra_geom, salida, anio, utm_epsg):
     """Anillos de buffer (lado mar) para usar en mapas."""
     radios = [r for r in CORTES_M[1:] if np.isfinite(r)]
     anillos, prev = [], None
-    etiquetas_anillo = ETIQ_BANDA[1:1 + len(radios)]
+    etiquetas_anillo = ETIQ_MAR[:len(radios)]  # bandas de mar con buffer finito
     for r, et in zip(radios, etiquetas_anillo):
         b = costa_geom.buffer(r)
         anillo = b if prev is None else b.difference(prev)
