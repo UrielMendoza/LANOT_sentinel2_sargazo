@@ -71,6 +71,8 @@ def parse_args():
     p.add_argument("--hex-gridsize", type=int, default=170, help="Resolucion del hexbin.")
     p.add_argument("--zee", default=fa.DEF_ZEE, help="GeoJSON de la ZEE de Mexico.")
     p.add_argument("--paises", default=fa.DEF_PAISES, help="GeoJSON de paises (Natural Earth).")
+    p.add_argument("--bandas", default=None,
+                   help="GeoJSON de anillos de banda de costa (bandas_costa_<anio>.geojson).")
     return p.parse_args()
 
 
@@ -327,6 +329,161 @@ def fig_mapa_densidad(gdf, muni, anio, outdir, gridsize):
     return fa._guarda(fig, outdir, "11_mapa_densidad_municipios.png")
 
 
+def fig_metodologia(muni, anio, outdir, zee_path, bandas_path, gdf=None):
+    """Mapa de metodologia en dos paneles:
+      (a) contexto regional: ZEE del Caribe + municipios + extension del analisis;
+      (b) zoom a un tramo de costa mostrando las bandas de distancia y, si se da,
+          algunos poligonos de sargazo clasificados.
+    """
+    if not os.path.isfile(bandas_path):
+        print("  [aviso] no se encontro {}; omito mapa de metodologia".format(bandas_path))
+        return None
+    bandas = gpd.read_file(bandas_path).to_crs(4326)
+    bandas["banda_costa"] = pd.Categorical(bandas["banda_costa"],
+                                           categories=ORDEN_BANDAS, ordered=True)
+    bandas = bandas.sort_values("banda_costa")
+    zee = gpd.read_file(zee_path).to_crs(4326) if os.path.isfile(zee_path) else None
+
+    from matplotlib.patches import Patch
+    zb = _bbox_zoom(muni)
+    fig = plt.figure(figsize=(15, 13))
+    gs = fig.add_gridspec(2, 2, height_ratios=[2.2, 1.0], hspace=0.22, wspace=0.16)
+    axA = fig.add_subplot(gs[0, 0])
+    axB = fig.add_subplot(gs[0, 1])
+    axC = fig.add_subplot(gs[1, :])
+
+    # --- Panel A: contexto regional (acotado al Caribe) ---
+    axA.set_facecolor(fa.COL_OCEANO)
+    if zee is not None:
+        zee.plot(ax=axA, facecolor="#cfe3ec", edgecolor=fa.COL_ZEE, lw=1.6,
+                 alpha=0.55, zorder=1)
+    if fa._CTX["paises"] is not None:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            fa._CTX["paises"].plot(ax=axA, facecolor="#eef0ec", edgecolor="#bbbbbb",
+                                   lw=0.4, zorder=0)
+    muni.plot(ax=axA, facecolor="#f0ead6", edgecolor="#888888", lw=0.5, zorder=2)
+    axA.add_patch(plt.Rectangle((zb[0], zb[2]), zb[1] - zb[0], zb[3] - zb[2],
+                                fill=False, edgecolor="#d62728", lw=2, zorder=10))
+    # Encuadre del Caribe mexicano (no toda la ZEE del Golfo).
+    axA.set_xlim(-90.6, -85.0)
+    axA.set_ylim(17.4, 22.2)
+    fa._aspecto(axA, 19.8)
+    axA.set_anchor("N")
+    axA.set_title("(a) Contexto: ZEE del Caribe y municipios", fontsize=12)
+    axA.set_xlabel("Longitud"); axA.set_ylabel("Latitud")
+    axA.legend(handles=[Patch(facecolor="#cfe3ec", edgecolor=fa.COL_ZEE,
+                              label="ZEE de México (Caribe)"),
+                        Patch(facecolor="#f0ead6", edgecolor="#888888",
+                              label="Municipios de Q. Roo"),
+                        Patch(facecolor="none", edgecolor="#d62728",
+                              label="Zona de detalle (b)")],
+               loc="upper left", fontsize=8.5, framealpha=0.9)
+    fa._flecha_norte(axA)
+
+    # --- Panel B: zoom con bandas de distancia ---
+    axB.set_facecolor(fa.COL_OCEANO)
+    muni.plot(ax=axB, facecolor="#e8e0c8", edgecolor="#999999", lw=0.5, zorder=2)
+    for b in ORDEN_BANDAS:
+        sub = bandas[bandas["banda_costa"] == b]
+        if len(sub):
+            sub.plot(ax=axB, facecolor=PAL_BANDAS.get(b, "#999999"), edgecolor="none",
+                     alpha=0.8, zorder=3)
+    # Poligonos de sargazo de ejemplo (clasificados) dentro del zoom.
+    if gdf is not None:
+        g = gdf.cx[zb[0]:zb[1], zb[2]:zb[3]]
+        if len(g) > 4000:
+            g = g.sample(4000, random_state=0)
+        if len(g):
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                pts = g.geometry.representative_point()
+            axB.scatter(pts.x, pts.y, s=5, c="#111111", alpha=0.4, zorder=5,
+                        label="Sargazo detectado")
+    if zee is not None:
+        zee.boundary.plot(ax=axB, color=fa.COL_ZEE, lw=1.3, zorder=6)
+    axB.set_xlim(zb[0], zb[1]); axB.set_ylim(zb[2], zb[3])
+    fa._aspecto(axB, (zb[2] + zb[3]) / 2)
+    axB.set_anchor("N")
+    axB.set_title("(b) Asignación de bandas de distancia a la costa", fontsize=12)
+    axB.set_xlabel("Longitud"); axB.set_ylabel("Latitud")
+    handles = [Patch(facecolor=PAL_BANDAS[b], edgecolor="none", label=b, alpha=0.85)
+               for b in ORDEN_BANDAS]
+    handles.append(plt.Line2D([0], [0], marker="o", color="none",
+                              markerfacecolor="#111111", markersize=6,
+                              alpha=0.6, label="Sargazo detectado"))
+    axB.legend(handles=handles, title="Distancia a la costa", loc="upper right",
+               fontsize=8, title_fontsize=9, framealpha=0.92)
+    fa._barra_escala(axB, km=10)
+    fa._flecha_norte(axB)
+
+    # Panel C (ancho completo): esquema conceptual (corte costa->mar, NO a escala)
+    # que explica como se asigna cada deteccion a una banda segun su distancia a la
+    # linea de costa. Necesario porque las bandas finas (10 m, 100 m) son sub-pixel
+    # en un mapa real.
+    _esquema_bandas(axC)
+    axC.set_title("(c) Esquema de asignación de bandas según distancia a la costa "
+                  "(corte transversal, no a escala)", fontsize=12)
+
+    fig.suptitle("Metodología: ZEE y bandas de distancia a la costa – {} ({})".format(
+        REGION, anio), fontsize=15, fontweight="bold", y=0.96)
+    return fa._guarda(fig, outdir, "14_metodologia_zee_bandas.png")
+
+
+def _esquema_bandas(ax):
+    """Diagrama conceptual (no a escala): tierra | linea de costa | bandas hacia el
+    mar, con puntos de sargazo de ejemplo asignados a su banda. Pensado para un
+    panel ancho horizontal."""
+    ax.set_facecolor("white")
+    # Tierra a la izquierda.
+    ax.axvspan(0.0, 1.2, color="#e8e0c8", zorder=0)
+    ax.text(0.6, 5.0, "TIERRA", ha="center", fontsize=11, fontweight="bold",
+            style="italic", color="#8a7d52")
+    # Linea de costa.
+    ax.axvline(1.2, color="#333333", lw=2.2, zorder=4)
+    ax.text(1.2, 9.4, "línea de costa", ha="center", va="top", fontsize=9.5,
+            color="#333333", fontweight="bold")
+    # Bandas hacia el mar (anchos iguales, NO a escala).
+    anchos = {"0 m (playa)": (0.0, 1.2), "0-10 m": (1.2, 2.7), "10-100 m": (2.7, 4.2),
+              "100 m-1 km": (4.2, 5.7), "1-10 km": (5.7, 7.5), ">10 km": (7.5, 10.0)}
+    rng = np.random.default_rng(3)
+    for b, (x0, x1) in anchos.items():
+        if b != "0 m (playa)":
+            ax.axvspan(x0, x1, color=PAL_BANDAS[b], alpha=0.85, zorder=1)
+        # etiqueta de banda (horizontal, arriba de cada franja)
+        ax.text((x0 + x1) / 2, 8.4, b, ha="center", va="top", fontsize=9,
+                color="#1a1a1a", fontweight="bold", zorder=6,
+                bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="none", alpha=0.65))
+        # puntos de sargazo de ejemplo dentro de la banda
+        n = {"0 m (playa)": 4, "0-10 m": 3, "10-100 m": 4, "100 m-1 km": 4,
+             "1-10 km": 7, ">10 km": 9}[b]
+        xs = rng.uniform(x0 + 0.12, x1 - 0.12, n)
+        ys = rng.uniform(1.5, 6.5, n)
+        ax.scatter(xs, ys, s=22, c="#111111", alpha=0.75, zorder=5,
+                   edgecolors="white", linewidths=0.4)
+    # Flecha de distancia.
+    ax.annotate("", xy=(9.9, 0.7), xytext=(1.2, 0.7),
+                arrowprops=dict(arrowstyle="-|>", color="#1f6f8b", lw=2.0))
+    ax.text(5.5, 1.05, "distancia a la línea de costa   →   mar abierto",
+            ha="center", fontsize=10, color="#1f6f8b", fontweight="bold")
+    # Leyenda del punto.
+    ax.scatter([], [], s=22, c="#111111", alpha=0.75, edgecolors="white",
+               linewidths=0.4, label="Detección de sargazo (centroide)")
+    ax.legend(loc="upper right", fontsize=9, framealpha=0.9)
+    ax.set_xlim(0, 10.0); ax.set_ylim(0, 9.8)
+    ax.set_xticks([]); ax.set_yticks([])
+
+
+def _bbox_zoom(muni=None):
+    """Tramo CORTO de costa para el panel de detalle, donde las bandas finas
+    (0-10 m, 10-100 m, 100 m-1 km) sean visibles. Riviera Maya (Tulum-Sian Ka'an),
+    costa con orientacion N-S y mar al este."""
+    # Ventana pequena (~0.35 x 0.40 grados) centrada en la costa.
+    lon0, lon1 = -87.55, -87.20
+    lat0, lat1 = 19.95, 20.35
+    return (lon0, lon1, lat0, lat1)
+
+
 # ------------------------------------------------------------------------------
 def main():
     args = parse_args()
@@ -383,6 +540,7 @@ def main():
                              "Biomasa húmeda (ton)", "12_mapa_biomasa_municipio.png",
                              "Biomasa total de sargazo por municipio – {} ({})")
         geojson = args.geojson or os.path.join(datadir, "sargazo_municipios_{}.geojson".format(args.anio))
+        gdf = None
         if os.path.isfile(geojson):
             print("Leyendo GeoJSON de poligonos...")
             gdf = gpd.read_file(geojson).to_crs(4326)
@@ -390,6 +548,11 @@ def main():
             fig_mapa_densidad(gdf, muni, args.anio, outdir, args.hex_gridsize)
         else:
             print("  [aviso] no se encontro {} (omito mapa de densidad)".format(geojson))
+
+        # Mapa de metodologia: ZEE + bandas de distancia a la costa.
+        bandas_path = args.bandas or os.path.join(
+            datadir, "bandas_costa_{}.geojson".format(args.anio))
+        fig_metodologia(muni, args.anio, outdir, args.zee, bandas_path, gdf=gdf)
 
     print("-" * 70)
     print("Figuras generadas en: {}".format(outdir))
