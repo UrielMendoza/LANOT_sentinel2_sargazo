@@ -757,8 +757,156 @@ def detfooMascara(detfoo_dist,pathInput,pathOutput):
     gdf_detfoot_buffers = gpd.GeoDataFrame(df_detfoot_buffers, geometry=detfoot_buffers, crs=gdf_crs)
     gdf_detfoot_buffers.to_file(pathOutput+detfoo.split('.')[0]+'.json',driver='GeoJSON')
 
+# =============================================================================
+# COSTURAS ENTRE DETECTORES (DETFOO) POR CONVOLUCION
+# =============================================================================
+
+# Tiles en los que SI se aplica el filtro de entropia sobre las costuras entre
+# detectores. En el resto de los tiles el filtro no se aplica porque eliminaba
+# sargazo valido sin necesidad.
+tilesFiltroDetfoo = ['T16QEF', 'T16QEE', 'T16QED', 'T16QEG']
+
+# Kernel de deteccion de lineas / bordes en diagonal derecha (SNAP).
+# Suma cero: en el interior de una region de valor constante responde 0 y solo
+# se activa sobre el limite entre detectores contiguos.
+kernelDiagonalDerecha = np.array([[-1, -1,  2],
+                                  [-1,  2, -1],
+                                  [ 2, -1, -1]], dtype=np.int64)
+
+# Numero de iteraciones del filtro (equivale al campo "iterations" de SNAP).
+# Cada iteracion ensancha la respuesta aproximadamente un pixel por lado.
+iteracionesDetfoo = 5
+
+
+def convolucion3x3(arr, kernel):
+    """Convolucion 3x3 en aritmetica entera, con borde replicado.
+
+    Se hace con numpy (sin scipy) para no agregar dependencias. El kernel de
+    diagonal derecha es simetrico bajo rotacion de 180 grados, asi que
+    convolucion y correlacion coinciden y no hay ambiguedad de signo.
+    Se trabaja en enteros para que los ceros sean exactos: de eso depende el
+    enmascarado posterior (!= 0).
+    """
+    arr = arr.astype(np.int64)
+    pad = np.pad(arr, 1, mode='edge')
+    out = np.zeros(arr.shape, dtype=np.int64)
+    for di in range(3):
+        for dj in range(3):
+            k = int(kernel[di, dj])
+            if k != 0:
+                out += k * pad[di:di + arr.shape[0], dj:dj + arr.shape[1]]
+    return out
+
+
+def creaTifByte(dsRef, npy, output):
+    """Escribe un arreglo binario como GeoTIFF Byte comprimido.
+
+    Se usa en lugar de creaTif() porque este ultimo escribe Float32 sin
+    compresion y le pasa (ny, nx) invertidos al driver, lo que solo funciona
+    cuando el raster es cuadrado.
+    """
+    arr = np.asarray(npy)
+    ny, nx = arr.shape
+    dst_ds = gdal.GetDriverByName('GTiff').Create(output, nx, ny, 1, gdal.GDT_Byte,
+                                                 options=['COMPRESS=LZW', 'TILED=YES'])
+    dst_ds.SetGeoTransform(dsRef.GetGeoTransform())
+    srs = osr.SpatialReference()
+    srs.ImportFromWkt(dsRef.GetProjectionRef())
+    dst_ds.SetProjection(srs.ExportToWkt())
+    dst_ds.GetRasterBand(1).WriteArray(arr.astype(np.uint8))
+    dst_ds.FlushCache()
+    dst_ds = None
+
+
+def alineaARef(pathSrc, dsRef, pathOut, resample='near', tipo=gdal.GDT_Byte):
+    """Remuestrea un raster a la malla exacta de dsRef y regresa el arreglo."""
+    nx, ny, xmin, ymax, xres, yres, xmax, ymin = obtieneParametrosGeoTrasform(dsRef)
+    gdal.Warp(pathOut, pathSrc,
+              options=gdal.WarpOptions(outputBounds=[xmin, ymin, xmax, ymax],
+                                       xRes=abs(xres), yRes=abs(yres),
+                                       dstSRS=dsRef.GetProjectionRef(),
+                                       resampleAlg=resample,
+                                       outputType=tipo))
+    return gdal.Open(pathOut).ReadAsArray()
+
+
+def detfooID(pathSAFE, dsRef, pathTmp, banda='B8A'):
+    """Regresa el raster de identificadores de detector (0 = sin dato, 1..N).
+
+    A partir de la linea base de procesamiento 04.00 la mascara viene como
+    raster (MSK_DETFOO_<banda>.jp2) con el numero de detector como valor de
+    pixel. En productos mas antiguos solo existe el vectorial (.gml), que se
+    rasteriza quemando el numero de detector tomado del gml_id.
+
+    Regresa (arreglo, pathDelRaster, resolucionNativa_m).
+    """
+    jp2 = glob(pathSAFE + '/GRANULE/L2*/QI_DATA/MSK_DETFOO_' + banda + '.jp2')
+    if len(jp2) >= 1:
+        ds = gdal.Open(jp2[0])
+        resNativa = abs(ds.GetGeoTransform()[1])
+        print('DETFOO raster: ' + jp2[0] + ' (resolucion nativa ' + str(resNativa) + ' m)')
+        return ds.ReadAsArray(), jp2[0], resNativa
+
+    gml = glob(pathSAFE + '/GRANULE/L2*/QI_DATA/MSK_DETFOO_' + banda + '.gml')
+    if len(gml) == 0:
+        raise RuntimeError('No se encontro MSK_DETFOO_' + banda + ' (.jp2 ni .gml) en ' + pathSAFE)
+
+    print('DETFOO vectorial: ' + gml[0] + ' (se rasteriza a la malla de referencia)')
+    gdf = gpd.read_file(gml[0])
+    # gml_id tipo 'detector_footprint-B8A-04-0' -> numero de detector
+    gdf['detector'] = [int(str(g).split('-')[-2]) for g in gdf['gml_id']]
+    gdf[['detector', 'geometry']].to_file(pathTmp + 'detfoo_id.geojson', driver='GeoJSON')
+
+    nx, ny, xmin, ymax, xres, yres, xmax, ymin = obtieneParametrosGeoTrasform(dsRef)
+    gdal.Rasterize(pathTmp + 'detfoo_id.tif', pathTmp + 'detfoo_id.geojson',
+                   options=gdal.RasterizeOptions(outputBounds=[xmin, ymin, xmax, ymax],
+                                                 xRes=abs(xres), yRes=abs(yres),
+                                                 attribute='detector',
+                                                 initValues=[0],
+                                                 outputType=gdal.GDT_Byte))
+    return gdal.Open(pathTmp + 'detfoo_id.tif').ReadAsArray(), pathTmp + 'detfoo_id.tif', abs(xres)
+
+
+def detfooLineas(pathSAFE, dsRef, pathTmp, iteraciones=None, banda='B8A'):
+    """Costuras entre detectores obtenidas por convolucion.
+
+    Sustituye a detfooMascara(), que aproximaba cada costura con la diagonal
+    del bounding box del detector y le aplicaba un buffer de 1500 m (3 km de
+    ancho). Aqui se aplica el kernel de deteccion de lineas en diagonal derecha
+    sobre el raster de identificadores de detector y se enmascara todo lo
+    distinto de cero, lo que deja una banda de aproximadamente un pixel por
+    iteracion a cada lado de la costura real.
+
+    La convolucion se aplica en la resolucion nativa del DETFOO (igual que en
+    SNAP) y el resultado binario se remuestrea a la malla de dsRef.
+
+    Regresa un arreglo booleano con la forma de dsRef.
+    """
+    if iteraciones is None:
+        iteraciones = iteracionesDetfoo
+
+    detfoo, pathDetfoo, resNativa = detfooID(pathSAFE, dsRef, pathTmp, banda)
+
+    conv = detfoo
+    for n in range(iteraciones):
+        conv = convolucion3x3(conv, kernelDiagonalDerecha)
+
+    lineas = (conv != 0)
+    print('Costuras DETFOO: ' + str(int(lineas.sum())) + ' pixeles a ' +
+          str(resNativa) + ' m (' + str(iteraciones) + ' iteraciones, ancho aprox. ' +
+          str(2 * iteraciones * resNativa) + ' m)')
+
+    # Guarda la mascara en resolucion nativa y la alinea a la malla de trabajo
+    dsDetfoo = gdal.Open(pathDetfoo)
+    creaTifByte(dsDetfoo, lineas, pathTmp + 'detfoo_lineas_nativa.tif')
+    lineasRef = alineaARef(pathTmp + 'detfoo_lineas_nativa.tif', dsRef,
+                           pathTmp + 'detfoo_lineas.tif')
+
+    return lineasRef.astype(bool)
+
+
 def obtieneCRS(UTM):
-    gdf_crs = pyproj.CRS.from_user_input(UTM)    
+    gdf_crs = pyproj.CRS.from_user_input(UTM)
     return gdf_crs
 
 def sargazoBin(banderaNub,nivel,pathInput,pathOutput):
@@ -1026,16 +1174,22 @@ def filtroPixelChatGPT(dsRef, dsSar, nubeBaja, entropia, dsSCL, SNbuffer, pathTm
     return nuMask
 
 
-def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
-    
+def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM,maskDetfoo=None):
+    """Filtro de pixel sobre la deteccion cruda de sargazo.
+
+    maskDetfoo: arreglo booleano con las costuras entre detectores obtenidas
+    con detfooLineas(). Si es None (tile fuera de tilesFiltroDetfoo) el filtro
+    de entropia no se aplica y solo queda el filtro por SCL.
+
+    Implementacion vectorizada: es equivalente al recorrido pixel a pixel que
+    tenia antes, pero al sustituir el point-in-polygon de geopandas por la
+    mascara raster ya no hace falta iterar sobre los ~30 millones de pixeles.
+    """
     # Nube baja con B12
-    nuMask = dsRef.ReadAsArray()
     b12 = dsRef.ReadAsArray().astype(np.int16)
     b12 = (b12 - 1000) * 0.0001
     sar = dsSar.ReadAsArray()
     scl = dsSCL.ReadAsArray()
-    df_detfoo = gpd.read_file(pathLM+'MSK_DETFOO_B8A_b1500.geojson')
-    nx,ny,xmin,ymax,xres,yres,xmax,ymin = obtieneParametrosGeoTrasform(dsRef)
 
     # Sin buffer de nubes
     if SNbuffer == False:
@@ -1047,9 +1201,6 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
 
     contB12 = 0
     contSN = 0
-    contEnt = 0
-    contSCL = 0
-    # Sin buffer nubes
     contNubes = 0
     listaBanderas = []
 
@@ -1060,59 +1211,38 @@ def filtroPixel(dsRef,dsSar,nubeBaja,entropia,dsSCL,SNbuffer,pathTmp,pathLM):
     entropiaMin = 4.0
     #entropiaMin = 1000
 
+    sarBin = (sar == 1)
 
-    for i in range(nuMask.shape[0]):
-        for j in range(nuMask.shape[1]):
-            if sar[i,j] == 1:               
-                y = (i*yres + ymax) + yres/2
-                x = (j*xres + xmin) + xres/2
-                sargazoPunto = Point(x,y)
-                # ENTROPIA CON DETFOO 
-                #for k in range(len(df_detfoo)):
-                seriePunto = df_detfoo.geometry.contains(sargazoPunto)
-                if len(seriePunto[seriePunto == True]) >= 1 and entropia[i,j] >= entropiaMin:
-                    #print(x,y)
-                    #print(entropia[i,j])
-                    nuMask[i,j] = 0
-                    listaBanderas.append('Entropia y Detfoo')
-                    contEnt += 1 
-                #continue
-                # NUBE BAJA B12
-                #elif b12[i,j] >= nubeBaja:
-                #    nuMask[i,j] = 0
-                #    listaBanderas.append('Nube baja')
-                #    contB12 += 1 
-                # SOMBRA DE NUBE
-#                elif b12[i,j] <= sombraNube:
-#                    nuMask[i,j] = 0
-#                    listaBanderas.append('Sombra nube')
-#                    contSN += 1 
-#                elif entropia[i,j] >= entropiaMin:
-#                    nuMask[i,j] = 0
-#                    listaBanderas.append('Entropia')
-#                    contEnt += 1   
-                # SCL
-                elif (scl[i,j] == 3) or (scl[i,j] == 8) or (scl[i,j] == 9) or (scl[i,j] == 10) or (scl[i,j] == 11):
-                    nuMask[i,j] = 0
-                    listaBanderas.append('SCL')
-                    contSCL += 1  
+    # ENTROPIA SOBRE LAS COSTURAS DE DETECTORES (DETFOO)
+    # Solo se aplica en los tiles de tilesFiltroDetfoo; en el resto llega None.
+    if maskDetfoo is None:
+        print('Sin mascara DETFOO: no se aplica el filtro de entropia')
+        rmEntropia = np.zeros(sarBin.shape, dtype=bool)
+    else:
+        rmEntropia = sarBin & (entropia >= entropiaMin) & np.asarray(maskDetfoo, dtype=bool)
+    contEnt = int(rmEntropia.sum())
+    if contEnt > 0:
+        listaBanderas.append('Entropia y Detfoo')
 
-                else:
-                    nuMask[i,j] = 1
-            else:
-                nuMask[i,j] = 0
+    # SCL: solo se evalua en los pixeles que no elimino el filtro anterior
+    rmSCL = sarBin & (~rmEntropia) & np.isin(scl, [3, 8, 9, 10, 11])
+    contSCL = int(rmSCL.sum())
+    if contSCL > 0:
+        listaBanderas.append('SCL')
+
+    # NUBE BAJA B12 y SOMBRA DE NUBE quedan desactivados, igual que antes
+    #rmB12 = sarBin & (b12 >= nubeBaja)
+    #rmSombra = sarBin & (b12 <= sombraNube)
+
+    nuMask = (sarBin & (~rmEntropia) & (~rmSCL)).astype(np.uint8)
 
     # Sin buffer de nubes
     if SNbuffer == False:
-        for i in range(nuMask.shape[0]):
-            for j in range(nuMask.shape[1]):
-                if sar[i,j] == 1: 
-                    if nubes[i,j] == 0:
-                        nuMask[i,j] = 0
-                        listaBanderas.append('Nubes')
-                        contNubes += 1
-                else:
-                    nuMask[i,j] = 0
+        rmNubes = sarBin & (nubes == 0)
+        contNubes = int(rmNubes.sum())
+        if contNubes > 0:
+            listaBanderas.append('Nubes')
+        nuMask = (nuMask.astype(bool) & (~rmNubes)).astype(np.uint8)
 
     print(set(listaBanderas))
     print('Filtrados Nube Baja: ',contB12)

@@ -489,8 +489,24 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     print("Porcentaje de nubes oceanico: ",porcNubeOceano)
 
                     print('5.4 Procesando mascara detfoo...')
-                    # Se usa la manual
-                    #processing_sentinel2.detfooMascara(200,pathTmp+dirI,pathTmp)
+                    # Costuras entre detectores por convolucion (kernel de diagonal
+                    # derecha, 5 iteraciones). Sustituye a detfooMascara(), que
+                    # aproximaba la costura con la diagonal del bbox del detector y
+                    # le metia un buffer de 1500 m.
+                    # Solo se calcula en los tiles de tilesFiltroDetfoo; en el resto
+                    # se pasa None y el filtro de entropia no se aplica.
+                    maskDetfoo = None
+                    if tile in processing_sentinel2.tilesFiltroDetfoo:
+                        try:
+                            maskDetfoo = processing_sentinel2.detfooLineas(pathTmp+dirI,ref,pathTmp)
+                        except Exception as e:
+                            # Si falta la mascara MSK_DETFOO en el producto, se sigue
+                            # sin el filtro en lugar de perder la escena completa.
+                            print('***No se pudo calcular el DETFOO para '+tile+', se continua sin ese filtro***')
+                            print(traceback.format_exc())
+                            maskDetfoo = None
+                    else:
+                        print('Tile '+tile+' fuera de tilesFiltroDetfoo: no se aplica el filtro DETFOO+entropia')
                     print("Tiempo de procesamiento 4: ",round((time.time()-iniTotal)/60,2))
                     print('5.5 Procesando sargazo sin filtro...')
                     #processing_sentinel2.sargazoBin(banderaNub,'L2A',pathTmp,pathTmp)
@@ -507,7 +523,7 @@ def sargazoL2A(pathInputL1C,pathInput,pathOutput,pathTmp,pathLM,pathSen2cor,path
                     print("Tiempo de procesamiento 6: ",round((time.time()-iniTotal)/60,2))
                     #entropia = None
                     print('5.7 Procesando sargazo con filtro...')
-                    nuMask = processing_sentinel2.filtroPixel(ref,dsSar,nubesBajas,entropia,scl,SNbuffer,pathTmp,pathLM)
+                    nuMask = processing_sentinel2.filtroPixel(ref,dsSar,nubesBajas,entropia,scl,SNbuffer,pathTmp,pathLM,maskDetfoo)
                     processing_sentinel2.creaTif(ref,nuMask,pathTmp+'nubesBajas_mask.tif')
                     del nuMask 
                     print('5.8 Guardando mascara de nubes...')

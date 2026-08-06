@@ -295,9 +295,23 @@ if __name__ == '__main__':
                     entropia = processing_sentinel2.entropiaNumpy(pathTmp)
                     print(f'Tiempo 6: {round((time.time()-iniTotal)/60, 2)} min')
 
+                    print('5.4 Costuras entre detectores (DETFOO)...')
+                    maskDetfoo = None
+                    if tile in processing_sentinel2.tilesFiltroDetfoo:
+                        try:
+                            maskDetfoo = processing_sentinel2.detfooLineas(
+                                pathTmp + dirI, ref, pathTmp)
+                        except Exception:
+                            print(f'***No se pudo calcular el DETFOO para {tile}, se continua sin ese filtro***')
+                            print(traceback.format_exc())
+                            maskDetfoo = None
+                    else:
+                        print(f'Tile {tile} fuera de tilesFiltroDetfoo: sin filtro DETFOO+entropia')
+
                     print('5.7 Filtro de pixeles...')
                     nuMask = processing_sentinel2.filtroPixel(
-                        ref, dsSar, nubesBajas, entropia, scl, SNbuffer, pathTmp, pathLM)
+                        ref, dsSar, nubesBajas, entropia, scl, SNbuffer, pathTmp, pathLM,
+                        maskDetfoo)
                     processing_sentinel2.creaTif(ref, nuMask, pathTmp + 'nubesBajas_mask.tif')
                     del nuMask
 

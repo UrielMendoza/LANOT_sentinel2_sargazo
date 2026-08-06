@@ -18,7 +18,13 @@ Opciones utiles:
     --out DIR             Directorio de salida (default /data/input/sentinel2/tmp/diagnostico/<TILE>_<FECHA>/)
     --sin-buffer-nubes    Ejecuta como SNbuffer=False (nubes sin buffer)
     --sen2cor             Si no existe el L2A, corrige el L1C con Sen2Cor
-    --verifica-filtro     Corre ademas el filtroPixel() original (lento, ~horas) y compara
+    --iteraciones N       Iteraciones del filtro de convolucion DETFOO (default 5)
+    --forzar-detfoo       Aplica DETFOO+entropia aunque el tile no este en la lista
+    --verifica-filtro     Corre ademas ps.filtroPixel() y compara resultados
+
+Las costuras entre detectores (DETFOO) se calculan SIEMPRE y se guardan como
+raster, aunque el tile no este en processing_sentinel2.tilesFiltroDetfoo, para
+poder compararlas con el metodo anterior (buffer de 1500 m) en QGIS.
 
 @author: urielm
 """
@@ -256,8 +262,9 @@ def rasterizaComoRef(pathGeojson, ref, pathOut):
     return gdal.Open(pathOut).ReadAsArray()
 
 
-def etapaFiltroPixel(work, out, ref, sar, entropia, nubesBajas, SNbuffer):
-    titulo('4. Filtro de pixel desglosado (equivalente vectorizado de filtroPixel)')
+def etapaFiltroPixel(work, out, ref, sar, entropia, nubesBajas, SNbuffer,
+                     safe, tile, iteraciones, forzarDetfoo):
+    titulo('4. Filtro de pixel desglosado')
 
     scl = ps.aperturaDS(work + 'SCL.tif').ReadAsArray()
     b12 = ps.aperturaDS(work + 'B12.tif').ReadAsArray().astype(np.int16)
@@ -267,12 +274,43 @@ def etapaFiltroPixel(work, out, ref, sar, entropia, nubesBajas, SNbuffer):
     entropiaMin = 4.0
     sombraNube = 0.001
 
-    # --- DETFOO: se rasteriza el poligono para replicar el point-in-polygon ---
-    log('Rasterizando MSK_DETFOO_B8A_b1500.geojson sobre la malla del tile...')
-    detfoo = rasterizaComoRef(pathLM + 'MSK_DETFOO_B8A_b1500.geojson', ref,
-                              out + '04_mask_detfoo_b1500.tif').astype(bool)
-    registra('FILTRO_PX', 'DETFOO b1500 (extension del poligono)', detfoo.sum(),
-             out + '04_mask_detfoo_b1500.tif')
+    # --- DETFOO NUEVO: costuras por convolucion (kernel diagonal derecha) ---
+    log('Calculando costuras DETFOO por convolucion (%d iteraciones)...' % iteraciones)
+    detfooConv = ps.detfooLineas(safe, ref, work, iteraciones=iteraciones)
+    os.system('cp ' + work + 'detfoo_lineas.tif ' +
+              out + '04_detfoo_lineas_conv_it%d.tif' % iteraciones)
+    if os.path.exists(work + 'detfoo_id.tif'):
+        os.system('cp ' + work + 'detfoo_id.tif ' + out + '04a_detfoo_id_detectores.tif')
+    registra('DETFOO', 'costuras por convolucion (%d it)' % iteraciones,
+             detfooConv.sum(), out + '04_detfoo_lineas_conv_it%d.tif' % iteraciones)
+
+    # --- DETFOO ANTERIOR: buffer de 1500 m sobre la diagonal del bbox ---
+    viejo = pathLM + 'MSK_DETFOO_B8A_b1500.geojson'
+    if os.path.exists(viejo):
+        detfooViejo = rasterizaComoRef(viejo, ref,
+                                       out + '04b_detfoo_ANTERIOR_b1500.tif').astype(bool)
+        registra('DETFOO', 'metodo ANTERIOR (buffer 1500 m)', detfooViejo.sum(),
+                 out + '04b_detfoo_ANTERIOR_b1500.tif')
+        rm_viejo = sarB & (entropia >= entropiaMin) & detfooViejo
+        p = out + '06b_ELIMINADO_metodo_ANTERIOR.tif'
+        guardaMascara(ref, rm_viejo, p)
+        registra('DETFOO', 'que ELIMINABA el metodo anterior', rm_viejo.sum(), p)
+    else:
+        log('No esta ' + viejo + ': se omite la comparacion con el metodo anterior.')
+
+    # --- Se aplica solo en los tiles de la lista (o con --forzar-detfoo) ---
+    enLista = tile in ps.tilesFiltroDetfoo
+    if enLista or forzarDetfoo:
+        if not enLista:
+            log('Tile %s NO esta en tilesFiltroDetfoo, pero se fuerza con '
+                '--forzar-detfoo' % tile)
+        detfoo = detfooConv
+    else:
+        log('Tile %s fuera de tilesFiltroDetfoo (%s): el filtro DETFOO+entropia '
+            'NO se aplica.' % (tile, ', '.join(ps.tilesFiltroDetfoo)))
+        log('Los rasters de costuras si se guardaron, para que puedas revisarlos '
+            'en QGIS. Usa --forzar-detfoo para ver cuanto eliminaria.')
+        detfoo = np.zeros(sarB.shape, dtype=bool)
 
     mask_ent = entropia >= entropiaMin
     p = out + '05_mask_entropia_ge4.tif'
@@ -283,7 +321,8 @@ def etapaFiltroPixel(work, out, ref, sar, entropia, nubesBajas, SNbuffer):
     rm_ent_detfoo = sarB & mask_ent & detfoo
     p = out + '06_ELIMINADO_entropia_y_detfoo.tif'
     guardaMascara(ref, rm_ent_detfoo, p)
-    registra('FILTRO_PX', 'ELIMINADO por entropia+DETFOO', rm_ent_detfoo.sum(), p)
+    registra('FILTRO_PX', 'ELIMINADO por entropia+DETFOO (metodo NUEVO)',
+             rm_ent_detfoo.sum(), p)
 
     # --- Filtro 2: SCL (solo se evalua si no lo elimino el filtro 1) ---
     mask_scl = np.isin(scl, [3, 8, 9, 10, 11])
@@ -443,18 +482,24 @@ def etapaVectorial(work, out, ref, tile, anio, fecha, SNbuffer, bufferNubes):
 # ---------------------------------------------------------------------------
 # VERIFICACION OPCIONAL CONTRA filtroPixel() ORIGINAL
 # ---------------------------------------------------------------------------
-def verificaContraOriginal(work, out, ref, nubesBajas, entropia, SNbuffer, nuMask):
-    titulo('7. Verificacion contra filtroPixel() original (LENTO)')
+def verificaContraOriginal(work, out, ref, nubesBajas, entropia, SNbuffer, nuMask,
+                           tile, iteraciones, forzarDetfoo, safe):
+    """Comprueba que el desglose de este script coincide con ps.filtroPixel()."""
+    titulo('7. Verificacion contra ps.filtroPixel()')
+    if tile in ps.tilesFiltroDetfoo or forzarDetfoo:
+        maskDetfoo = ps.detfooLineas(safe, ref, work, iteraciones=iteraciones)
+    else:
+        maskDetfoo = None
     dsSar = ps.aperturaDS(work + 'alg_tmp_numpy.tif')
     scl = ps.aperturaDS(work + 'SCL.tif')
     ini = time.time()
-    orig = ps.filtroPixel(ref, dsSar, nubesBajas, entropia, scl, SNbuffer, work, pathLM)
-    log('filtroPixel original: %.2f min' % ((time.time() - ini) / 60))
-    orig = np.asarray(orig)
-    dif = (orig.astype(np.uint8) != nuMask)
-    p = out + '99_DIFERENCIA_vectorizado_vs_original.tif'
+    orig = ps.filtroPixel(ref, dsSar, nubesBajas, entropia, scl, SNbuffer, work,
+                          pathLM, maskDetfoo)
+    log('ps.filtroPixel(): %.2f min' % ((time.time() - ini) / 60))
+    dif = (np.asarray(orig).astype(np.uint8) != nuMask)
+    p = out + '99_DIFERENCIA_diagnostico_vs_pipeline.tif'
     guardaMascara(ref, dif, p)
-    registra('VERIF', 'pixeles distintos vectorizado vs original', dif.sum(), p)
+    registra('VERIF', 'pixeles distintos diagnostico vs pipeline', dif.sum(), p)
 
 
 # ---------------------------------------------------------------------------
@@ -472,8 +517,14 @@ def main():
                         help='Ejecuta con SNbuffer=False')
     parser.add_argument('--sen2cor', action='store_true',
                         help='Corrige el L1C con Sen2Cor si no existe el L2A')
+    parser.add_argument('--iteraciones', type=int, default=ps.iteracionesDetfoo,
+                        help='Iteraciones del filtro de convolucion DETFOO (default %d)'
+                             % ps.iteracionesDetfoo)
+    parser.add_argument('--forzar-detfoo', dest='forzarDetfoo', action='store_true',
+                        help='Aplica el filtro DETFOO+entropia aunque el tile no este '
+                             'en tilesFiltroDetfoo (util para comparar)')
     parser.add_argument('--verifica-filtro', action='store_true',
-                        help='Corre tambien el filtroPixel() original y compara (lento)')
+                        help='Corre tambien ps.filtroPixel() y compara resultados')
     args = parser.parse_args()
 
     fechaDia = args.fecha.replace('-', '')
@@ -517,11 +568,13 @@ def main():
     # del filtro de pixel cuando SNbuffer == False, igual que en el pipeline.
     banderaNub, porcNubeOceano = etapaMascaraNubes(work, out, ref, bufferNubes, SNbuffer)
 
-    nuMask = etapaFiltroPixel(work, out, ref, sar, entropia, nubesBajas, SNbuffer)
+    nuMask = etapaFiltroPixel(work, out, ref, sar, entropia, nubesBajas, SNbuffer,
+                              safe, tile, args.iteraciones, args.forzarDetfoo)
     etapaVectorial(work, out, ref, tile, anio, fecha, SNbuffer, bufferNubes)
 
     if args.verifica_filtro:
-        verificaContraOriginal(work, out, ref, nubesBajas, entropia, SNbuffer, nuMask)
+        verificaContraOriginal(work, out, ref, nubesBajas, entropia, SNbuffer,
+                               nuMask, tile, args.iteraciones, args.forzarDetfoo, safe)
 
     # ----------------------------------------------------------------------
     # RESUMEN
