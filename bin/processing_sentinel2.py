@@ -404,6 +404,11 @@ def uneVectorial(crs,tipo,pathInput,fecha,pathOutput,pathOutputPeta,pathOutputWe
     archivos = glob(pathInput+'*'+fecha+'*')
     archivos.sort()
 
+    # Sin archivos para la fecha (p. ej. todas las imagenes con exceso de nubes, sin sargazo)
+    if len(archivos) == 0:
+        print('Sin archivos de '+tipo+' para la fecha '+fecha+', no se une')
+        return
+
     archivoB = archivos[0]
     nombreB = archivoB.split('/')[-1].split('_')
     df_b = gpd.read_file(archivoB)
