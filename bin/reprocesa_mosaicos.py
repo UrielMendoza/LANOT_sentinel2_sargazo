@@ -121,8 +121,8 @@ def generaRGB_porTile(archivoL1C, fecha, tile, bandas20m):
     else:
         print('  - Corriendo Sen2Cor...')
         owd = os.getcwd()
-        pathSen2corBin = pathSen2cor + 'LANOT_sentinel2_sargazo/Sen2Cor-02.12.03-Linux64/bin/'
-        pathCFG = pathSen2cor + 'sen2cor/2.12/cfg/L2A_GIPP.xml'
+        pathSen2corBin = pathSen2cor + 'LANOT_sentinel2_sargazo/Sen2Cor-02.13.02-Linux64/bin/'
+        pathCFG = pathSen2cor + 'sen2cor/2.13/cfg/L2A_GIPP.xml'
         processing_sentinel2.sen2cor(pathSen2corBin, pathCFG, pathTmp + dirI, pathTmp, '10')
 
         l2a = glob(pathTmp + '*MSIL2A*' + fecha + '*' + tile + '*.SAFE')[0]

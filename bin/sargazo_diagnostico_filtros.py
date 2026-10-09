@@ -154,8 +154,8 @@ def localizaL2A(tile, fechaDia, work, usaSen2cor):
         ps.descomprime(work + archivoL1C.split('/')[-1], work)
         dirL1C = ps.nomDir(archivoL1C, 'L1C')
         log('Corrigiendo con Sen2Cor (puede tardar)...')
-        pathSen2corBin = pathSen2cor + 'LANOT_sentinel2_sargazo/Sen2Cor-02.12.03-Linux64/bin/'
-        pathCFG = pathSen2cor + 'sen2cor/2.12/cfg/L2A_GIPP.xml'
+        pathSen2corBin = pathSen2cor + 'LANOT_sentinel2_sargazo/Sen2Cor-02.13.02-Linux64/bin/'
+        pathCFG = pathSen2cor + 'sen2cor/2.13/cfg/L2A_GIPP.xml'
         ps.sen2cor(pathSen2corBin, pathCFG, work + dirL1C, work, '10')
 
     safes = glob(work + '*MSIL2A*' + fechaDia + 'T*' + tile + '*.SAFE')

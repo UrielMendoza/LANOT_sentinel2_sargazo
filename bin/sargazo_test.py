@@ -52,8 +52,8 @@ pathVertices      = os.path.join(BASE_DIR, 'test', 'geojson')           + os.sep
 pathLM            = os.path.join(BASE_DIR, 'data', 'masks')             + os.sep
 
 # Sen2Cor instalado por install.sh en la raiz del repo
-pathSen2corBin = os.path.join(BASE_DIR, 'Sen2Cor-02.12.03-Linux64', 'bin') + os.sep
-pathCFG        = os.path.join(HOME_DIR, 'sen2cor', '2.12', 'cfg', 'L2A_GIPP.xml')
+pathSen2corBin = os.path.join(BASE_DIR, 'Sen2Cor-02.13.02-Linux64', 'bin') + os.sep
+pathCFG        = os.path.join(HOME_DIR, 'sen2cor', '2.13', 'cfg', 'L2A_GIPP.xml')
 
 # ---------------------------------------------------------------
 # CREA DIRECTORIOS NECESARIOS
